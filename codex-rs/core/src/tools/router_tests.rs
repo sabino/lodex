@@ -660,3 +660,48 @@ fn namespace_function_names(specs: &[ToolSpec], namespace_name: &str) -> Vec<Str
         })
         .unwrap_or_default()
 }
+
+#[test]
+fn build_tool_call_normalizes_responses_lite_search_identity() -> anyhow::Result<()> {
+    let call = ToolRouter::build_tool_call(ResponseItem::FunctionCall {
+        status: None,
+        encrypted_content: None,
+        id: None,
+        name: "tool_search_tool".to_string(),
+        namespace: Some("tool_search".to_string()),
+        arguments: r#"{"query":"challenge","limit":2}"#.to_string(),
+        encrypted_function_args: None,
+        call_id: "search-call".to_string(),
+        internal_chat_message_metadata_passthrough: None,
+    })?
+    .expect("search function should produce a native search call");
+    assert_eq!(call.tool_name, ToolName::plain("tool_search"));
+    assert_eq!(call.call_id, "search-call");
+    match call.payload {
+        ToolPayload::ToolSearch { arguments } => {
+            assert_eq!(arguments.query, "challenge");
+            assert_eq!(arguments.limit, Some(2));
+        }
+        other => panic!("expected native search payload, got {other:?}"),
+    }
+    Ok(())
+}
+
+#[test]
+fn build_tool_call_rejects_malformed_responses_lite_search_arguments() {
+    let result = ToolRouter::build_tool_call(ResponseItem::FunctionCall {
+        status: None,
+        encrypted_content: None,
+        id: None,
+        name: "tool_search_tool".to_string(),
+        namespace: Some("tool_search".to_string()),
+        arguments: r#"{"query":42}"#.to_string(),
+        encrypted_function_args: None,
+        call_id: "search-call".to_string(),
+        internal_chat_message_metadata_passthrough: None,
+    });
+    assert!(matches!(
+        result,
+        Err(crate::function_tool::FunctionCallError::RespondToModel(_))
+    ));
+}

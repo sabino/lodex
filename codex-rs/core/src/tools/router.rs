@@ -264,6 +264,23 @@ impl ToolRouter {
                 call_id,
                 ..
             } => {
+                // Responses Lite can return the native search tool using its
+                // model-visible namespace/function identity. Normalize that
+                // reserved pair to the same runtime and payload as ToolSearchCall.
+                if namespace.as_deref() == Some("tool_search") && name == "tool_search_tool" {
+                    let arguments: SearchToolCallParams = serde_json::from_str(&arguments)
+                        .map_err(|err| {
+                            FunctionCallError::RespondToModel(format!(
+                                "failed to parse tool_search arguments: {err}"
+                            ))
+                        })?;
+                    return Ok(Some(ToolCall {
+                        tool_name: ToolName::plain("tool_search"),
+                        call_id,
+                        payload: ToolPayload::ToolSearch { arguments },
+                        encrypted_function_args,
+                    }));
+                }
                 let tool_name = ToolName::new(namespace, name).with_default_namespace();
                 Ok(Some(ToolCall {
                     tool_name,
