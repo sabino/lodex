@@ -48,7 +48,8 @@ components, but are not yet attached automatically to agent prompts.
 The normal MIPS launcher graph contains no `codex-tui` or `ratatui` dependency.
 Experimental `exec-server` support preserves an executor path for remote tools.
 The standalone `lodex-executor` image compiled at 75614760 bytes for remote-primary
-setups; its own native qualification is still pending. Browser automation should normally
+setups. Native startup, environment RPC and MCP tool/resource smoke checks passed;
+process/file/cancellation/recovery stress remains to qualify. Browser automation should normally
 run through remote MCP services instead of a
 browser installed on the router.
 
@@ -96,7 +97,7 @@ MCP suite passed 377 top-level tests; host passes are separate from MIPS validat
 | Lodex v1.1 headless launcher | 236607592 |
 | Lodex v1.2 SQLite candidate | 236607236 |
 | Lodex v1.3 full headless image with executor CLI | 239722436 |
-| Executor-only candidate, native qualification pending | 75614760 |
+| Executor-only candidate, basic native smoke checks passed | 75614760 |
 
 Executable size is not RAM usage. Early pool measurements reduced thread count
 and median observed RSS peak, with slower request-group timing in that workload.

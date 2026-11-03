@@ -1,0 +1,51 @@
+{
+  "variant": "executor-only v1",
+  "image": {
+    "bytes": 75614760,
+    "sha256": "7a8b64ed1bed062e7909fb6d0ee7d13b607da8e3a9c7c6efb93750c20a7cba13",
+    "gzip_bytes": 23681554,
+    "gzip_sha256": "6b5998d7be3efe86b6a9d24e1b487571ee18bafb2200fb5d961be32b96622dd7"
+  },
+  "native_cli_version_help_and_transport_schema_passed": true,
+  "native_environment_info_status_passed": true,
+  "native_remote_mcp_discovery_tool_resource_passed": true,
+  "warm_fixture_observation": {
+    "scope": "One warm executor-only MCP fixture observation; no model inference. Background managed service remains active.",
+    "device_footprint": {
+      "sample_count": 5,
+      "elapsed_seconds": 8,
+      "rss_min_kib": 32084,
+      "rss_max_kib": 32084,
+      "rss_peak_kib": 32100,
+      "swap_max_kib": 0,
+      "major_fault_delta": 0,
+      "cpu_tick_delta": 0
+    },
+    "device_threads": [
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "device_cpu_ticks_at_first_sample": 77,
+    "rpc_seconds": {
+      "initialize": 1.7800773489288986,
+      "thread/start": 0.8735995700117201,
+      "mcpServerStatus/list": 0.7924965509446338,
+      "mcpServer/tool/call": 0.05369311093818396,
+      "mcpServer/resource/read": 0.054296105983667076
+    }
+  },
+  "evidence_sha256": {
+    "executor-only-cli-retry.txt": "04c5d2cf3490417de0c2e95c1bd98fdd156fa40e6b5946689ee3bc8fd788bb82",
+    "result.json": "913bf5dbac3ae2512de49c02fca0510ac1c3263f1f8b14771e6cadb2f6ac91cf",
+    "mcp-result.json": "60877e5a4b612c93212a111300a1441273ae9d6ae8a854331c5a181e1e8b602a"
+  },
+  "limitations": [
+    "Only basic native qualification; process/file/cancellation/auth/recovery stress and prolonged workloads remain.",
+    "Real model-driven shell proof used full v1.3 executor, not this standalone image.",
+    "Profile is one warm fixture observation with background managed service active, no model inference and no controller resource accounting.",
+    "No universal memory, speed, cloud-network or voice-latency guarantee."
+  ]
+}

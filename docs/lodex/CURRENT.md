@@ -26,7 +26,8 @@ undergoing repeated hardware comparison. All245 state tests and one doctest pass
 with both the new limit and upstream's five-connection limit. The v1.3 executor entry point compiled and passed ten native CLI gates. A separate
 Linux primary then passed real model-driven shell and MCP tool/resource tests
 through the device executor. An executor-only image compiled at 75614760 bytes as a smaller remote-primary
-option; native qualification remains pending. Preliminary pool results show a resource/latency tradeoff; see
+option. Basic native CLI, environment RPC and remote MCP calls passed; full
+process/file/cancellation/recovery qualification is still pending. Preliminary pool results show a resource/latency tradeoff; see
 performance.md. A clean alternating confirmation remains required.
 
 ## Remaining work

@@ -13,7 +13,7 @@ external SD storage. Results are specific to the workload, binary and firmware.
 | Lodex v1.1 | 236607592 |
 | Lodex v1.2, two-connection candidate | 236607236 |
 | Lodex v1.3, executor entry point restored | 239722436 |
-| Executor-only candidate, native qualification pending | 75614760 |
+| Executor-only candidate, basic native smoke checks passed | 75614760 |
 
 The executor CLI adds about 3.1 MB to the image while retaining a remote tools
 execution path. Image size is not heap, RSS, swap or total physical RAM usage.
@@ -65,7 +65,11 @@ warm-cache/order and the background service are confounders. Controller resource
 use, actual cloud network/inference latency, speech streaming and full user-turn
 latency are not included. Request-duration sums exclude notification-wait and
 sampling time. See [the counters and exact scope](placement-observation.json).
-Repeated placement tests and native executor-only qualification remain work in progress.
+An additional warm executor-only fixture observation recorded RSS 32084 KiB,
+peak 32100 KiB, zero sampled swap and 9 threads. This separate single observation
+has different warm/cache state and is not a controlled percentage-saving result.
+See [its exact scope and native gates](executor-only-results.json). Repeated
+placement tests and broader executor-only qualification remain work in progress.
 
 ## Execution placement
 

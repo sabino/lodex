@@ -39,7 +39,8 @@ The executor state directory and matching private runtime must already exist.
 The functional test used a separate, credential-free executor home. It used an
 explicit direct-tool model catalog for the controller. Other tool modes and
 firmware layouts require their own qualification. The experimental executor-only image compiled as a smaller alternative to the
-full local harness image; its own native qualification is pending.
+full local harness image. Its native startup, environment RPC and MCP tool/resource
+smoke checks passed; broader process/file/cancellation/recovery testing remains.
 
 Specify the device-native working directory when selecting an environment or
 calling a shell tool. A controller's local working directory may not exist on the
