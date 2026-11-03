@@ -23,8 +23,9 @@ and mcp-test-matrix.md for the exact scope.
 
 The v1.2 two-connection SQLite candidate compiled, passed native CLI gates and is
 undergoing repeated hardware comparison. All245 state tests and one doctest pass
-with both the new limit and upstream's five-connection limit. The v1.3 executor
-CLI entry point is being rebuilt; its own native qualification remains pending.
+with both the new limit and upstream's five-connection limit. The v1.3 executor CLI entry point compiled; its own native qualification remains
+pending. Preliminary pool results show a resource/latency tradeoff; see
+performance.md. A clean alternating confirmation remains required.
 
 ## Remaining work
 

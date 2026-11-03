@@ -91,8 +91,11 @@ MCP suite passed 377 top-level tests; host passes are separate from MIPS validat
 | Upstream headless App Server reference | 229765044 |
 | Lodex v1.1 headless launcher | 236607592 |
 | Lodex v1.2 SQLite candidate | 236607236 |
+| Lodex v1.3 executor candidate | 239722436 |
 
-Executable size is not RAM usage. See the [measurement scope and status](docs/lodex/CURRENT.md),
+Executable size is not RAM usage. Early pool measurements reduced thread count
+and median observed RSS peak, with slower request-group timing in that workload.
+See the [performance results and limits](docs/lodex/performance.md), the [measurement scope and status](docs/lodex/CURRENT.md),
 [reference measurements](docs/lodex/reference-results.json),
 [MCP qualification matrix](docs/lodex/mcp-test-matrix.md),
 [capability contract](docs/lodex/contract.md) and [implementation plan](docs/lodex/plan.md).

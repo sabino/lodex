@@ -1,0 +1,243 @@
+{
+  "scope": "Preliminary sequential batches of three synthetic four-thread shell/history trials per image; managed service running unchanged during both batches.",
+  "comparison": {
+    "pool5": {
+      "trial_count": 3,
+      "rss_peak_median_kib": 55096,
+      "final_sample_threads_median": 29,
+      "request_group_sum_median_seconds": 33.2835560500389,
+      "trials": [
+        {
+          "trial": 1,
+          "remote_home": "/mnt/mmcblk0p2/lodex-lab/bench-v1.1-pool5/trial-1",
+          "footprint": {
+            "sample_count": 5,
+            "elapsed_seconds": 8,
+            "rss_min_kib": 38548,
+            "rss_max_kib": 54364,
+            "rss_peak_kib": 56560,
+            "swap_max_kib": 7360,
+            "major_fault_delta": 21,
+            "cpu_tick_delta": 9
+          },
+          "threads": [
+            40,
+            40,
+            40,
+            40,
+            29
+          ],
+          "request_group_seconds": [
+            12.722727415035479,
+            15.61671423597727,
+            15.61671423597727,
+            15.61671423597727,
+            15.61671423597727,
+            5.26518135308288,
+            5.26518135308288,
+            5.26518135308288,
+            5.26518135308288,
+            2.174856931902468,
+            2.174856931902468,
+            2.174856931902468,
+            2.174856931902468
+          ]
+        },
+        {
+          "trial": 2,
+          "remote_home": "/mnt/mmcblk0p2/lodex-lab/bench-v1.1-pool5/trial-2",
+          "footprint": {
+            "sample_count": 5,
+            "elapsed_seconds": 9,
+            "rss_min_kib": 44300,
+            "rss_max_kib": 44740,
+            "rss_peak_kib": 55096,
+            "swap_max_kib": 7396,
+            "major_fault_delta": 4,
+            "cpu_tick_delta": 5
+          },
+          "threads": [
+            34,
+            34,
+            30,
+            30,
+            30
+          ],
+          "request_group_seconds": [
+            13.239606712013483,
+            13.715887935017236,
+            13.715887935017236,
+            13.715887935017236,
+            13.715887935017236,
+            2.7774772570701316,
+            2.7774772570701316,
+            2.7774772570701316,
+            2.7774772570701316,
+            1.5840560820652172,
+            1.5840560820652172,
+            1.5840560820652172,
+            1.5840560820652172
+          ]
+        },
+        {
+          "trial": 3,
+          "remote_home": "/mnt/mmcblk0p2/lodex-lab/bench-v1.1-pool5/trial-3",
+          "footprint": {
+            "sample_count": 5,
+            "elapsed_seconds": 8,
+            "rss_min_kib": 37580,
+            "rss_max_kib": 37712,
+            "rss_peak_kib": 54876,
+            "swap_max_kib": 6780,
+            "major_fault_delta": 11,
+            "cpu_tick_delta": 6
+          },
+          "threads": [
+            35,
+            35,
+            35,
+            35,
+            28
+          ],
+          "request_group_seconds": [
+            12.639436195022427,
+            12.693753859959543,
+            12.693753859959543,
+            12.693753859959543,
+            12.693753859959543,
+            5.876887349993922,
+            5.876887349993922,
+            5.876887349993922,
+            5.876887349993922,
+            2.0734786450630054,
+            2.0734786450630054,
+            2.0734786450630054,
+            2.0734786450630054
+          ]
+        }
+      ]
+    },
+    "pool2": {
+      "trial_count": 3,
+      "rss_peak_median_kib": 52676,
+      "final_sample_threads_median": 20,
+      "request_group_sum_median_seconds": 37.591348487185314,
+      "trials": [
+        {
+          "trial": 1,
+          "remote_home": "/mnt/mmcblk0p2/lodex-lab/bench-v1.2-pool2/trial-1",
+          "footprint": {
+            "sample_count": 5,
+            "elapsed_seconds": 8,
+            "rss_min_kib": 24280,
+            "rss_max_kib": 34932,
+            "rss_peak_kib": 52976,
+            "swap_max_kib": 8764,
+            "major_fault_delta": 30,
+            "cpu_tick_delta": 5
+          },
+          "threads": [
+            28,
+            28,
+            28,
+            20,
+            20
+          ],
+          "request_group_seconds": [
+            12.571664707036689,
+            19.873423415003344,
+            19.873423415003344,
+            19.873423415003344,
+            19.873423415003344,
+            1.6315218510571867,
+            1.6315218510571867,
+            1.6315218510571867,
+            1.6315218510571867,
+            3.5147385140880942,
+            3.5147385140880942,
+            3.5147385140880942,
+            3.5147385140880942
+          ]
+        },
+        {
+          "trial": 2,
+          "remote_home": "/mnt/mmcblk0p2/lodex-lab/bench-v1.2-pool2/trial-2",
+          "footprint": {
+            "sample_count": 5,
+            "elapsed_seconds": 8,
+            "rss_min_kib": 47252,
+            "rss_max_kib": 47524,
+            "rss_peak_kib": 50512,
+            "swap_max_kib": 7456,
+            "major_fault_delta": 26,
+            "cpu_tick_delta": 6
+          },
+          "threads": [
+            29,
+            29,
+            29,
+            29,
+            20
+          ],
+          "request_group_seconds": [
+            14.432074554963037,
+            14.661046675988473,
+            14.661046675988473,
+            14.661046675988473,
+            14.661046675988473,
+            5.32417518098373,
+            5.32417518098373,
+            5.32417518098373,
+            5.32417518098373,
+            2.0975083319935948,
+            2.0975083319935948,
+            2.0975083319935948,
+            2.0975083319935948
+          ]
+        },
+        {
+          "trial": 3,
+          "remote_home": "/mnt/mmcblk0p2/lodex-lab/bench-v1.2-pool2/trial-3",
+          "footprint": {
+            "sample_count": 5,
+            "elapsed_seconds": 8,
+            "rss_min_kib": 27336,
+            "rss_max_kib": 27904,
+            "rss_peak_kib": 52676,
+            "swap_max_kib": 7740,
+            "major_fault_delta": 39,
+            "cpu_tick_delta": 8
+          },
+          "threads": [
+            25,
+            25,
+            20,
+            20,
+            20
+          ],
+          "request_group_seconds": [
+            12.119877284974791,
+            18.28500479797367,
+            18.28500479797367,
+            18.28500479797367,
+            18.28500479797367,
+            10.570951238041744,
+            10.570951238041744,
+            10.570951238041744,
+            10.570951238041744,
+            3.2518617230234668,
+            3.2518617230234668,
+            3.2518617230234668,
+            3.2518617230234668
+          ]
+        }
+      ]
+    }
+  },
+  "limitations": [
+    "Request-group sums exclude notification-wait and idle sampling time; they are not end-to-end user turn latency.",
+    "Post-workload RSS, swap and page faults vary; these batches do not establish a universal speedup or steady-state RAM saving.",
+    "Background service and image page-cache sharing are confounders. A separate alternating confirmation is still required.",
+    "A later exploratory alternating run had an image upload overlap one trial and is not used for conclusions."
+  ]
+}
