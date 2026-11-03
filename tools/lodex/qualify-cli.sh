@@ -25,7 +25,7 @@ pass() { printf 'PASS %s\n' "$1"; }
 grep -q '^lodex 0\.166\.0$' "$target_home/version.txt"
 pass version
 "$binary" --help > "$target_home/help.txt"
-for command in app-server remote-control mcp exec exec-server profile login logout; do
+for command in app-server remote-control mcp exec exec-server profile cloud login logout; do
     grep -q "$command" "$target_home/help.txt"
 done
 pass root-command-schema
@@ -33,6 +33,13 @@ pass root-command-schema
 grep -q 'write-memory' "$target_home/profile-help.txt"
 grep -q 'inspect' "$target_home/profile-help.txt"
 pass local-profile-command-schema
+"$binary" cloud capabilities > "$target_home/cloud-capabilities.json"
+grep -q '"adapter":"codex_cli_cloud_tasks"' "$target_home/cloud-capabilities.json"
+"$binary" cloud api capabilities > "$target_home/api-capabilities.json"
+grep -q '"adapter":"agents_api_v1"' "$target_home/api-capabilities.json"
+"$binary" cloud exec --env fixture --branch fixture --help > "$target_home/cloud-exec-help.txt"
+grep -q -- '--branch' "$target_home/cloud-exec-help.txt"
+pass explicit-cloud-command-schema
 "$binary" exec-server --listen ws://127.0.0.1:0 --concurrent-requests 2 --ws-auth capability-token --ws-token-file /tmp/lodex-executor-fixture.token --help > "$target_home/executor-help.txt"
 grep -q -- '--concurrent-requests' "$target_home/executor-help.txt"
 grep -q -- '--ws-auth' "$target_home/executor-help.txt"

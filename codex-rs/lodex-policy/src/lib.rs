@@ -11,21 +11,27 @@ pub const MAX_IDENTIFIER_BYTES: usize = 256;
 pub const MAX_REQUEST_BYTES: usize = 64 * 1024;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub struct SubmissionTooLarge;
+pub enum SubmissionError {
+    TooLarge,
+    MissingGitRef,
+}
 
-impl fmt::Display for SubmissionTooLarge {
+impl fmt::Display for SubmissionError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.write_str("encoded cloud submission exceeds the 64 KiB limit")
+        f.write_str(match self {
+            Self::TooLarge => "encoded cloud submission exceeds the 64 KiB limit",
+            Self::MissingGitRef => "cloud submission requires an explicit git_ref",
+        })
     }
 }
 
-impl std::error::Error for SubmissionTooLarge {}
+impl std::error::Error for SubmissionError {}
 
 /// Build the pinned Codex new-task wire payload without consulting the process
 /// environment, working tree, parent thread or local profile store. In particular,
 /// do not inherit CODEX_STARTING_DIFF as the upstream cloud UI adapter does.
-/// The constant default branch is explicit; there is no local Git discovery.
-pub fn encode_cloud_submission(task: &CloudTask) -> Result<Vec<u8>, SubmissionTooLarge> {
+/// An explicit branch is required; there is no ambient Git discovery or default.
+pub fn encode_cloud_submission(task: &CloudTask) -> Result<Vec<u8>, SubmissionError> {
     #[derive(Serialize)]
     struct NewTask<'a> {
         environment_id: &'a str,
@@ -53,7 +59,7 @@ pub fn encode_cloud_submission(task: &CloudTask) -> Result<Vec<u8>, SubmissionTo
     impl Write for BoundedBytes {
         fn write(&mut self, bytes: &[u8]) -> io::Result<usize> {
             if bytes.len() > MAX_REQUEST_BYTES.saturating_sub(self.0.len()) {
-                return Err(io::Error::other(SubmissionTooLarge));
+                return Err(io::Error::other(SubmissionError::TooLarge));
             }
             self.0.extend_from_slice(bytes);
             Ok(bytes.len())
@@ -65,7 +71,7 @@ pub fn encode_cloud_submission(task: &CloudTask) -> Result<Vec<u8>, SubmissionTo
     let submission = Submission {
         new_task: NewTask {
             environment_id: task.environment_id(),
-            branch: task.git_ref().unwrap_or("main"),
+            branch: task.git_ref().ok_or(SubmissionError::MissingGitRef)?,
             run_environment_in_qa_mode: false,
         },
         input_items: [Message {
@@ -78,7 +84,7 @@ pub fn encode_cloud_submission(task: &CloudTask) -> Result<Vec<u8>, SubmissionTo
         }],
     };
     let mut bytes = BoundedBytes(Vec::with_capacity(MAX_REQUEST_BYTES));
-    serde_json::to_writer(&mut bytes, &submission).map_err(|_| SubmissionTooLarge)?;
+    serde_json::to_writer(&mut bytes, &submission).map_err(|_| SubmissionError::TooLarge)?;
     Ok(bytes.0)
 }
 
@@ -256,20 +262,25 @@ mod tests {
 
     #[test]
     fn escaped_wire_size_is_bounded_before_any_submission() {
-        let task =
-            CloudTask::new("env".into(), None, "\0".repeat(MAX_TASK_BYTES)).expect("byte bound");
+        let task = CloudTask::new(
+            "env".into(),
+            Some("selected".into()),
+            "\0".repeat(MAX_TASK_BYTES),
+        )
+        .expect("byte bound");
         assert_eq!(
             encode_cloud_submission(&task).err(),
-            Some(SubmissionTooLarge)
+            Some(SubmissionError::TooLarge)
         );
     }
 
     #[test]
-    fn omitted_ref_has_a_constant_default_independent_of_current_directory() {
+    fn omitted_ref_is_rejected_before_any_submission() {
         let task = CloudTask::new("env".into(), None, "selected task".into()).expect("valid");
-        let value: serde_json::Value =
-            serde_json::from_slice(&encode_cloud_submission(&task).expect("wire")).expect("JSON");
-        assert_eq!(value["new_task"]["branch"], "main");
+        assert_eq!(
+            encode_cloud_submission(&task).err(),
+            Some(SubmissionError::MissingGitRef)
+        );
     }
 
     #[test]
@@ -277,7 +288,12 @@ mod tests {
         const CHILD: &str = "LODEX_WIRE_CANARY_CHILD";
         const CANARY: &str = "private-starting-diff-must-not-be-exported";
         if std::env::var_os(CHILD).is_some() {
-            let task = CloudTask::new("env".into(), None, "selected task".into()).expect("valid");
+            let task = CloudTask::new(
+                "env".into(),
+                Some("selected".into()),
+                "selected task".into(),
+            )
+            .expect("valid");
             let wire = encode_cloud_submission(&task).expect("wire");
             assert!(
                 !String::from_utf8(wire)

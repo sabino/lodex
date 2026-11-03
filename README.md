@@ -25,9 +25,11 @@ This is an independent fork, not an official OpenAI distribution.
   has passed real model-driven shell and MCP tool/resource tests over SSH; hosted
   Cloud and voice-streaming qualification remain pending. See the
   [remote-primary setup and limits](docs/lodex/remote-primary.md).
-- **Cloud tasks:** an explicit, bounded task adapter is in development. A new cloud
-  task is separate from moving a running local thread. Automatic private-context
-  synchronization is not enabled.
+- **Cloud tasks and API sessions:** `lodex cloud` uses the existing ChatGPT login
+  for explicit environment/ref/task submission. `lodex cloud api` prepares hosted
+  or self-hosted agent sessions using a separate API key. A new task is separate
+  from moving a running thread; profiles are not exported automatically. See
+  [commands, data boundaries and qualification limits](docs/lodex/worker-routing.md).
 
 The local harness remains supported. Moving computation off the device must
 preserve tools, connection recovery and explicit data boundaries.

@@ -43,6 +43,23 @@ synthetic fixture result, excluding model inference and voice. See performance.m
 and placement-balanced-results.json. The separate SQLite pool comparison still
 needs clean alternating confirmation.
 
+## Cloud task and API adapter
+
+The headless `cloud` command now submits one explicit environment/ref/task using
+saved ChatGPT authentication and retrieves bounded status/assistant text. A live
+read-only cloud worker completed with the expected marker. The API subcommand
+separately implements hosted/self-hosted session creation, minimal status,
+paginated assistant results and actual cancellation-event submission. It requires
+an API key and does not substitute the saved subscription login for that key.
+Twenty-two cloud protocol/CLI tests and thirteen payload-policy tests pass, with
+package Clippy warnings denied. Both native images passed cloud/API preflight
+and saved-login cloud readback; a real local MIPS `exec` turn passed against a
+synthetic API response server over SSH forwarding. The full candidate passed
+twelve CLI gates and App Server shell execution. Live API keys were unavailable,
+so this does not qualify hosted API execution or device registration. Exact native gates and remaining live API limits
+are recorded in [cloud-results.json](cloud-results.json). Command examples and
+credential/data boundaries are in [worker-routing.md](worker-routing.md).
+
 ## Remaining work
 
 - Repeated comparable device CPU/RSS/swap/fault/startup/tool-latency measurements,
@@ -52,8 +69,10 @@ needs clean alternating confirmation.
   while retaining the local harness. A separate Linux primary passed real
   model-driven shell and MCP tool/resource tests; loaded-turn placement benchmarks
   remain beyond the measured synthetic startup fixture.
-- Explicit cloud-task selection, account/environment qualification, bounded
-  results and verified cancellation semantics. New tasks are not thread migration.
+- Live hosted API-harness/device registration once appropriately scoped API keys
+  are configured. API event streaming, durable follow-up submission and real auth
+  expiry/recovery remain; the legacy task API exposes no verified cancel method.
+  Explicit new cloud tasks are not migration of a running local thread.
 - Agent profile selection/prompt policy, atomic initialization recovery and
   SD-failure tests. Local storage CLI, writer attribution and process-kill update
   recovery are implemented. No automatic profile injection or sync is enabled.

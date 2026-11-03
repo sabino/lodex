@@ -3975,6 +3975,7 @@ dependencies = [
  "codex-features",
  "codex-home",
  "codex-http-client",
+ "codex-lodex-cloud",
  "codex-lodex-local",
  "codex-login",
  "codex-mcp",
@@ -3998,6 +3999,27 @@ dependencies = [
  "tracing-appender",
  "tracing-subscriber",
  "url",
+]
+
+[[package]]
+name = "codex-lodex-cloud"
+version = "0.166.0"
+dependencies = [
+ "bytes",
+ "clap",
+ "codex-api",
+ "codex-core",
+ "codex-http-client",
+ "codex-lodex-policy",
+ "codex-login",
+ "codex-model-provider",
+ "codex-utils-cli",
+ "http 1.4.0",
+ "serde",
+ "serde_json",
+ "tokio",
+ "url",
+ "wiremock",
 ]
 
 [[package]]

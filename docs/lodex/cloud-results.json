@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "date": "2026-11-03",
+  "upstream_version": "0.166.0",
+  "scope": "bounded CLI cloud tasks, API session controller and local API-provider qualification; no overall performance claim",
+  "images": [
+    {
+      "name": "lodex-v1.5",
+      "bytes": 240249956,
+      "sha256": "f8683c924628aa2fa1adedfb5daedbef51e9f8bca2f7df9405ec5a6836c4087c"
+    },
+    {
+      "name": "lodex-cloud-v1",
+      "bytes": 56895940,
+      "sha256": "c2577db7d9a9c99c6a7a3515662a8979d48083988265ee976eb386abb96512a9"
+    }
+  ],
+  "host": {
+    "cloud_protocol_and_cli_tests": 22,
+    "payload_policy_tests": 13,
+    "clippy_warnings_denied": true,
+    "python_tools_tests": 26,
+    "cli_preflight_cases": 5
+  },
+  "existing_chatgpt_login": {
+    "environment_discovery": true,
+    "selected_public_repository": true,
+    "explicit_git_ref": true,
+    "synthetic_read_only_task_submitted": true,
+    "completed_status": true,
+    "expected_assistant_result": true,
+    "auth_expiry_refresh_live": false
+  },
+  "api": {
+    "wire_fixture_tests": 7,
+    "separate_key_authentication": true,
+    "real_cancel_event_wire": true,
+    "explicit_pagination": true,
+    "live_api_key_configured": false,
+    "hosted_api_execution_qualified": false,
+    "api_harness_device_connection_qualified": false,
+    "local_provider_transport_qualified_with_synthetic_server": true
+  },
+  "limits": {
+    "metadata_bytes": 262144,
+    "result_body_bytes": 1048576,
+    "result_text_bytes": 65536,
+    "task_text_bytes": 32768,
+    "request_deadline_seconds": 30
+  },
+  "unsupported": [
+    "legacy-task cancellation",
+    "active-thread migration",
+    "automatic private-profile export",
+    "API event streaming",
+    "API follow-up input submission",
+    "arbitrary hosted agent/MCP configuration"
+  ],
+  "production_cutover": false,
+  "native": {
+    "full_cli_gates": 12,
+    "standalone_and_full_cloud_api_preflight": true,
+    "app_server_startup_shell_error_gate": true,
+    "saved_login_environment_discovery": true,
+    "saved_login_completed_task_status_and_result_both_images": true,
+    "local_api_provider_actual_exec": true,
+    "local_api_provider_synthetic_sse": true,
+    "api_fixture_transport": "SSH reverse forwarding",
+    "api_fixture_request_count": 1,
+    "api_fixture_separate_key_no_chatgpt_account_header": true,
+    "direct_fixture_route_qualified": false,
+    "compressed_and_decoded_images_sha256_verified": true
+  }
+}

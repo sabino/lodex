@@ -41,6 +41,7 @@ members = [
     "lodex-executor",
     "lodex-policy",
     "lodex-local",
+    "lodex-cloud",
     "collaboration-mode-templates",
     "connectors",
     "config",
@@ -265,6 +266,8 @@ codex-linux-sandbox = { path = "linux-sandbox" }
 codex-lmstudio = { path = "lmstudio" }
 codex-login = { path = "login" }
 codex-lodex-local = { path = "lodex-local" }
+codex-lodex-cloud = { path = "lodex-cloud" }
+codex-lodex-policy = { path = "lodex-policy" }
 codex-mermaid = { path = "mermaid" }
 codex-message-history = { path = "message-history" }
 codex-memories-extension = { path = "ext/memories" }

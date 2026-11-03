@@ -51,6 +51,7 @@ enum Command {
     Exec(codex_exec::Cli),
     ExecServer(codex_exec_server_cli::ExecServerCommand),
     Profile(codex_lodex_local::cli::ProfileArgs),
+    Cloud(codex_lodex_cloud::cli::CloudArgs),
     Login(LoginArgs),
     Logout,
 }
@@ -151,6 +152,10 @@ fn main() -> anyhow::Result<()> {
             Command::ExecServer(args) => args.run(&paths, &cli.config_overrides).await,
             Command::Profile(args) => tokio::task::spawn_blocking(move || args.run())
                 .await?
+                .map_err(anyhow::Error::from_boxed),
+            Command::Cloud(args) => args
+                .run(cli.config_overrides)
+                .await
                 .map_err(anyhow::Error::from_boxed),
             Command::Login(args) => match args.command {
                 Some(LoginCommand::Status) => login::run_login_status(cli.config_overrides).await,
