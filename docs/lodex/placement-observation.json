@@ -1,0 +1,74 @@
+{
+  "scope": "One sequential synthetic MCP fixture pair; local first, remote second. No model inference during this profile. Both used Lodex v1.3 on the device and the same external HTTP fixture; controller was stock Codex 0.166.0 for remote mode.",
+  "observations": [
+    {
+      "label": "local-harness",
+      "device_footprint": {
+        "sample_count": 5,
+        "elapsed_seconds": 8,
+        "rss_min_kib": 39196,
+        "rss_max_kib": 45936,
+        "rss_peak_kib": 50860,
+        "swap_max_kib": 5776,
+        "major_fault_delta": 60,
+        "cpu_tick_delta": 7
+      },
+      "device_threads": [
+        16,
+        16,
+        16,
+        16,
+        16
+      ],
+      "rpc_seconds": {
+        "initialize": 11.916000530007295,
+        "thread/start": 21.668294921983033,
+        "mcpServerStatus/list": 10.569115129997954,
+        "mcpServer/tool/call": 1.271788753918372,
+        "mcpServer/resource/read": 0.08469445200171322
+      },
+      "device_cpu_ticks_at_first_post_workload_sample": 988,
+      "device_cpu_ticks_at_last_sample": 995,
+      "request_seconds_sum": 45.50989378790837,
+      "counter_capture_sha256": "c8c58db6b75a21a6048e6f39da1c7cd4b7990b3fe00df2a3cb7c65ffd24b5478"
+    },
+    {
+      "label": "remote-primary-device-executor",
+      "device_footprint": {
+        "sample_count": 5,
+        "elapsed_seconds": 8,
+        "rss_min_kib": 36676,
+        "rss_max_kib": 36692,
+        "rss_peak_kib": 47440,
+        "swap_max_kib": 2400,
+        "major_fault_delta": 0,
+        "cpu_tick_delta": 0
+      },
+      "device_threads": [
+        8,
+        8,
+        8,
+        8,
+        6
+      ],
+      "rpc_seconds": {
+        "initialize": 1.6433225710643455,
+        "thread/start": 5.164235980017111,
+        "mcpServerStatus/list": 1.591500252019614,
+        "mcpServer/tool/call": 0.061811439925804734,
+        "mcpServer/resource/read": 0.05327120597939938
+      },
+      "device_cpu_ticks_at_first_post_workload_sample": 136,
+      "device_cpu_ticks_at_last_sample": 136,
+      "request_seconds_sum": 8.514141449006274,
+      "counter_capture_sha256": "0de172cbe223c8032d26c54060c3d51b7e5731afc53fae9f25667e4cc8a1f7e2"
+    }
+  ],
+  "limitations": [
+    "Only one pair, warm-cache/order and background-service state are confounders; not a benchmark guarantee.",
+    "Controller CPU/RAM and real cloud transport/inference/voice latency are not included.",
+    "Request-duration sums exclude notification-wait and sampling time.",
+    "CPU ticks include startup and workload before the first sample; idle delta alone does not describe active CPU.",
+    "Kernel lacks smaps/PSS, so private heap/shared executable attribution is unavailable."
+  ]
+}

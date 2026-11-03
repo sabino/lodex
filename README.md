@@ -21,8 +21,10 @@ This is an independent fork, not an official OpenAI distribution.
 - **Remote control:** access the running local harness through Codex Remote or the
   App Server protocol.
 - **Remote primary with device tools:** a cloud/remote harness controls the device
-  through an authenticated executor or MCP endpoint. This is being implemented
-  and will be compared against the local harness before performance claims.
+  through an authenticated executor or MCP endpoint. A separate Linux controller
+  has passed real model-driven shell and MCP tool/resource tests over SSH; hosted
+  Cloud and voice-streaming qualification remain pending. See the
+  [remote-primary setup and limits](docs/lodex/remote-primary.md).
 - **Cloud tasks:** an explicit, bounded task adapter is in development. A new cloud
   task is separate from moving a running local thread. Automatic private-context
   synchronization is not enabled.
@@ -45,7 +47,9 @@ components, but are not yet attached automatically to agent prompts.
 
 The normal MIPS launcher graph contains no `codex-tui` or `ratatui` dependency.
 Experimental `exec-server` support preserves an executor path for remote tools.
-Browser automation should normally run through remote MCP services instead of a
+The standalone `lodex-executor` image compiled at 75614760 bytes for remote-primary
+setups; its own native qualification is still pending. Browser automation should normally
+run through remote MCP services instead of a
 browser installed on the router.
 
 ## Build for the tested MIPS target
@@ -91,7 +95,8 @@ MCP suite passed 377 top-level tests; host passes are separate from MIPS validat
 | Upstream headless App Server reference | 229765044 |
 | Lodex v1.1 headless launcher | 236607592 |
 | Lodex v1.2 SQLite candidate | 236607236 |
-| Lodex v1.3 executor candidate | 239722436 |
+| Lodex v1.3 full headless image with executor CLI | 239722436 |
+| Executor-only candidate, native qualification pending | 75614760 |
 
 Executable size is not RAM usage. Early pool measurements reduced thread count
 and median observed RSS peak, with slower request-group timing in that workload.

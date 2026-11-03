@@ -1,5 +1,5 @@
 {
-  "scope": "Preliminary sequential batches of three synthetic four-thread shell/history trials per image; managed service running unchanged during both batches.",
+  "scope": "Preliminary sequential batches of three synthetic four-thread shell/history trials per image; the same managed service version/configuration was running during each batch and restarted between batches.",
   "comparison": {
     "pool5": {
       "trial_count": 3,
@@ -238,6 +238,7 @@
     "Request-group sums exclude notification-wait and idle sampling time; they are not end-to-end user turn latency.",
     "Post-workload RSS, swap and page faults vary; these batches do not establish a universal speedup or steady-state RAM saving.",
     "Background service and image page-cache sharing are confounders. A separate alternating confirmation is still required.",
-    "A later exploratory alternating run had an image upload overlap one trial and is not used for conclusions."
+    "A later exploratory alternating run had an image upload overlap one trial and is not used for conclusions.",
+    "The background service warmed state was not held constant across batches."
   ]
 }

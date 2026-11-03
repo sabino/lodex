@@ -4000,6 +4000,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "codex-lodex-executor"
+version = "0.166.0"
+dependencies = [
+ "anyhow",
+ "codex-exec-server-cli",
+ "codex-state",
+]
+
+[[package]]
 name = "codex-lodex-local"
 version = "0.166.0"
 dependencies = [

@@ -38,6 +38,7 @@ members = [
     "cloud-tasks-mock-client",
     "cli",
     "lodex",
+    "lodex-executor",
     "lodex-policy",
     "lodex-local",
     "collaboration-mode-templates",

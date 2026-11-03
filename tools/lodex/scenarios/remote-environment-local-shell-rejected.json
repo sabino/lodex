@@ -1,0 +1,65 @@
+[
+  {
+    "method": "initialize",
+    "params": {
+      "clientInfo": {
+        "name": "lodex_fixture",
+        "version": "0.1.0"
+      },
+      "capabilities": {
+        "experimentalApi": true
+      }
+    }
+  },
+  {
+    "method": "initialized",
+    "notification": true
+  },
+  {
+    "method": "environment/info",
+    "params": {
+      "environmentId": "device-fixture"
+    }
+  },
+  {
+    "method": "thread/start",
+    "params": {
+      "ephemeral": true,
+      "environments": [
+        {
+          "environmentId": "device-fixture",
+          "cwd": {
+            "$ref": "remote_cwd"
+          }
+        }
+      ]
+    },
+    "capture": {
+      "thread": [
+        "result",
+        "thread",
+        "id"
+      ]
+    }
+  },
+  {
+    "method": "thread/shellCommand",
+    "params": {
+      "threadId": {
+        "$ref": "thread"
+      },
+      "command": "printf 'lodex-remote-primary\\n'; uname -m",
+      "timeoutMs": 10000
+    },
+    "expect_error": true,
+    "checks": [
+      {
+        "path": [
+          "error",
+          "message"
+        ],
+        "equals": "local environment is not configured"
+      }
+    ]
+  }
+]

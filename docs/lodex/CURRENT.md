@@ -23,8 +23,10 @@ and mcp-test-matrix.md for the exact scope.
 
 The v1.2 two-connection SQLite candidate compiled, passed native CLI gates and is
 undergoing repeated hardware comparison. All245 state tests and one doctest pass
-with both the new limit and upstream's five-connection limit. The v1.3 executor CLI entry point compiled; its own native qualification remains
-pending. Preliminary pool results show a resource/latency tradeoff; see
+with both the new limit and upstream's five-connection limit. The v1.3 executor entry point compiled and passed ten native CLI gates. A separate
+Linux primary then passed real model-driven shell and MCP tool/resource tests
+through the device executor. An executor-only image compiled at 75614760 bytes as a smaller remote-primary
+option; native qualification remains pending. Preliminary pool results show a resource/latency tradeoff; see
 performance.md. A clean alternating confirmation remains required.
 
 ## Remaining work
@@ -32,8 +34,9 @@ performance.md. A clean alternating confirmation remains required.
 - Repeated comparable device CPU/RSS/swap/fault/startup/tool-latency measurements,
   including loaded conversations, long output and concurrent MCP workloads.
 - Native extended MCP/OAuth/cancellation, auth refresh and fault/recovery tests.
-- A selectable remote/cloud primary controlling a device executor/MCP endpoint,
-  while retaining the local harness and comparing end-to-end performance.
+- A selectable hosted-cloud primary controlling a device executor/MCP endpoint,
+  while retaining the local harness. A separate Linux primary passed real
+  model-driven shell and MCP tool/resource tests; placement benchmarks remain.
 - Explicit cloud-task selection, account/environment qualification, bounded
   results and verified cancellation semantics. New tasks are not thread migration.
 - Local profile CLI/runtime integration, writer attribution and crash recovery.

@@ -1,0 +1,25 @@
+{
+  "controller": "Installed stock Codex 0.166.0 on a separate x86_64 Linux host",
+  "device_runtime": "Lodex v1.3 exec-server over pinned SSH stdio, OpenWrt MIPS",
+  "cloud_model": "gpt-6.1-sol with an explicit direct-tool fixture catalog",
+  "real_model_tool_execution_passed": true,
+  "exact_device_architecture_output": "mips",
+  "mcp_via_device_executor_passed": true,
+  "mcp_methods": [
+    "initialize",
+    "thread/start",
+    "mcpServerStatus/list",
+    "mcpServer/tool/call",
+    "mcpServer/resource/read"
+  ],
+  "evidence_sha256": {
+    "agent-result-v2.jsonl": "050b24719c4c63f4a95adf1f0524c55697c0f98418119f15dcb17936d3e314af",
+    "mcp-result-v2.json": "38c3caebc4e3a80ca161fbcb8854027ebc6e5e74244345265ca60121c550f4a6"
+  },
+  "limitations": [
+    "Remote primary is a separate Linux host, not a qualified OpenAI-hosted Cloud environment.",
+    "Normal tool calls require an explicit device workdir; the local thread/shellCommand escape hatch is intentionally not a remote tool.",
+    "The HTTP fixture runs on the controller host through an SSH reverse tunnel; minimal device Python lacks the email module required by http.server. No Python package was installed on the device.",
+    "No private SOUL/MEMORY context was supplied, and no voice streaming or end-to-end placement performance claim is established by these functional gates."
+  ]
+}

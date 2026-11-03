@@ -1,0 +1,22 @@
+[package]
+name = "codex-lodex-executor"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "lodex-executor"
+path = "src/main.rs"
+
+[lints]
+workspace = true
+
+[dependencies]
+anyhow = { workspace = true }
+codex-exec-server-cli = { workspace = true }
+# Keep the same dependency feature profile as the headless harness. The shared
+# CLI's configuration path already depends on state; do not fork its behavior.
+codex-state = { workspace = true, features = ["lodex-low-memory"] }
+
+[package.metadata.cargo-shear]
+ignored = ["codex-state"]
