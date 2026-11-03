@@ -126,3 +126,26 @@ end-to-end performance result.
 Tools in tools/lodex use isolated fixture homes and bounded synthetic workloads.
 The kernel does not expose smaps/PSS, so these measurements cannot split private
 heap from shared executable pages precisely. Keep raw traces out of the repository.
+
+
+## API-only setup comparison
+
+The optional `lodex-agents` frontend removes full Codex configuration and
+subscription-auth dependencies from API-only controller commands. Six balanced
+warm-cache trials per mode, following one warmup, measured median peak RSS of
+3,986 KiB versus 19,200 KiB, and wall time of 0.0294 s versus 0.1116 s.
+The API-only executable is 11,406,572 bytes versus 57,289,260 bytes for the full
+cloud helper. These commands only validate configuration; they do not execute
+an agent or perform a network request. Configuration semantics intentionally
+differ: explicit HTTP environment settings versus full Codex configuration.
+
+`tools/lodex/measure-command.c` reads raw Linux `wait4` resource counters. Its
+32-MiB calibration matched `/proc/self/status` high-water RSS on the target.
+The tested BusyBox `time` output inflated peak RSS by four; those earlier figures
+were discarded. Peak RSS is not PSS, swap or steady-state memory.
+
+The old managed runtime's automatic restart exceeded its initialization deadline
+after the measured trials; it subsequently recovered. This benchmark is not an
+all-passing service-lifecycle result. The later v1.6 deployment, using the normal
+OpenWrt wrapper and compatible `ps`, reconnected successfully. Details and all
+trials are in [api-only-results.json](api-only-results.json).

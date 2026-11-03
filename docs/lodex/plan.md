@@ -39,7 +39,7 @@ Development profiling:
 - Run parser tests with python3 -m unittest discover -s tools/lodex/tests -v.
 Target sampling requires only BusyBox shell/awk, not Python or extra daemons.
 
-Lodex v1.1 is installed experimentally as the managed Remote service, with stock
+Lodex v1.6 is installed experimentally as the managed Remote service, with stock
 rollback retained. It passed reconnect after managed stop/start, native CLI,
 concurrent shell/history and process-restart recovery. See CURRENT.md and
 candidate-v1.1-results.json for exact evidence and remaining limitations.

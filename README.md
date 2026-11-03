@@ -27,7 +27,9 @@ This is an independent fork, not an official OpenAI distribution.
   [remote-primary setup and limits](docs/lodex/remote-primary.md).
 - **Cloud tasks and API sessions:** `lodex cloud` uses the existing ChatGPT login
   for explicit environment/ref/task submission. `lodex cloud api` prepares hosted
-  or self-hosted agent sessions using a separate API key. A new task is separate
+  or self-hosted agent sessions using a separate API key. The optional 11.4 MB
+  `lodex-agents` binary supplies only that API controller, without the main
+  harness dependencies. A new task is separate
   from moving a running thread; profiles are not exported automatically. See
   [commands, data boundaries and qualification limits](docs/lodex/worker-routing.md).
 
@@ -92,7 +94,10 @@ and further dependency reductions remain experiments, not default guarantees.
 Run `lodex --help` for the current headless commands. `lodex app-server --listen
 stdio://` exposes the upstream App Server protocol. Remote daemon installation on
 MIPS currently requires manual managed-package layout; an automatic router
-installer and portable release bundle are not yet available. MIPS currently needs
+installer and portable release bundle are not yet available. Keep the normal
+launch wrapper and its PATH: managed process tracking requires a `ps` supporting
+`-p PID -o stat= -o lstart=`, which the tested BusyBox build lacks. The target
+wrapper supplies a compatible version. MIPS currently needs
 direct tool mode because the V8 code-mode host is unavailable on this target.
 
 ## Verification and measurements
@@ -109,6 +114,9 @@ MCP suite passed 377 top-level tests; host passes are separate from MIPS validat
 | Lodex v1.2 SQLite candidate | 236607236 |
 | Lodex v1.3 full headless image with executor CLI | 239722436 |
 | Executor-only candidate, basic native smoke checks passed | 75614760 |
+| Lodex v1.6 installed headless launcher | 240184068 |
+| Full cloud helper v1.1 | 57289260 |
+| API-only controller v1 | 11406572 |
 
 Executable size is not RAM usage. Early pool measurements reduced thread count
 and median observed RSS peak, with slower request-group timing in that workload.

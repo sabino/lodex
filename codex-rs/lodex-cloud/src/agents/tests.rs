@@ -138,3 +138,40 @@ fn oversized_or_inconsistent_results_fail_explicitly() {
         "idle"
     );
 }
+
+#[tokio::test]
+async fn api_redirects_do_not_forward_credentials() {
+    let source = MockServer::start().await;
+    let destination = MockServer::start().await;
+    Mock::given(method("GET"))
+        .respond_with(ResponseTemplate::new(302).insert_header("location", destination.uri()))
+        .expect(1)
+        .mount(&source)
+        .await;
+    assert!(matches!(
+        client(&source).status("session_fixture").await,
+        Err(CloudError::Http(302))
+    ));
+    assert!(
+        destination
+            .received_requests()
+            .await
+            .expect("requests")
+            .is_empty()
+    );
+}
+#[tokio::test]
+async fn api_metadata_limit_is_enforced_by_the_transport() {
+    let server = MockServer::start().await;
+    Mock::given(method("GET"))
+        .respond_with(
+            ResponseTemplate::new(200).set_body_string("x".repeat(MAX_METADATA_BYTES + 1)),
+        )
+        .expect(1)
+        .mount(&server)
+        .await;
+    assert!(matches!(
+        client(&server).status("session_fixture").await,
+        Err(CloudError::ResponseTooLarge(MAX_METADATA_BYTES))
+    ));
+}

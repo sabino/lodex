@@ -176,3 +176,27 @@ API wire/limit fixtures and missing-key preflight pass. No live application or
 restricted executor key was configured, so hosted API execution and the actual
 API-harness/device-executor connection remain unqualified. Live auth expiry,
 long-running recovery and API event streaming remain separate work.
+
+
+## API-only binary
+
+Build `codex-lodex-cloud` with `--no-default-features --features api-cli --bin
+lodex-agents`. It has the same API subcommands without the `api` prefix:
+
+```sh
+lodex-agents check
+lodex-agents create < selected-api-task.json
+lodex-agents status SESSION_ID
+lodex-agents result SESSION_ID
+lodex-agents cancel SESSION_ID
+```
+
+`check` performs offline configuration checks only; it does not authenticate the
+key or contact the service. The API-only client uses the shared bounded HTTP
+transport, environment proxy/CA settings and explicit API key. It intentionally
+does not load Codex configuration or private profiles. Use the full cloud helper
+when Codex configuration or ChatGPT login is needed. No MCP capability is removed
+from the main runtime or device executor by building this optional controller.
+
+See [api-only-results.json](api-only-results.json) for the measured, limited
+configuration-startup comparison and its service-recovery caveat.

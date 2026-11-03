@@ -60,6 +60,39 @@ so this does not qualify hosted API execution or device registration. Exact nati
 are recorded in [cloud-results.json](cloud-results.json). Command examples and
 credential/data boundaries are in [worker-routing.md](worker-routing.md).
 
+## v1.6 deployment and API-only controller
+
+The v1.6 launcher is now installed on the test device. It passed twelve native
+CLI gates, four-thread durable history across a process restart, App Server
+shell/error handling, stdio MCP tool/resource calls, and local profile semantics.
+Managed Remote reconnected with the existing enrollment identity. Startup through
+the device wrapper took 54.464 seconds in this deployment; this is one observation,
+not a latency improvement claim. The previous release and state backup remain.
+
+The MIPS control-socket initialization budget is ten seconds instead of two,
+with one deadline over the complete exchange. Other platforms retain two seconds.
+A native three-second-delay peer is rejected by v1.1 and accepted by v1.6; host
+coverage includes a notification stream that cannot extend the deadline.
+
+Deployment must preserve the device wrapper environment, including its compatible
+`ps`. The managed PID backend invokes options unavailable in BusyBox `ps`.
+Bypassing the wrapper caused a deployment failure; the wrapper-based retry passed.
+This change does not remove that upstream process-inspection dependency.
+
+`lodex-agents` is an optional API-only controller built without `codex-core`,
+ChatGPT authentication, SQLite, keyring or MCP client dependencies. MCP remains
+in the full runtime and executor. The controller is 11,406,572 bytes versus
+57,289,260 bytes for the full cloud helper. Nine native API wire tests passed.
+Six balanced warm-cache offline setup trials measured median peak RSS of
+3,986 versus 19,200 KiB, and wall time 0.0294 versus 0.1116 seconds. These are
+configuration-only commands, not agent turns or network requests. The previous
+runtime's automatic restore timed out after that benchmark; subsequent recovery
+was verified. See [api-only-results.json](api-only-results.json).
+
+An owner-only API key is now configured and authenticated from the test device.
+Hosted Agents execution and restricted executor-key registration remain unqualified.
+A key being present or accepted does not establish those paths.
+
 ## Remaining work
 
 - Repeated comparable device CPU/RSS/swap/fault/startup/tool-latency measurements,

@@ -1,0 +1,180 @@
+{
+  "scope": "offline API configuration setup only; no network, model inference or executor requests",
+  "counter_source": "raw Linux wait4 rusage; calibrated against /proc/self/status",
+  "managed_service_stopped_during_measurement": true,
+  "warmups_per_mode": 1,
+  "trials_per_mode": 6,
+  "balanced_pair_order": true,
+  "page_cache_flushed": false,
+  "trials": [
+    {
+      "trial": 1,
+      "mode": "full",
+      "warmup": false,
+      "wall_seconds": 0.110274838,
+      "user_seconds": 0.038123,
+      "system_seconds": 0.066715,
+      "maxrss_kib": 19228,
+      "minor_faults": 857,
+      "major_faults": 0
+    },
+    {
+      "trial": 1,
+      "mode": "api_only",
+      "warmup": false,
+      "wall_seconds": 0.02906003,
+      "user_seconds": 0.018468,
+      "system_seconds": 0.009234,
+      "maxrss_kib": 4000,
+      "minor_faults": 247,
+      "major_faults": 0
+    },
+    {
+      "trial": 2,
+      "mode": "api_only",
+      "warmup": false,
+      "wall_seconds": 0.028060812,
+      "user_seconds": 0.013648,
+      "system_seconds": 0.013648,
+      "maxrss_kib": 3948,
+      "minor_faults": 246,
+      "major_faults": 0
+    },
+    {
+      "trial": 2,
+      "mode": "full",
+      "warmup": false,
+      "wall_seconds": 0.113617294,
+      "user_seconds": 0.048744,
+      "system_seconds": 0.058493,
+      "maxrss_kib": 19188,
+      "minor_faults": 858,
+      "major_faults": 0
+    },
+    {
+      "trial": 3,
+      "mode": "full",
+      "warmup": false,
+      "wall_seconds": 0.111105827,
+      "user_seconds": 0.063106,
+      "system_seconds": 0.04207,
+      "maxrss_kib": 19184,
+      "minor_faults": 852,
+      "major_faults": 0
+    },
+    {
+      "trial": 3,
+      "mode": "api_only",
+      "warmup": false,
+      "wall_seconds": 0.090965485,
+      "user_seconds": 0.00684,
+      "system_seconds": 0.020522,
+      "maxrss_kib": 3972,
+      "minor_faults": 246,
+      "major_faults": 0
+    },
+    {
+      "trial": 4,
+      "mode": "api_only",
+      "warmup": false,
+      "wall_seconds": 0.028355769,
+      "user_seconds": 0.009156,
+      "system_seconds": 0.018313,
+      "maxrss_kib": 3956,
+      "minor_faults": 247,
+      "major_faults": 0
+    },
+    {
+      "trial": 4,
+      "mode": "full",
+      "warmup": false,
+      "wall_seconds": 0.112062756,
+      "user_seconds": 0.056019,
+      "system_seconds": 0.046683,
+      "maxrss_kib": 19192,
+      "minor_faults": 841,
+      "major_faults": 0
+    },
+    {
+      "trial": 5,
+      "mode": "full",
+      "warmup": false,
+      "wall_seconds": 0.10888832,
+      "user_seconds": 0.027926,
+      "system_seconds": 0.074471,
+      "maxrss_kib": 19220,
+      "minor_faults": 845,
+      "major_faults": 0
+    },
+    {
+      "trial": 5,
+      "mode": "api_only",
+      "warmup": false,
+      "wall_seconds": 0.029797729,
+      "user_seconds": 0.009153,
+      "system_seconds": 0.018306,
+      "maxrss_kib": 4008,
+      "minor_faults": 248,
+      "major_faults": 0
+    },
+    {
+      "trial": 6,
+      "mode": "api_only",
+      "warmup": false,
+      "wall_seconds": 0.030419851,
+      "user_seconds": 0.0,
+      "system_seconds": 0.027615,
+      "maxrss_kib": 4008,
+      "minor_faults": 247,
+      "major_faults": 0
+    },
+    {
+      "trial": 6,
+      "mode": "full",
+      "warmup": false,
+      "wall_seconds": 0.126258602,
+      "user_seconds": 0.039609,
+      "system_seconds": 0.063374,
+      "maxrss_kib": 19208,
+      "minor_faults": 852,
+      "major_faults": 0
+    }
+  ],
+  "medians": {
+    "full": {
+      "wall_seconds": 0.1115842915,
+      "user_seconds": 0.0441765,
+      "system_seconds": 0.0609335,
+      "maxrss_kib": 19200.0,
+      "minor_faults": 852.0,
+      "major_faults": 0.0
+    },
+    "api_only": {
+      "wall_seconds": 0.029428879499999998,
+      "user_seconds": 0.0091545,
+      "system_seconds": 0.0183095,
+      "maxrss_kib": 3986.0,
+      "minor_faults": 247.0,
+      "major_faults": 0.0
+    }
+  },
+  "limitations": [
+    "Different configuration semantics: full frontend loads Codex configuration, API-only uses explicit HTTP environment configuration.",
+    "No model/network/full-turn inference from this comparison.",
+    "Linux getrusage peak RSS; not PSS, steady-state RSS, process swap or total device memory.",
+    "Warm-cache serialized setup trials; no page-cache flush."
+  ],
+  "automatic_service_restore_succeeded": false,
+  "subsequent_service_recovery_verified": true,
+  "restore_failure": "The previous launcher exceeded its two-second initialization deadline; its child subsequently reached connected status. This run is not an all-passing service lifecycle test.",
+  "images": [
+    {
+      "name": "lodex-cloud-v1.1",
+      "bytes": 57289260
+    },
+    {
+      "name": "lodex-agents-v1",
+      "bytes": 11406572
+    }
+  ]
+}

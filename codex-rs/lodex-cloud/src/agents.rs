@@ -1,13 +1,10 @@
 //! API-key-backed hosted harness. Independent of saved ChatGPT credentials.
 use crate::{
-    CloudClient, CloudError, MAX_METADATA_BYTES, MAX_RESULT_BODY_BYTES, MAX_RESULT_TEXT_BYTES,
-    identifier,
+    CloudError, MAX_METADATA_BYTES, MAX_RESULT_BODY_BYTES, MAX_RESULT_TEXT_BYTES, identifier,
 };
-use codex_api::{AuthError, AuthProvider};
 use codex_http_client::HttpClientFactory;
-use http::{HeaderMap, HeaderValue, Method};
+use http::{HeaderValue, Method};
 use serde::{Deserialize, Serialize};
-use std::sync::Arc;
 
 const MAX_CREATE_BYTES: usize = 64 * 1024;
 
@@ -80,16 +77,8 @@ fn absolute_directory(path: &str) -> bool {
     path.starts_with('/') && path.len() <= 4096 && !path.chars().any(char::is_control)
 }
 
-struct ApiKey(HeaderValue);
-impl AuthProvider for ApiKey {
-    fn add_auth_headers(&self, headers: &mut HeaderMap) -> Result<(), AuthError> {
-        headers.insert(http::header::AUTHORIZATION, self.0.clone());
-        headers.insert("openai-beta", HeaderValue::from_static("agents=v1"));
-        Ok(())
-    }
-}
 /// Constructor accepts only an explicit API key; never consults AuthManager.
-pub struct AgentsClient(CloudClient);
+pub struct AgentsClient(crate::transport::ControllerHttp);
 impl AgentsClient {
     pub fn new(key: &str, factory: HttpClientFactory) -> Result<Self, CloudError> {
         if key.is_empty()
@@ -103,11 +92,11 @@ impl AgentsClient {
         let mut value = HeaderValue::from_str(&format!("Bearer {key}"))
             .map_err(|_| CloudError::ApiAuthentication)?;
         value.set_sensitive(true);
-        Ok(Self(CloudClient::with_base(
+        Ok(Self(crate::transport::ControllerHttp::new(
             url::Url::parse("https://api.openai.com/v1/")
                 .map_err(|_| CloudError::UntrustedOrigin)?,
             factory,
-            Arc::new(ApiKey(value)),
+            crate::transport::Credentials::Api(value),
         )))
     }
     async fn request(

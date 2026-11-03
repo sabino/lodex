@@ -22,6 +22,11 @@ use tokio_tungstenite::WebSocketStream;
 use tokio_tungstenite::client_async;
 use tokio_tungstenite::tungstenite::Message;
 
+// The control handshake is CPU-bound during MIPS/musl startup. Keep the
+// desktop budget elsewhere; the router allowance is bounded, not a readiness claim.
+#[cfg(all(target_os = "linux", target_env = "musl", target_arch = "mips"))]
+pub(crate) const CONTROL_SOCKET_RESPONSE_TIMEOUT: Duration = Duration::from_secs(10);
+#[cfg(not(all(target_os = "linux", target_env = "musl", target_arch = "mips")))]
 pub(crate) const CONTROL_SOCKET_RESPONSE_TIMEOUT: Duration = Duration::from_secs(2);
 const CLIENT_NAME: &str = "codex_app_server_daemon";
 const INITIALIZE_REQUEST_ID: RequestId = RequestId::Integer(1);
@@ -103,6 +108,17 @@ pub(crate) async fn initialize<S>(
 where
     S: AsyncRead + AsyncWrite + Unpin,
 {
+    initialize_with_timeout(websocket, experimental_api, CONTROL_SOCKET_RESPONSE_TIMEOUT).await
+}
+
+async fn initialize_with_timeout<S>(
+    websocket: &mut WebSocketStream<S>,
+    experimental_api: bool,
+    budget: Duration,
+) -> Result<InitializeResponse>
+where
+    S: AsyncRead + AsyncWrite + Unpin,
+{
     let initialize = JSONRPCMessage::Request(JSONRPCRequest {
         id: INITIALIZE_REQUEST_ID,
         method: "initialize".to_string(),
@@ -123,22 +139,24 @@ where
         })?),
         trace: None,
     });
-    send_message(websocket, &initialize)
-        .await
-        .context("failed to send initialize request")?;
-
-    let response = loop {
-        let message = timeout(CONTROL_SOCKET_RESPONSE_TIMEOUT, read_message(websocket))
+    timeout(budget, async {
+        send_message(websocket, &initialize)
             .await
-            .context("timed out waiting for initialize response")??;
-        if let JSONRPCMessage::Response(response) = message
-            && response.id == INITIALIZE_REQUEST_ID
-        {
-            break response;
-        }
-    };
-    serde_json::from_value::<InitializeResponse>(response.result)
-        .context("failed to parse initialize response")
+            .context("failed to send initialize request")?;
+
+        let response = loop {
+            let message = read_message(websocket).await?;
+            if let JSONRPCMessage::Response(response) = message
+                && response.id == INITIALIZE_REQUEST_ID
+            {
+                break response;
+            }
+        };
+        serde_json::from_value::<InitializeResponse>(response.result)
+            .context("failed to parse initialize response")
+    })
+    .await
+    .context("timed out waiting for initialize response")?
 }
 
 pub(crate) async fn send_message<S>(
@@ -203,5 +221,85 @@ mod tests {
     #[test]
     fn rejects_user_agent_without_version() {
         assert!(parse_version_from_user_agent("codex_app_server_daemon").is_err());
+    }
+}
+
+#[cfg(test)]
+mod initialize_budget_tests {
+    use super::*;
+    use tokio::io::duplex;
+    use tokio_tungstenite::tungstenite::protocol::Role;
+
+    async fn peer() -> (
+        WebSocketStream<tokio::io::DuplexStream>,
+        WebSocketStream<tokio::io::DuplexStream>,
+    ) {
+        let (a, b) = duplex(8192);
+        (
+            WebSocketStream::from_raw_socket(a, Role::Client, None).await,
+            WebSocketStream::from_raw_socket(b, Role::Server, None).await,
+        )
+    }
+    async fn reply(server: &mut WebSocketStream<tokio::io::DuplexStream>) {
+        server.send(Message::Text(serde_json::json!({"id":1,"result":{"userAgent":"fixture/0.166.0","codexHome":"/tmp/fixture","platformFamily":"unix","platformOs":"linux"}}).to_string().into())).await.expect("reply");
+    }
+    #[tokio::test(start_paused = true)]
+    async fn bounded_router_budget_accepts_a_three_second_initialize() {
+        let (mut client, mut server) = peer().await;
+        let task = tokio::spawn(async move {
+            read_message(&mut server).await.expect("request");
+            tokio::time::sleep(Duration::from_secs(3)).await;
+            reply(&mut server).await;
+        });
+        let response = initialize_with_timeout(&mut client, false, Duration::from_secs(10))
+            .await
+            .expect("delayed response");
+        assert_eq!(response.user_agent, "fixture/0.166.0");
+        task.await.expect("server");
+    }
+    #[tokio::test(start_paused = true)]
+    async fn desktop_budget_still_rejects_a_three_second_initialize() {
+        let (mut client, mut server) = peer().await;
+        let task = tokio::spawn(async move {
+            read_message(&mut server).await.expect("request");
+            tokio::time::sleep(Duration::from_secs(3)).await;
+        });
+        assert!(
+            initialize_with_timeout(&mut client, false, Duration::from_secs(2))
+                .await
+                .is_err()
+        );
+        task.abort();
+        let _ = task.await;
+    }
+    #[tokio::test(start_paused = true)]
+    async fn notifications_cannot_extend_the_initialize_deadline() {
+        let (mut client, mut server) = peer().await;
+        let task = tokio::spawn(async move {
+            read_message(&mut server).await.expect("request");
+            loop {
+                tokio::time::sleep(Duration::from_secs(1)).await;
+                if server
+                    .send(Message::Text(
+                        serde_json::json!({"method":"fixture/tick"})
+                            .to_string()
+                            .into(),
+                    ))
+                    .await
+                    .is_err()
+                {
+                    break;
+                }
+            }
+        });
+        let start = tokio::time::Instant::now();
+        assert!(
+            initialize_with_timeout(&mut client, false, Duration::from_secs(3))
+                .await
+                .is_err()
+        );
+        assert_eq!(start.elapsed(), Duration::from_secs(3));
+        task.abort();
+        let _ = task.await;
     }
 }
