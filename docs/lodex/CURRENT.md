@@ -50,18 +50,23 @@ needs clean alternating confirmation.
 - Native extended MCP/OAuth/cancellation, auth refresh and fault/recovery tests.
 - A selectable hosted-cloud primary controlling a device executor/MCP endpoint,
   while retaining the local harness. A separate Linux primary passed real
-  model-driven shell and MCP tool/resource tests; placement benchmarks remain.
+  model-driven shell and MCP tool/resource tests; loaded-turn placement benchmarks
+  remain beyond the measured synthetic startup fixture.
 - Explicit cloud-task selection, account/environment qualification, bounded
   results and verified cancellation semantics. New tasks are not thread migration.
-- Local profile CLI/runtime integration, writer attribution and crash recovery.
-  No automatic private profile injection or cloud synchronization is enabled.
+- Agent profile selection/prompt policy, atomic initialization recovery and
+  SD-failure tests. Local storage CLI, writer attribution and process-kill update
+  recovery are implemented. No automatic profile injection or sync is enabled.
 - Further compile-time dependency, initialization, telemetry and provider cuts,
   each justified by regression tests and measurements.
 - Portable OpenWrt packaging and qualification beyond the first hardware/ABI.
 
-Generic bounded local SOUL/MEMORY storage has seven host tests and a native SD
-write/lock/revision/reopen qualification. Worker policy has thirteen host tests,
-including a 64KiB submission bound and exclusion of ambient starting diffs.
-Neither component is automatically attached to a live agent yet.
+Generic bounded local SOUL/MEMORY storage has ten default-library host tests,
+eleven with its CLI feature, and native CLI/concurrent-writer/process-kill
+qualification. A standalone profile utility is under 1 MiB, and the full launcher
+has a profile subcommand. Main-model prompt loading is not enabled. Worker policy
+has thirteen host tests, including a 64 KiB submission bound and exclusion of
+ambient starting diffs. Neither component automatically supplies profile context
+to an agent or worker.
 
 This is a development preview, not a completed compatibility or performance claim.

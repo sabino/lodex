@@ -7,8 +7,23 @@ license.workspace = true
 [lints]
 workspace = true
 
+[features]
+fault-injection = []
+cli = ["dep:clap"]
+
+[[bin]]
+name = "lodex-profile"
+path = "src/main.rs"
+required-features = ["cli"]
+
+[[example]]
+name = "crash-recovery"
+path = "examples/crash_recovery.rs"
+required-features = ["fault-injection"]
+
 [dependencies]
 sha2 = { workspace = true }
+clap = { workspace = true, features = ["derive", "env"], optional = true }
 
 [dev-dependencies]
 tempfile = { workspace = true }

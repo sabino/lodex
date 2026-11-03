@@ -42,8 +42,10 @@ soft-float SDK, portable atomics and dependency fixes with upstream licenses int
 A two-connection SQLite profile replaces the upstream maximum of five connections
 per writable database. Both profiles pass 245 state tests and the state doctest;
 repeated device performance comparisons are in progress. A generic, bounded local
-SOUL/MEMORY store and a cloud-submission boundary are implemented as independent
-components, but are not yet attached automatically to agent prompts.
+SOUL/MEMORY store now has local CLI administration, writer attribution and
+process-kill recovery checks, available through `lodex profile` or the small
+`lodex-profile` utility. See [local profile commands](docs/lodex/local-profiles.md).
+A cloud-submission boundary is an independent component. Neither automatically exports private profiles into agent prompts.
 
 The normal MIPS launcher graph contains no `codex-tui` or `ratatui` dependency.
 Experimental `exec-server` support preserves an executor path for remote tools.

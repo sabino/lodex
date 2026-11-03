@@ -25,10 +25,14 @@ pass() { printf 'PASS %s\n' "$1"; }
 grep -q '^lodex 0\.166\.0$' "$target_home/version.txt"
 pass version
 "$binary" --help > "$target_home/help.txt"
-for command in app-server remote-control mcp exec exec-server login logout; do
+for command in app-server remote-control mcp exec exec-server profile login logout; do
     grep -q "$command" "$target_home/help.txt"
 done
 pass root-command-schema
+"$binary" profile --root /tmp/lodex-profile-fixture --help > "$target_home/profile-help.txt"
+grep -q 'write-memory' "$target_home/profile-help.txt"
+grep -q 'inspect' "$target_home/profile-help.txt"
+pass local-profile-command-schema
 "$binary" exec-server --listen ws://127.0.0.1:0 --concurrent-requests 2 --ws-auth capability-token --ws-token-file /tmp/lodex-executor-fixture.token --help > "$target_home/executor-help.txt"
 grep -q -- '--concurrent-requests' "$target_home/executor-help.txt"
 grep -q -- '--ws-auth' "$target_home/executor-help.txt"

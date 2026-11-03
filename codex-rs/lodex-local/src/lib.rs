@@ -9,6 +9,10 @@ use std::fs::{self, File, OpenOptions};
 use std::io::{self, Read, Write};
 use std::path::{Path, PathBuf};
 use std::sync::atomic::{AtomicUsize, Ordering};
+use std::time::{SystemTime, UNIX_EPOCH};
+
+#[cfg(feature = "cli")]
+pub mod cli;
 
 pub const MAX_SOUL_BYTES: usize = 8192;
 pub const MAX_MEMORY_BYTES: usize = 32768;
@@ -22,6 +26,10 @@ pub enum StoreError {
     TooLarge,
     InvalidUtf8,
     Conflict,
+    InvalidRevision,
+    InvalidWriter,
+    InvalidRecord,
+    RecoveryConflict,
 }
 
 impl fmt::Display for StoreError {
@@ -35,6 +43,10 @@ impl fmt::Display for StoreError {
             Self::TooLarge => f.write_str("local profile file exceeds its size limit"),
             Self::InvalidUtf8 => f.write_str("local profile file is not UTF-8"),
             Self::Conflict => f.write_str("memory changed since it was read"),
+            Self::InvalidRevision => f.write_str("expected a 64-character SHA-256 revision"),
+            Self::InvalidWriter => f.write_str("writer must contain 1..64 ASCII letters, digits, dots, colons, underscores or dashes"),
+            Self::InvalidRecord => f.write_str("invalid local memory transaction record"),
+            Self::RecoveryConflict => f.write_str("memory transaction conflicts with local files; preserve them for inspection"),
         }
     }
 }
@@ -48,9 +60,96 @@ impl From<io::Error> for StoreError {
 
 #[derive(Clone, Copy, PartialEq, Eq)]
 pub struct MemoryRevision([u8; 32]);
+impl MemoryRevision {
+    pub fn to_hex(self) -> String {
+        let mut output = String::with_capacity(64);
+        for byte in self.0 {
+            output.push(char::from(b"0123456789abcdef"[usize::from(byte >> 4)]));
+            output.push(char::from(b"0123456789abcdef"[usize::from(byte & 15)]));
+        }
+        output
+    }
+
+    pub fn from_hex(value: &str) -> Result<Self, StoreError> {
+        if value.len() != 64 {
+            return Err(StoreError::InvalidRevision);
+        }
+        let mut bytes = [0; 32];
+        for (output, pair) in bytes.iter_mut().zip(value.as_bytes().as_chunks::<2>().0) {
+            let digit = |value: u8| match value {
+                b'0'..=b'9' => Ok(value - b'0'),
+                b'a'..=b'f' => Ok(value - b'a' + 10),
+                _ => Err(StoreError::InvalidRevision),
+            };
+            *output = digit(pair[0])? * 16 + digit(pair[1])?;
+        }
+        Ok(Self(bytes))
+    }
+}
 impl fmt::Debug for MemoryRevision {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.write_str("<local-memory-revision>")
+    }
+}
+
+#[derive(Clone, PartialEq, Eq)]
+pub struct WriterId(String);
+
+impl WriterId {
+    pub fn new(value: &str) -> Result<Self, StoreError> {
+        if value.is_empty()
+            || value.len() > 64
+            || !value.bytes().all(|byte| {
+                byte.is_ascii_alphanumeric() || matches!(byte, b'.' | b':' | b'_' | b'-')
+            })
+        {
+            return Err(StoreError::InvalidWriter);
+        }
+        Ok(Self(value.to_owned()))
+    }
+
+    pub fn as_str(&self) -> &str {
+        &self.0
+    }
+}
+
+/// Caller-supplied attribution, not an authenticated identity or an audit chain.
+pub struct MemoryWrite {
+    pub previous_revision: MemoryRevision,
+    pub revision: MemoryRevision,
+    pub writer: WriterId,
+    pub unix_millis: u64,
+    pub process_id: u32,
+}
+
+impl MemoryWrite {
+    fn encode(&self) -> String {
+        format!(
+            "lodex-memory-v1\n{}\n{}\n{}\n{}\n{}\n",
+            self.previous_revision.to_hex(),
+            self.revision.to_hex(),
+            self.writer.as_str(),
+            self.unix_millis,
+            self.process_id
+        )
+    }
+
+    fn decode(value: &str) -> Result<Self, StoreError> {
+        let lines: Vec<_> = value.lines().collect();
+        if lines.len() != 6 || lines[0] != "lodex-memory-v1" {
+            return Err(StoreError::InvalidRecord);
+        }
+        let result = Self {
+            previous_revision: MemoryRevision::from_hex(lines[1])?,
+            revision: MemoryRevision::from_hex(lines[2])?,
+            writer: WriterId::new(lines[3])?,
+            unix_millis: lines[4].parse().map_err(|_| StoreError::InvalidRecord)?,
+            process_id: lines[5].parse().map_err(|_| StoreError::InvalidRecord)?,
+        };
+        if result.process_id == 0 || result.previous_revision == result.revision {
+            return Err(StoreError::InvalidRecord);
+        }
+        Ok(result)
     }
 }
 
@@ -58,6 +157,7 @@ pub struct ProfileSnapshot {
     pub soul: String,
     pub memory: String,
     pub memory_revision: MemoryRevision,
+    pub memory_write: Option<MemoryWrite>,
 }
 
 impl fmt::Debug for ProfileSnapshot {
@@ -167,6 +267,95 @@ fn atomic_replace_with(
     Ok(())
 }
 
+#[cfg(any(test, feature = "fault-injection"))]
+fn crash_checkpoint(path: &Path, stage: &str) -> io::Result<()> {
+    if std::env::var("LODEX_PROFILE_FAULT_STAGE").as_deref() == Ok(stage) {
+        fs::write(path.join(".fault-ready"), stage)?;
+        loop {
+            std::thread::park();
+        }
+    }
+    Ok(())
+}
+
+fn optional_text(path: &Path, max: usize) -> Result<Option<String>, StoreError> {
+    match read_bounded(path, max) {
+        Ok(text) => Ok(Some(text)),
+        Err(StoreError::Io(error)) if error.kind() == io::ErrorKind::NotFound => Ok(None),
+        Err(error) => Err(error),
+    }
+}
+
+fn remove_if_present(path: &Path) -> Result<(), StoreError> {
+    regular_file_or_missing(path)?;
+    match fs::remove_file(path) {
+        Ok(()) => Ok(()),
+        Err(error) if error.kind() == io::ErrorKind::NotFound => Ok(()),
+        Err(error) => Err(error.into()),
+    }
+}
+
+fn recover_memory(path: &Path) -> Result<(), StoreError> {
+    let pending = path.join(".memory.pending");
+    let previous = path.join(".memory.previous.pending");
+    if let Some(text) = optional_text(&pending, 512)? {
+        let record = MemoryWrite::decode(&text)?;
+        let current = revision(&read_bounded(&path.join("MEMORY.md"), MAX_MEMORY_BYTES)?);
+        if current == record.revision {
+            if let Some(old) = optional_text(&previous, MAX_MEMORY_BYTES)? {
+                if revision(&old) != record.previous_revision {
+                    return Err(StoreError::RecoveryConflict);
+                }
+                regular_file_or_missing(&path.join("MEMORY.previous.md"))?;
+                fs::rename(&previous, path.join("MEMORY.previous.md"))?;
+                File::open(path)?.sync_all()?;
+                #[cfg(any(test, feature = "fault-injection"))]
+                crash_checkpoint(path, "after-backup")?;
+            } else if optional_text(&path.join("MEMORY.previous.md"), MAX_MEMORY_BYTES)?
+                .as_deref()
+                .map(revision)
+                != Some(record.previous_revision)
+            {
+                return Err(StoreError::RecoveryConflict);
+            }
+            atomic_replace_with(&path.join(".memory.last-write"), |file| {
+                file.write_all(text.as_bytes())
+            })?;
+            #[cfg(any(test, feature = "fault-injection"))]
+            crash_checkpoint(path, "after-attribution")?;
+        } else if current != record.previous_revision {
+            return Err(StoreError::RecoveryConflict);
+        }
+        // Old revision: preparation was interrupted; leave the last committed
+        // backup and attribution intact. New revision: finish its commit above.
+        remove_if_present(&previous)?;
+        remove_if_present(&pending)?;
+        File::open(path)?.sync_all()?;
+    } else {
+        remove_if_present(&previous)?;
+    }
+    // The lock excludes active writers. Only our exact reserved temp grammar
+    // is disposable after process death; unrelated files are never removed.
+    for entry in fs::read_dir(path)? {
+        let entry = entry?;
+        let name = entry.file_name();
+        let Some(name) = name.to_str().and_then(|name| name.strip_prefix(".write-")) else {
+            continue;
+        };
+        let Some((pid, serial)) = name.split_once('-') else {
+            continue;
+        };
+        if !pid.is_empty()
+            && !serial.is_empty()
+            && pid.bytes().all(|byte| byte.is_ascii_digit())
+            && serial.bytes().all(|byte| byte.is_ascii_digit())
+        {
+            remove_if_present(&entry.path())?;
+        }
+    }
+    Ok(())
+}
+
 impl LocalProfiles {
     /// Existing roots must already be private. Never chmod an existing directory.
     /// The parent must exist; profiles belong in a dedicated external data root.
@@ -214,6 +403,7 @@ impl LocalProfiles {
         private_directory(&path, false)?;
         let lock = open_private(&path.join(".memory.lock"), false)?;
         lock.lock()?;
+        recover_memory(&path)?;
         Ok((path, lock))
     }
 
@@ -226,7 +416,15 @@ impl LocalProfiles {
             memory_revision: revision(&memory),
             soul,
             memory,
+            memory_write: optional_text(&path.join(".memory.last-write"), 512)?
+                .map(|text| MemoryWrite::decode(&text))
+                .transpose()?,
         })
+    }
+
+    pub fn directory(&self, name: &str) -> Result<PathBuf, StoreError> {
+        let (path, _lock) = self.locked_profile(name)?;
+        Ok(path)
     }
 
     /// Locked compare-and-replace; retain one previous version before committing.
@@ -237,6 +435,22 @@ impl LocalProfiles {
         expected: MemoryRevision,
         memory: &str,
     ) -> Result<MemoryRevision, StoreError> {
+        self.write_memory_as(
+            name,
+            expected,
+            memory,
+            &WriterId::new(&format!("process:{}", std::process::id()))?,
+        )
+    }
+
+    /// Explicit caller attribution; no-op writes preserve the previous writer.
+    pub fn write_memory_as(
+        &self,
+        name: &str,
+        expected: MemoryRevision,
+        memory: &str,
+        writer: &WriterId,
+    ) -> Result<MemoryRevision, StoreError> {
         if memory.len() > MAX_MEMORY_BYTES {
             return Err(StoreError::TooLarge);
         }
@@ -245,13 +459,51 @@ impl LocalProfiles {
         if revision(&old) != expected {
             return Err(StoreError::Conflict);
         }
-        atomic_replace_with(&path.join("MEMORY.previous.md"), |file| {
+        if old == memory {
+            return Ok(expected);
+        }
+        let record = MemoryWrite {
+            previous_revision: expected,
+            revision: revision(memory),
+            writer: writer.clone(),
+            unix_millis: SystemTime::now()
+                .duration_since(UNIX_EPOCH)
+                .map_err(|_| StoreError::InvalidRecord)?
+                .as_millis()
+                .try_into()
+                .map_err(|_| StoreError::InvalidRecord)?,
+            process_id: std::process::id(),
+        };
+        atomic_replace_with(&path.join(".memory.previous.pending"), |file| {
             file.write_all(old.as_bytes())
         })?;
-        atomic_replace_with(&path.join("MEMORY.md"), |file| {
-            file.write_all(memory.as_bytes())
+        #[cfg(any(test, feature = "fault-injection"))]
+        crash_checkpoint(&path, "after-previous-stage")?;
+        atomic_replace_with(&path.join(".memory.pending"), |file| {
+            file.write_all(record.encode().as_bytes())
         })?;
-        Ok(revision(memory))
+        #[cfg(any(test, feature = "fault-injection"))]
+        crash_checkpoint(&path, "after-intent")?;
+        atomic_replace_with(&path.join("MEMORY.md"), |file| {
+            let bytes = memory.as_bytes();
+            let middle = bytes.len() / 2;
+            file.write_all(&bytes[..middle])?;
+            #[cfg(any(test, feature = "fault-injection"))]
+            crash_checkpoint(&path, "during-memory-write")?;
+            file.write_all(&bytes[middle..])
+        })?;
+        #[cfg(any(test, feature = "fault-injection"))]
+        crash_checkpoint(&path, "after-memory")?;
+        recover_memory(&path)?;
+        Ok(record.revision)
+    }
+
+    /// Last managed commit; a manual editor can subsequently change MEMORY.md.
+    pub fn last_memory_write(&self, name: &str) -> Result<Option<MemoryWrite>, StoreError> {
+        let (path, _lock) = self.locked_profile(name)?;
+        optional_text(&path.join(".memory.last-write"), 512)?
+            .map(|text| MemoryWrite::decode(&text))
+            .transpose()
     }
 
     pub fn read_previous_memory(&self, name: &str) -> Result<String, StoreError> {
@@ -263,6 +515,163 @@ impl LocalProfiles {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn attribution_and_noop_preserve_last_committed_writer() {
+        let (_temp, store) = store();
+        let before = store.read("main").expect("read");
+        let writer = WriterId::new("operator:fixture").expect("writer");
+        let current = store
+            .write_memory_as("main", before.memory_revision, "new", &writer)
+            .expect("write");
+        let record = store
+            .last_memory_write("main")
+            .expect("record")
+            .expect("commit");
+        assert_eq!(record.writer.as_str(), "operator:fixture");
+        assert_eq!(record.previous_revision, before.memory_revision);
+        assert_eq!(record.revision, current);
+        assert_eq!(record.process_id, std::process::id());
+        let other = WriterId::new("other").expect("writer");
+        store
+            .write_memory_as("main", current, "new", &other)
+            .expect("no-op");
+        assert_eq!(
+            store
+                .last_memory_write("main")
+                .expect("read")
+                .expect("record")
+                .writer
+                .as_str(),
+            writer.as_str()
+        );
+        assert_eq!(
+            MemoryRevision::from_hex(&current.to_hex()).expect("decode"),
+            current
+        );
+        assert!(WriterId::new("inject\nrecord").is_err());
+        assert!(MemoryRevision::from_hex(&"x".repeat(64)).is_err());
+    }
+
+    #[test]
+    fn conflicting_pending_record_preserves_evidence() {
+        let (_temp, store) = store();
+        let path = store.root.join("main");
+        let record = MemoryWrite {
+            previous_revision: revision("old"),
+            revision: revision("new"),
+            writer: WriterId::new("fixture").expect("writer"),
+            unix_millis: 1,
+            process_id: 1,
+        };
+        fs::write(path.join(".memory.pending"), record.encode()).expect("intent");
+        fs::write(path.join(".memory.previous.pending"), "old").expect("previous");
+        assert!(matches!(
+            store.read("main"),
+            Err(StoreError::RecoveryConflict)
+        ));
+        assert!(path.join(".memory.pending").is_file());
+        assert!(path.join(".memory.previous.pending").is_file());
+        assert_eq!(
+            fs::read_to_string(path.join("MEMORY.md")).expect("read"),
+            "# Memory\n"
+        );
+    }
+
+    #[test]
+    #[ignore = "spawned by process_kill_recovers_each_commit_boundary"]
+    fn crash_child() {
+        let root =
+            PathBuf::from(std::env::var_os("LODEX_PROFILE_TEST_ROOT").expect("fixture root"));
+        let store = LocalProfiles::open(root).expect("open");
+        let before = store.read("main").expect("before");
+        store
+            .write_memory_as(
+                "main",
+                before.memory_revision,
+                "new child memory",
+                &WriterId::new("crashed-child").expect("writer"),
+            )
+            .expect("write");
+        panic!("fault checkpoint was not reached");
+    }
+
+    #[test]
+    fn process_kill_recovers_each_commit_boundary() {
+        for (stage, committed) in [
+            ("after-previous-stage", false),
+            ("after-intent", false),
+            ("during-memory-write", false),
+            ("after-memory", true),
+            ("after-backup", true),
+            ("after-attribution", true),
+        ] {
+            let (_temp, store) = store();
+            let before = store.read("main").expect("before");
+            store
+                .write_memory_as(
+                    "main",
+                    before.memory_revision,
+                    "old parent memory",
+                    &WriterId::new("parent").expect("writer"),
+                )
+                .expect("baseline");
+            let mut child =
+                std::process::Command::new(std::env::current_exe().expect("test executable"))
+                    .args(["--exact", "tests::crash_child", "--ignored", "--nocapture"])
+                    .env("LODEX_PROFILE_TEST_ROOT", &store.root)
+                    .env("LODEX_PROFILE_FAULT_STAGE", stage)
+                    .stdout(std::process::Stdio::null())
+                    .stderr(std::process::Stdio::null())
+                    .spawn()
+                    .expect("spawn fixture");
+            let marker = store.root.join("main/.fault-ready");
+            let deadline = std::time::Instant::now() + std::time::Duration::from_secs(10);
+            while !marker.is_file() {
+                if child.try_wait().expect("poll").is_some()
+                    || std::time::Instant::now() >= deadline
+                {
+                    let _ = child.kill();
+                    let _ = child.wait();
+                    panic!("child did not reach {stage}");
+                }
+                std::thread::sleep(std::time::Duration::from_millis(10));
+            }
+            child.kill().expect("kill at checkpoint");
+            assert!(!child.wait().expect("reap").success());
+            let after = store.read("main").expect("recover");
+            let writer = store
+                .last_memory_write("main")
+                .expect("record")
+                .expect("writer");
+            if committed {
+                assert_eq!(after.memory, "new child memory", "{stage}");
+                assert_eq!(
+                    store.read_previous_memory("main").expect("backup"),
+                    "old parent memory"
+                );
+                assert_eq!(writer.writer.as_str(), "crashed-child");
+            } else {
+                assert_eq!(after.memory, "old parent memory", "{stage}");
+                assert_eq!(
+                    store.read_previous_memory("main").expect("backup"),
+                    before.memory
+                );
+                assert_eq!(writer.writer.as_str(), "parent");
+            }
+            assert_eq!(writer.revision, after.memory_revision);
+            assert!(!store.root.join("main/.memory.pending").exists());
+            assert!(
+                !fs::read_dir(store.root.join("main"))
+                    .expect("entries")
+                    .any(|entry| entry
+                        .expect("entry")
+                        .file_name()
+                        .to_string_lossy()
+                        .starts_with(".write-"))
+            );
+        }
+    }
 
     fn store() -> (tempfile::TempDir, LocalProfiles) {
         let temp = tempfile::tempdir().expect("temp root");

@@ -13,10 +13,14 @@ external SD storage. Results are specific to the workload, binary and firmware.
 | Lodex v1.1 | 236607592 |
 | Lodex v1.2, two-connection candidate | 236607236 |
 | Lodex v1.3, executor entry point restored | 239722436 |
+| Lodex v1.4, local profile administration | 239788704 |
 | Executor-only v1 | 75614760 |
 
 The executor CLI adds about 3.1 MB to the image while retaining a remote tools
-execution path. Image size is not heap, RSS, swap or total physical RAM usage.
+execution path. Image size is not heap, RSS, swap or total physical RAM usage. The profile-only
+utility is 990448 bytes (967.2 KiB); it administers local files without an agent
+server. Adding its interface to the full launcher increased that image by 66268
+bytes. No new comparative runtime-memory result is claimed for that addition.
 
 ## Preliminary database pool comparison
 

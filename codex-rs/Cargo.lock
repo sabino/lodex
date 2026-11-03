@@ -3975,6 +3975,7 @@ dependencies = [
  "codex-features",
  "codex-home",
  "codex-http-client",
+ "codex-lodex-local",
  "codex-login",
  "codex-mcp",
  "codex-protocol",
@@ -4012,6 +4013,7 @@ dependencies = [
 name = "codex-lodex-local"
 version = "0.166.0"
 dependencies = [
+ "clap",
  "sha2 0.10.9",
  "tempfile",
 ]

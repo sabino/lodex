@@ -1,0 +1,62 @@
+{
+  "native": {
+    "passed": true,
+    "checks": [
+      "create-and-explicit-local-read",
+      "utf8-atomic-write-attribution-and-redacted-inspection",
+      "stale-oversized-invalid-utf8-rejected-without-change",
+      "concurrent-process-writers-have-one-winner",
+      "private-directory-and-file-modes",
+      "process-kill-recovery-after-previous-stage",
+      "process-kill-recovery-after-intent",
+      "process-kill-recovery-during-memory-write",
+      "process-kill-recovery-after-memory",
+      "process-kill-recovery-after-backup",
+      "process-kill-recovery-after-attribution"
+    ],
+    "scope": "native synthetic local profile CLI, writer races and six process-kill commit boundaries",
+    "limitations": [
+      "No actual private profiles, model, network export, power-loss or SD-failure test.",
+      "Attribution is caller supplied, not authentication or a tamper-proof audit log.",
+      "Full launcher profile command and App Server shell also passed separate native gates. Production remains on its existing image."
+    ]
+  },
+  "images": {
+    "profile": {
+      "bytes": 990448,
+      "sha256": "3b3ba0ee610a579904ec8fbef5cc694c19396b156603d84f7c3a314bb21f11fc"
+    },
+    "crash-qualification": {
+      "bytes": 661760,
+      "sha256": "617369a3d1a679bb8967a1f9d9249392136bdfbaa47727a5881418fd7fa404cb"
+    }
+  },
+  "full_launcher_candidate": {
+    "bytes": 239788704,
+    "sha256": "e5acc760faeffbe5f71a7501c8cb0e5602b992a0be3c7031a1b7f8681a1441f1"
+  },
+  "host_tests": {
+    "default_library_passed": 10,
+    "cli_feature_passed": 11,
+    "ignored_child_exercised_by_parent": 1,
+    "package_clippy_all_targets_all_features_passed": true
+  },
+  "full_launcher_native_gate_passed": true,
+  "automatic_prompt_or_worker_export": false,
+  "evidence_sha256": {
+    "local-profile-native-result-02.json": "aa4841c132c551c86a8a26ae2b2c8754b3d17f062ad395e94c80e054d9870f10",
+    "local-profile-clippy.log": "37bb159a3394c6c17ec27f4903c7b544677276d6ae4f3d547760cfd063a9baea",
+    "local-profile-cli-test.log": "1429e59f200ba800131228310018cba9b33f142b2a4c6d873d209e27b87bca33",
+    "local-profile-crash-host.log": "6a8ebc2f9f9796c129020f9bad3cc2d22b00a5e263a0b916be5276a772e8f62e",
+    "local-profile-full-native-cli.txt": "003268525eeab0347fe8eb5b96b688c6f14bcc1803d09f817a859ceb280e7af5",
+    "local-profile-full-native-semantic.txt": "90fd06a847e09fe500fc536ca3cbf226c7460097ddaf7e4aa7d793ab6493290e",
+    "local-profile-full-startup-shell.json": "76af2b17df1a01419138b256e1bdda679bd88f47ed2e2743f296c6928c7d6d68",
+    "profile-size-metadata-gate.json": "b85f9918d2f14b8eb65dc717040c2f769495db81cfe36e777ecd16fe5aae1d5e"
+  },
+  "full_launcher_native": {
+    "cli_gates_passed": 11,
+    "profile_init_inspect_write_attribution_read_passed": true,
+    "app_server_startup_shell_and_unknown_method_passed": true,
+    "image_size_increase_from_v1_3_bytes": 66268
+  }
+}

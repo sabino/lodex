@@ -18,6 +18,12 @@ def ssh(helper, command, **kwargs):
     return subprocess.run([str(helper), command], check=True, **kwargs)
 
 
+def size_command(path):
+    # OpenWrt can lack stat. Read directory metadata instead of streaming a
+    # hundreds-of-megabytes image through wc just to obtain its byte count.
+    return f"LC_ALL=C ls -ln {shlex.quote(path)} | awk 'NR == 1 {{print $5; exit}}'"
+
+
 def prepare(image, cache, name):
     cache.mkdir(parents=True, exist_ok=True)
     compressed = cache / (name + ".gz")
@@ -53,7 +59,7 @@ def run(args):
     target = root + "/bin/" + args.name
     ssh(args.ssh, f"set -eu\n[ -d {q(root)} ]\n[ -d {q(root + '/bin')} ]\n[ ! -e {q(target)} ]")
     for attempt in range(1, 4):
-        result = ssh(args.ssh, f"if [ -f {q(payload)} ]; then wc -c < {q(payload)}; else echo 0; fi",
+        result = ssh(args.ssh, f"if [ -f {q(payload)} ]; then {size_command(payload)}; else echo 0; fi",
                      capture_output=True, text=True)
         offset = int(result.stdout.strip())
         if not 0 <= offset <= manifest["gzip_bytes"]:
@@ -75,10 +81,10 @@ def run(args):
     command = f"""set -eu
 umask 077
 [ ! -e {q(target)} ]
-[ "$(wc -c < {q(payload)})" -eq {manifest['gzip_bytes']} ]
+[ "$({size_command(payload)})" -eq {manifest['gzip_bytes']} ]
 [ "$(sha256sum {q(payload)} | cut -d ' ' -f 1)" = {q(manifest['gzip_sha256'])} ]
 gzip -dc {q(payload)} > {q(temporary)}
-[ "$(wc -c < {q(temporary)})" -eq {manifest['bytes']} ]
+[ "$({size_command(temporary)})" -eq {manifest['bytes']} ]
 [ "$(sha256sum {q(temporary)} | cut -d ' ' -f 1)" = {q(manifest['sha256'])} ]
 chmod 755 {q(temporary)}
 mv {q(temporary)} {q(target)}

@@ -50,6 +50,7 @@ enum Command {
     Mcp(mcp_cmd::McpCli),
     Exec(codex_exec::Cli),
     ExecServer(codex_exec_server_cli::ExecServerCommand),
+    Profile(codex_lodex_local::cli::ProfileArgs),
     Login(LoginArgs),
     Logout,
 }
@@ -148,6 +149,9 @@ fn main() -> anyhow::Result<()> {
                 codex_exec::run_main(args, paths).await
             }
             Command::ExecServer(args) => args.run(&paths, &cli.config_overrides).await,
+            Command::Profile(args) => tokio::task::spawn_blocking(move || args.run())
+                .await?
+                .map_err(anyhow::Error::from_boxed),
             Command::Login(args) => match args.command {
                 Some(LoginCommand::Status) => login::run_login_status(cli.config_overrides).await,
                 None if args.with_api_key => {
