@@ -12,6 +12,9 @@ codex-utils-absolute-path = { workspace = true }
 dunce = { workspace = true }
 tempfile = { workspace = true }
 
+[target.'cfg(target_os = "linux")'.dependencies]
+libc = { workspace = true }
+
 [target.'cfg(windows)'.dependencies]
 windows-sys = { workspace = true, features = [
     "Win32_Foundation",

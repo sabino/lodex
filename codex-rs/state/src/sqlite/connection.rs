@@ -12,6 +12,11 @@ use sqlx::SqlitePool;
 use sqlx::sqlite::SqliteConnectOptions;
 use sqlx::sqlite::SqlitePoolOptions;
 
+#[cfg(feature = "lodex-low-memory")]
+const MAX_CONNECTIONS: u32 = 2;
+#[cfg(not(feature = "lodex-low-memory"))]
+const MAX_CONNECTIONS: u32 = 5;
+
 #[derive(Clone, Copy, Eq, PartialEq)]
 pub(super) enum JournalModePolicy {
     InitializeWal,
@@ -26,41 +31,42 @@ pub(super) async fn connect_once(
     // SQLx retries after_connect errors, eventually replacing them with PoolTimedOut.
     // Return the first initialization error directly while opening this pool.
     let (init_error_tx, mut init_error_rx) = tokio::sync::mpsc::channel(/*buffer*/ 1);
-    let pool_options =
-        SqlitePoolOptions::new()
-            .max_connections(5)
-            .after_connect(move |connection, _metadata| {
-                let init_error_tx = init_error_tx.clone();
-                Box::pin(async move {
-                    let result = async {
-                        let journal: String = sqlx::query_scalar("PRAGMA journal_mode")
-                            .fetch_one(&mut *connection)
-                            .await?;
-                        if journal_mode_policy == JournalModePolicy::RequireDelete
-                            && journal != "delete"
-                        {
-                            return Err(Error::Protocol(format!(
-                                "NFS database requires DELETE journaling, found {journal}"
-                            )));
-                        }
-                        if journal == "delete" {
-                            // If the filesystem honors sync requests, EXTRA syncs the directory
-                            // after SQLite deletes a rollback journal.
-                            sqlx::query("PRAGMA synchronous = EXTRA")
-                                .execute(connection)
-                                .await?;
-                        }
-                        Ok(())
+    let pool_options = SqlitePoolOptions::new()
+        // Keep an independent reader/writer available; a one-connection pool
+        // would serialize both and deadlock callers holding a connection.
+        .max_connections(MAX_CONNECTIONS)
+        .after_connect(move |connection, _metadata| {
+            let init_error_tx = init_error_tx.clone();
+            Box::pin(async move {
+                let result = async {
+                    let journal: String = sqlx::query_scalar("PRAGMA journal_mode")
+                        .fetch_one(&mut *connection)
+                        .await?;
+                    if journal_mode_policy == JournalModePolicy::RequireDelete
+                        && journal != "delete"
+                    {
+                        return Err(Error::Protocol(format!(
+                            "NFS database requires DELETE journaling, found {journal}"
+                        )));
                     }
-                    .await;
-                    result.map_err(|error| match init_error_tx.try_send(error) {
-                        // The opener owns the original error and cancels connection retries.
-                        Ok(()) => Error::PoolClosed,
-                        // After opening, lazy connections retain SQLx's normal error handling.
-                        Err(error) => error.into_inner(),
-                    })
+                    if journal == "delete" {
+                        // If the filesystem honors sync requests, EXTRA syncs the directory
+                        // after SQLite deletes a rollback journal.
+                        sqlx::query("PRAGMA synchronous = EXTRA")
+                            .execute(connection)
+                            .await?;
+                    }
+                    Ok(())
+                }
+                .await;
+                result.map_err(|error| match init_error_tx.try_send(error) {
+                    // The opener owns the original error and cancels connection retries.
+                    Ok(()) => Error::PoolClosed,
+                    // After opening, lazy connections retain SQLx's normal error handling.
+                    Err(error) => error.into_inner(),
                 })
-            });
+            })
+        });
     let pool = tokio::select! {
         biased;
         Some(error) = init_error_rx.recv() => Err(error),

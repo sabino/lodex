@@ -3,7 +3,7 @@
 //! Session recovery cannot replay a submitted proof; connection closure drops pending inputs.
 
 use std::collections::BTreeMap;
-use std::sync::atomic::AtomicU64;
+use portable_atomic::AtomicU64;
 use std::sync::atomic::Ordering;
 use std::time::Duration;
 

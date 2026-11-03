@@ -2,7 +2,7 @@
 
 use super::*;
 use crate::app_event::ConnectorsSnapshot;
-use std::sync::atomic::AtomicU64;
+use portable_atomic::AtomicU64;
 
 /// Prevents stale requests from matching a replacement widget for the same thread.
 static NEXT_CONNECTOR_SCOPE_GENERATION: AtomicU64 = AtomicU64::new(1);

@@ -28,7 +28,7 @@ pub(crate) fn daemon_socket_mask_paths(
     let directory_file = fs::File::open(directory)?;
     let device = directory_file.metadata()?.dev();
     let filesystem =
-        if fstatfs(&directory_file).is_ok_and(|stat| stat.f_type == libc::BTRFS_SUPER_MAGIC) {
+        if fstatfs(&directory_file).is_ok_and(|stat| stat.f_type == libc::BTRFS_SUPER_MAGIC as rustix::fs::FsWord) {
             SocketFilesystem::Btrfs
         } else {
             SocketFilesystem::Other

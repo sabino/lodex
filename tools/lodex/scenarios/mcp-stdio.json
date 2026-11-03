@@ -1,0 +1,19 @@
+[
+  {"method": "initialize", "params": {
+    "clientInfo": {"name": "lodex_fixture", "version": "0.1.0"},
+    "capabilities": {"experimentalApi": true}
+  }},
+  {"method": "initialized", "notification": true},
+  {"method": "thread/start", "params": {"ephemeral": true},
+   "capture": {"thread": ["result", "thread", "id"]}},
+  {"method": "mcpServerStatus/list", "params": {
+    "threadId": {"$ref": "thread"}, "serverName": "fixture"
+  }, "checks": [{"path": ["result", "data", 0, "name"], "equals": "fixture"}]},
+  {"method": "mcpServer/tool/call", "params": {
+    "threadId": {"$ref": "thread"}, "server": "fixture", "tool": "echo",
+    "arguments": {"text": "lodex-mcp-canary"}
+  }, "checks": [{"path": ["result", "content", 0, "text"], "equals": "lodex-mcp-canary"}]},
+  {"method": "mcpServer/resource/read", "params": {
+    "threadId": {"$ref": "thread"}, "server": "fixture", "uri": "fixture://lodex/identity"
+  }, "checks": [{"path": ["result", "contents", 0, "text"], "equals": "lodex-mcp-fixture"}]}
+]

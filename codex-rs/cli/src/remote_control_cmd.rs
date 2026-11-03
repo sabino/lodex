@@ -162,7 +162,7 @@ async fn daemon_eligible(root_config_overrides: &CliConfigOverrides) -> anyhow::
         return Ok(false);
     };
     Ok(config.features.enabled(Feature::DaemonAutoStart)
-        && !codex_tui::uses_wsl_drvfs(&config.codex_home))
+        && !codex_utils_path::uses_wsl_drvfs(&config.codex_home))
 }
 
 fn print_remote_control_progress(json: bool, message: &str) -> anyhow::Result<()> {

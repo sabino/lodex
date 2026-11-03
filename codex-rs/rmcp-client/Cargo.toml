@@ -8,6 +8,7 @@ license.workspace = true
 workspace = true
 
 [dependencies]
+portable-atomic = { workspace = true }
 anyhow = "1"
 axum = { workspace = true, default-features = false, features = [
     "http1",

@@ -1071,6 +1071,7 @@ async fn writable_pool_reads_do_not_wait_for_an_existing_writer() {
 
         // Reopening preserves existing FULL and legacy NONE without taking a writer lock.
         let pool = sqlite.open_read_write_pool(&path).await.unwrap();
+        let expected_readers = pool.options().get_max_connections() as usize;
         let mut connection = pool.acquire().await.unwrap();
         let writer = connection.begin_with("BEGIN IMMEDIATE").await.unwrap();
         let read_result = tokio::time::timeout(std::time::Duration::from_secs(2), async {
@@ -1082,7 +1083,7 @@ async fn writable_pool_reads_do_not_wait_for_an_existing_writer() {
             let mut held_connections = Vec::new();
             let mut values = Vec::new();
             // Keep every connection checked out to exercise lazy pool expansion too.
-            for _ in 0..5 {
+            for _ in 0..expected_readers {
                 let mut reader = readers.acquire().await.unwrap();
                 values.push(
                     sqlx::query_scalar::<_, i64>("SELECT value FROM sample")
@@ -1102,7 +1103,7 @@ async fn writable_pool_reads_do_not_wait_for_an_existing_writer() {
         pool.close().await;
         assert_eq!(
             read_result.expect("opening and expanding a read pool must not wait for a writer"),
-            (expected_mode, vec![7; 5])
+            (expected_mode, vec![7; expected_readers])
         );
     }
 }

@@ -9,6 +9,57 @@ use sqlx::sqlite::SqliteJournalMode;
 use sqlx::sqlite::SqlitePoolOptions;
 
 #[tokio::test]
+async fn concurrent_writes_survive_pool_pressure_and_reopen() -> anyhow::Result<()> {
+    let home = tempfile::tempdir()?;
+    let sqlite = SqliteConfig::new_for_testing(home.path().abs());
+    let path = sqlite.state_db_path();
+    let pool = sqlite.open_read_write_pool(&path).await?;
+    sqlx::query(
+        "CREATE TABLE pressure_test (writer INTEGER, item INTEGER, PRIMARY KEY(writer, item))",
+    )
+    .execute(&pool)
+    .await?;
+    let mut writers = tokio::task::JoinSet::new();
+    for writer in 0..16_i64 {
+        let pool = pool.clone();
+        writers.spawn(async move {
+            for item in 0..8_i64 {
+                sqlx::query("INSERT INTO pressure_test VALUES (?, ?)")
+                    .bind(writer)
+                    .bind(item)
+                    .execute(&pool)
+                    .await?;
+                // Reads compete with writes through the same bounded pool.
+                let count: i64 = sqlx::query_scalar("SELECT count(*) FROM pressure_test")
+                    .fetch_one(&pool)
+                    .await?;
+                assert!(count > 0);
+            }
+            Ok::<_, sqlx::Error>(())
+        });
+    }
+    tokio::time::timeout(std::time::Duration::from_secs(60), async {
+        while let Some(result) = writers.join_next().await {
+            result??;
+        }
+        Ok::<_, anyhow::Error>(())
+    })
+    .await??;
+    pool.close().await;
+    let reopened = sqlite.open_read_write_pool(&path).await?;
+    let rows: Vec<(i64, i64)> =
+        sqlx::query_as("SELECT writer, item FROM pressure_test ORDER BY writer, item")
+            .fetch_all(&reopened)
+            .await?;
+    let expected: Vec<_> = (0..16)
+        .flat_map(|writer| (0..8).map(move |item| (writer, item)))
+        .collect();
+    assert_eq!(rows, expected);
+    reopened.close().await;
+    Ok(())
+}
+
+#[tokio::test]
 async fn configured_log_directory_is_initialized_on_use_and_retries_after_failure()
 -> anyhow::Result<()> {
     let sqlite_home = crate::runtime::test_support::unique_temp_dir();
@@ -201,10 +252,11 @@ async fn open_read_write_pool_initializes_fresh_database_settings() -> anyhow::R
             assert!(tokio::fs::metadata(&path).await?.len() > 0);
         }
         let pool = sqlite.open_read_write_pool(&path).await?;
+        let capacity = pool.options().get_max_connections() as usize;
         // Hold connections open so the assertions cover lazy pool connections too.
         let mut connections = Vec::new();
         let mut settings = Vec::new();
-        for _ in 0..5 {
+        for _ in 0..capacity {
             let mut connection = pool.acquire().await?;
             let current: (String, i64, i64) = sqlx::query_as(
                 "SELECT journal_mode, auto_vacuum, synchronous
@@ -223,7 +275,7 @@ async fn open_read_write_pool_initializes_fresh_database_settings() -> anyhow::R
                     SqliteAutoVacuum::Incremental as i64,
                     if nfs { 3 } else { 1 },
                 );
-                5
+                capacity
             ]
         );
         drop(connections);
@@ -341,9 +393,10 @@ async fn open_read_write_pool_preserves_delete_under_write_lock() -> anyhow::Res
 
     let pool = sqlite.open_read_write_pool(&database_path).await?;
     // Keep each acquired connection open to test connections that the pool initializes later.
+    let capacity = pool.options().get_max_connections() as usize;
     let mut connections = Vec::new();
     let mut settings = Vec::new();
-    for _ in 0..5 {
+    for _ in 0..capacity {
         let mut connection = pool.acquire().await?;
         let journal: String = sqlx::query_scalar("PRAGMA journal_mode")
             .fetch_one(&mut *connection)
@@ -354,7 +407,7 @@ async fn open_read_write_pool_preserves_delete_under_write_lock() -> anyhow::Res
         settings.push((journal, synchronous));
         connections.push(connection);
     }
-    assert_eq!(settings, vec![("delete".to_string(), 3); 5]);
+    assert_eq!(settings, vec![("delete".to_string(), 3); capacity]);
     drop(connections);
     sqlx::query("ROLLBACK").execute(&mut *lock_holder).await?;
     drop(lock_holder);

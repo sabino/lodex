@@ -481,7 +481,7 @@ pub(crate) mod test_support {
     use std::future::Future;
     use std::sync::Arc;
     use std::sync::Mutex;
-    use std::sync::atomic::AtomicU64;
+    use portable_atomic::AtomicU64;
     use std::sync::atomic::Ordering;
     use tracing::Event;
     use tracing::Id;

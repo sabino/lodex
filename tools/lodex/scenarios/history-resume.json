@@ -1,0 +1,89 @@
+[
+  {
+    "method": "initialize",
+    "params": {
+      "clientInfo": {
+        "name": "lodex_fixture",
+        "version": "0.1.0"
+      },
+      "capabilities": {
+        "experimentalApi": true
+      }
+    }
+  },
+  {
+    "method": "initialized",
+    "notification": true
+  },
+  {
+    "method": "thread/resume",
+    "params": {
+      "threadId": {
+        "$ref": "thread"
+      }
+    },
+    "checks": [
+      {
+        "path": [
+          "result",
+          "thread",
+          "name"
+        ],
+        "equals": "Lodex durable fixture"
+      }
+    ]
+  },
+  {
+    "method": "thread/read",
+    "params": {
+      "threadId": {
+        "$ref": "thread"
+      },
+      "includeTurns": true
+    },
+    "checks": [
+      {
+        "path": [
+          "result",
+          "thread",
+          "name"
+        ],
+        "equals": "Lodex durable fixture"
+      },
+      {
+        "path": [
+          "result",
+          "thread",
+          "turns",
+          0,
+          "status"
+        ],
+        "equals": "completed"
+      },
+      {
+        "path": [
+          "result",
+          "thread",
+          "turns",
+          0,
+          "items",
+          0,
+          "exitCode"
+        ],
+        "equals": 0
+      },
+      {
+        "path": [
+          "result",
+          "thread",
+          "turns",
+          0,
+          "items",
+          0,
+          "aggregatedOutput"
+        ],
+        "equals": "lodex-history-marker"
+      }
+    ]
+  }
+]

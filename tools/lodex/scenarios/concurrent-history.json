@@ -1,0 +1,314 @@
+[
+  {
+    "method": "initialize",
+    "params": {
+      "clientInfo": {
+        "name": "lodex_fixture",
+        "version": "0.1.0"
+      },
+      "capabilities": {
+        "experimentalApi": true
+      }
+    }
+  },
+  {
+    "method": "initialized",
+    "notification": true
+  },
+  {
+    "parallel": [
+      {
+        "method": "thread/start",
+        "params": {
+          "ephemeral": false
+        },
+        "capture": {
+          "thread0": [
+            "result",
+            "thread",
+            "id"
+          ]
+        }
+      },
+      {
+        "method": "thread/start",
+        "params": {
+          "ephemeral": false
+        },
+        "capture": {
+          "thread1": [
+            "result",
+            "thread",
+            "id"
+          ]
+        }
+      },
+      {
+        "method": "thread/start",
+        "params": {
+          "ephemeral": false
+        },
+        "capture": {
+          "thread2": [
+            "result",
+            "thread",
+            "id"
+          ]
+        }
+      },
+      {
+        "method": "thread/start",
+        "params": {
+          "ephemeral": false
+        },
+        "capture": {
+          "thread3": [
+            "result",
+            "thread",
+            "id"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "parallel": [
+      {
+        "method": "thread/shellCommand",
+        "params": {
+          "threadId": {
+            "$ref": "thread0"
+          },
+          "command": "printf lodex-pressure-0",
+          "timeoutMs": 10000
+        }
+      },
+      {
+        "method": "thread/shellCommand",
+        "params": {
+          "threadId": {
+            "$ref": "thread1"
+          },
+          "command": "printf lodex-pressure-1",
+          "timeoutMs": 10000
+        }
+      },
+      {
+        "method": "thread/shellCommand",
+        "params": {
+          "threadId": {
+            "$ref": "thread2"
+          },
+          "command": "printf lodex-pressure-2",
+          "timeoutMs": 10000
+        }
+      },
+      {
+        "method": "thread/shellCommand",
+        "params": {
+          "threadId": {
+            "$ref": "thread3"
+          },
+          "command": "printf lodex-pressure-3",
+          "timeoutMs": 10000
+        }
+      }
+    ]
+  },
+  {
+    "wait_notification": "turn/completed"
+  },
+  {
+    "wait_notification": "turn/completed"
+  },
+  {
+    "wait_notification": "turn/completed"
+  },
+  {
+    "wait_notification": "turn/completed"
+  },
+  {
+    "parallel": [
+      {
+        "method": "thread/read",
+        "params": {
+          "threadId": {
+            "$ref": "thread0"
+          },
+          "includeTurns": true
+        },
+        "checks": [
+          {
+            "path": [
+              "result",
+              "thread",
+              "turns",
+              0,
+              "status"
+            ],
+            "equals": "completed"
+          },
+          {
+            "path": [
+              "result",
+              "thread",
+              "turns",
+              0,
+              "items",
+              0,
+              "exitCode"
+            ],
+            "equals": 0
+          },
+          {
+            "path": [
+              "result",
+              "thread",
+              "turns",
+              0,
+              "items",
+              0,
+              "aggregatedOutput"
+            ],
+            "equals": "lodex-pressure-0"
+          }
+        ]
+      },
+      {
+        "method": "thread/read",
+        "params": {
+          "threadId": {
+            "$ref": "thread1"
+          },
+          "includeTurns": true
+        },
+        "checks": [
+          {
+            "path": [
+              "result",
+              "thread",
+              "turns",
+              0,
+              "status"
+            ],
+            "equals": "completed"
+          },
+          {
+            "path": [
+              "result",
+              "thread",
+              "turns",
+              0,
+              "items",
+              0,
+              "exitCode"
+            ],
+            "equals": 0
+          },
+          {
+            "path": [
+              "result",
+              "thread",
+              "turns",
+              0,
+              "items",
+              0,
+              "aggregatedOutput"
+            ],
+            "equals": "lodex-pressure-1"
+          }
+        ]
+      },
+      {
+        "method": "thread/read",
+        "params": {
+          "threadId": {
+            "$ref": "thread2"
+          },
+          "includeTurns": true
+        },
+        "checks": [
+          {
+            "path": [
+              "result",
+              "thread",
+              "turns",
+              0,
+              "status"
+            ],
+            "equals": "completed"
+          },
+          {
+            "path": [
+              "result",
+              "thread",
+              "turns",
+              0,
+              "items",
+              0,
+              "exitCode"
+            ],
+            "equals": 0
+          },
+          {
+            "path": [
+              "result",
+              "thread",
+              "turns",
+              0,
+              "items",
+              0,
+              "aggregatedOutput"
+            ],
+            "equals": "lodex-pressure-2"
+          }
+        ]
+      },
+      {
+        "method": "thread/read",
+        "params": {
+          "threadId": {
+            "$ref": "thread3"
+          },
+          "includeTurns": true
+        },
+        "checks": [
+          {
+            "path": [
+              "result",
+              "thread",
+              "turns",
+              0,
+              "status"
+            ],
+            "equals": "completed"
+          },
+          {
+            "path": [
+              "result",
+              "thread",
+              "turns",
+              0,
+              "items",
+              0,
+              "exitCode"
+            ],
+            "equals": 0
+          },
+          {
+            "path": [
+              "result",
+              "thread",
+              "turns",
+              0,
+              "items",
+              0,
+              "aggregatedOutput"
+            ],
+            "equals": "lodex-pressure-3"
+          }
+        ]
+      }
+    ]
+  }
+]

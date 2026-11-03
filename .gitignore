@@ -12,6 +12,9 @@ dist/
 bazel-*
 user.bazelrc
 build/
+# These are vendored source helpers, not build output.
+!/vendor/mxc/src/mxc-sdk/build/
+!/vendor/mxc/src/mxc-sdk/build/**
 out/
 storybook-static/
 
@@ -94,3 +97,8 @@ CHANGELOG.ignore.md
 # Python bytecode files
 __pycache__/
 *.pyc
+
+# Lodex local build and profiling artifacts
+/.lodex-build/
+/tools/lodex/__pycache__/
+/tools/lodex/tests/__pycache__/

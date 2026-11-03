@@ -3,7 +3,7 @@ use std::collections::HashSet;
 use std::collections::VecDeque;
 use std::collections::hash_map::Entry;
 use std::sync::Arc;
-use std::sync::atomic::AtomicU64;
+use portable_atomic::AtomicU64;
 use std::sync::atomic::Ordering;
 use std::time::Duration;
 

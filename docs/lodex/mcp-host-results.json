@@ -1,0 +1,177 @@
+{
+  "scope": "x86_64 host tests of the forked MCP client and vendored SDK; remote-executor fixtures use installed stock Codex 0.166.0, not the Lodex launcher",
+  "targets": [
+    {
+      "target": "unittests src/lib.rs",
+      "passed": 261,
+      "failed": 0,
+      "ignored_child_helpers": 1
+    },
+    {
+      "target": "unittests src/bin/rmcp_test_server.rs",
+      "passed": 0,
+      "failed": 0,
+      "ignored_child_helpers": 0
+    },
+    {
+      "target": "unittests src/bin/test_mcp_2026_discovery_stdio_server.rs",
+      "passed": 0,
+      "failed": 0,
+      "ignored_child_helpers": 0
+    },
+    {
+      "target": "unittests src/bin/test_mcp_2026_stdio_server.rs",
+      "passed": 0,
+      "failed": 0,
+      "ignored_child_helpers": 0
+    },
+    {
+      "target": "unittests src/bin/test_stdio_server.rs",
+      "passed": 0,
+      "failed": 0,
+      "ignored_child_helpers": 0
+    },
+    {
+      "target": "unittests src/bin/test_streamable_http_server.rs",
+      "passed": 0,
+      "failed": 0,
+      "ignored_child_helpers": 0
+    },
+    {
+      "target": "tests/foreign_stdio_cwd.rs",
+      "passed": 1,
+      "failed": 0,
+      "ignored_child_helpers": 0
+    },
+    {
+      "target": "tests/mcp_2026_discovery.rs",
+      "passed": 31,
+      "failed": 0,
+      "ignored_child_helpers": 0
+    },
+    {
+      "target": "tests/mcp_2026_message_limits.rs",
+      "passed": 3,
+      "failed": 0,
+      "ignored_child_helpers": 0
+    },
+    {
+      "target": "tests/mcp_2026_mrtr.rs",
+      "passed": 14,
+      "failed": 0,
+      "ignored_child_helpers": 0
+    },
+    {
+      "target": "tests/mcp_2026_oauth_discovery.rs",
+      "passed": 9,
+      "failed": 0,
+      "ignored_child_helpers": 0
+    },
+    {
+      "target": "tests/mcp_2026_sse_discovery.rs",
+      "passed": 3,
+      "failed": 0,
+      "ignored_child_helpers": 0
+    },
+    {
+      "target": "tests/mcp_2026_stdio.rs",
+      "passed": 6,
+      "failed": 0,
+      "ignored_child_helpers": 0
+    },
+    {
+      "target": "tests/mcp_2026_stdio_discovery.rs",
+      "passed": 3,
+      "failed": 0,
+      "ignored_child_helpers": 1
+    },
+    {
+      "target": "tests/mcp_events.rs",
+      "passed": 2,
+      "failed": 0,
+      "ignored_child_helpers": 0
+    },
+    {
+      "target": "tests/process_group_cleanup.rs",
+      "passed": 2,
+      "failed": 0,
+      "ignored_child_helpers": 0
+    },
+    {
+      "target": "tests/resources.rs",
+      "passed": 2,
+      "failed": 0,
+      "ignored_child_helpers": 0
+    },
+    {
+      "target": "tests/stdio_descriptor_boundary.rs",
+      "passed": 2,
+      "failed": 0,
+      "ignored_child_helpers": 0
+    },
+    {
+      "target": "tests/stdio_message_limits.rs",
+      "passed": 1,
+      "failed": 0,
+      "ignored_child_helpers": 0
+    },
+    {
+      "target": "tests/stdio_stderr_cleanup.rs",
+      "passed": 1,
+      "failed": 0,
+      "ignored_child_helpers": 0
+    },
+    {
+      "target": "tests/streamable_http_oauth_startup.rs",
+      "passed": 13,
+      "failed": 0,
+      "ignored_child_helpers": 5
+    },
+    {
+      "target": "tests/streamable_http_oauth_store_pinning.rs",
+      "passed": 2,
+      "failed": 0,
+      "ignored_child_helpers": 1
+    },
+    {
+      "target": "tests/streamable_http_oauth_tool_call.rs",
+      "passed": 2,
+      "failed": 0,
+      "ignored_child_helpers": 1
+    },
+    {
+      "target": "tests/streamable_http_recovery.rs",
+      "passed": 15,
+      "failed": 0,
+      "ignored_child_helpers": 0
+    },
+    {
+      "target": "tests/streamable_http_remote.rs",
+      "passed": 3,
+      "failed": 0,
+      "ignored_child_helpers": 0
+    },
+    {
+      "target": "tests/streamable_http_test_support.rs",
+      "passed": 0,
+      "failed": 0,
+      "ignored_child_helpers": 0
+    },
+    {
+      "target": "tests/streamable_http_user_agent.rs",
+      "passed": 1,
+      "failed": 0,
+      "ignored_child_helpers": 0
+    }
+  ],
+  "totals": {
+    "passed": 377,
+    "failed": 0,
+    "ignored_child_helpers": 9
+  },
+  "log_sha256": "88619e8ded3bc4f833f3e8625fdefe599fffc81b8c325efde487f9a49529b493",
+  "limitations": [
+    "Ignored cases are child-process helpers invoked by parent tests, not independent top-level qualification.",
+    "Does not replace native MIPS transport/version/OAuth/cancellation qualification."
+  ]
+}

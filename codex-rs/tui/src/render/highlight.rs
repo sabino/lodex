@@ -38,7 +38,7 @@ use std::path::PathBuf;
 use std::sync::OnceLock;
 use std::sync::RwLock;
 #[cfg(not(test))]
-use std::sync::atomic::AtomicU64;
+use portable_atomic::AtomicU64;
 #[cfg(not(test))]
 use std::sync::atomic::Ordering;
 use syntect::easy::HighlightLines;

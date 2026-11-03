@@ -1,0 +1,41 @@
+{
+  "variant": "Lodex v1.1",
+  "bytes": 236607592,
+  "sha256": "4bef0f8c83c282eae84226f8d43389edc1a499bd24041078155fa4acc9a87093",
+  "native_cli_checks_passed": 9,
+  "isolated_unix_daemon_control_probe_passed": true,
+  "managed_remote_connected": true,
+  "existing_environment_identity_preserved": true,
+  "stock_rollback_binary_retained": true,
+  "profile_store_native_fixture_passed": true,
+  "profile_store_wired_to_agent": false,
+  "production_observation": {
+    "sample_count": 5,
+    "elapsed_seconds": 8,
+    "rss_min_kib": 21452,
+    "rss_max_kib": 21464,
+    "rss_peak_kib": 58156,
+    "swap_max_kib": 6884,
+    "major_fault_delta": 0,
+    "cpu_tick_delta": 1
+  },
+  "limitations": [
+    "No manual phone check after cutover.",
+    "Authentication status passed; refresh-cycle qualification remains pending.",
+    "Production RSS observation is not a controlled comparison against stock.",
+    "MCP basic stdio/HTTP, file editing and durable history passed in v1; full protocol matrix remains pending.",
+    "No automatic profile prompt injection or worker export."
+  ],
+  "evidence_sha256": {
+    "v1.1-cli.txt": "abc8fee15deffb29ebb55246cd28a65ea6616429f4b3c9ef7f9b50d1a9915bc6",
+    "v1.1-daemon-probe.json": "663f4c29e2b32ce276805728053282fef00bd4fe65e2c5010facf4e3d894be64",
+    "cutover-v1.1-result.txt": "ba3837767dbf49a8bf23e85247acea719e1a0912ce6881fc03a338f0582bc20b",
+    "v1.1-production-auth.stderr": "16118df3eb3595e44a4721878cef0f79910e6564e10ff0e78e451e7c4e478947",
+    "local-store-native.txt": "2d80c20974e7fd1bad964129c1d01c75b47ca9b1b3d984f9f430b8aba45e392b",
+    "v1.1-concurrent-resume.json": "e6f62fa52d2c63223a6d4f8bff35a4fc82079a0084a530d7ee7254b117ee6718",
+    "v1.1-restart-result.jsonl": "9300e5bf258ee5127b5fc1f7a0736df97720d6a2af8b3fd8524e17a57efa1175"
+  },
+  "four_threads_resumed_with_exact_shell_results": true,
+  "concurrent_history_trials_passed": 3,
+  "managed_stop_start_reconnect_passed": true
+}

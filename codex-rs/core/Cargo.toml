@@ -12,6 +12,7 @@ path = "src/lib.rs"
 workspace = true
 
 [dependencies]
+portable-atomic = { workspace = true }
 codex-utils-process = { workspace = true }
 anyhow = { workspace = true }
 arc-swap = { workspace = true }
@@ -143,6 +144,10 @@ openssl-sys = { workspace = true, features = ["vendored"] }
 
 # Build OpenSSL from source for musl builds.
 [target.aarch64-unknown-linux-musl.dependencies]
+openssl-sys = { workspace = true, features = ["vendored"] }
+
+# The Omega's musl SDK does not include target OpenSSL development files.
+[target.mipsel-unknown-linux-musl.dependencies]
 openssl-sys = { workspace = true, features = ["vendored"] }
 
 [dev-dependencies]

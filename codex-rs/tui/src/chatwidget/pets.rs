@@ -2,7 +2,7 @@
 
 use super::*;
 use codex_config::types::TuiPetAnchor;
-use std::sync::atomic::AtomicU64;
+use portable_atomic::AtomicU64;
 use std::sync::atomic::Ordering;
 
 // A configured-pet load can finish after its ChatWidget is replaced, so

@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 use std::path::PathBuf;
-use std::sync::atomic::AtomicU64;
+use portable_atomic::AtomicU64;
 use std::sync::atomic::Ordering;
 
 use codex_app_server_protocol::CollabAgentTool;

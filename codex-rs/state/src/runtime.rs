@@ -36,7 +36,7 @@ use std::collections::BTreeSet;
 use std::path::Path;
 use std::path::PathBuf;
 use std::sync::Arc;
-use std::sync::atomic::AtomicI64;
+use portable_atomic::AtomicI64;
 use std::time::Instant;
 use tracing::warn;
 

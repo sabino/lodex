@@ -182,8 +182,8 @@ fn install_network_seccomp_filter_on_current_thread(
     mode: NetworkSeccompMode,
     managed_network: Option<&ManagedNetworkSandboxContext>,
 ) -> std::result::Result<(), SandboxErr> {
-    fn deny_syscall(rules: &mut BTreeMap<i64, Vec<SeccompRule>>, nr: i64) {
-        rules.insert(nr, vec![]); // empty rule vec = unconditional match
+    fn deny_syscall(rules: &mut BTreeMap<i64, Vec<SeccompRule>>, nr: libc::c_long) {
+        rules.insert(nr as i64, vec![]); // empty rule vec = unconditional match
     }
 
     // Build rule map.
@@ -199,6 +199,12 @@ fn install_network_seccomp_filter_on_current_thread(
     deny_syscall(&mut rules, libc::SYS_io_uring_setup);
     deny_syscall(&mut rules, libc::SYS_io_uring_enter);
     deny_syscall(&mut rules, libc::SYS_io_uring_register);
+
+    // MIPS o32 also exposes the legacy socketcall multiplexer. Its pointed-to
+    // arguments cannot be inspected by seccomp, so reject the entire legacy
+    // path instead of permitting it to bypass direct-syscall restrictions.
+    #[cfg(target_arch = "mips")]
+    deny_syscall(&mut rules, libc::SYS_socketcall);
 
     match mode {
         NetworkSeccompMode::Restricted => {
@@ -229,8 +235,8 @@ fn install_network_seccomp_filter_on_current_thread(
                 libc::AF_UNIX as u64,
             )?])?;
 
-            rules.insert(libc::SYS_socket, vec![unix_only_rule.clone()]);
-            rules.insert(libc::SYS_socketpair, vec![unix_only_rule]);
+            rules.insert(libc::SYS_socket as i64, vec![unix_only_rule.clone()]);
+            rules.insert(libc::SYS_socketpair as i64, vec![unix_only_rule]);
         }
         NetworkSeccompMode::ProxyRouted => {
             // In proxy-routed mode we allow IP sockets in the isolated
@@ -266,8 +272,8 @@ fn install_network_seccomp_filter_on_current_thread(
                 SeccompCmpOp::Ne,
                 libc::AF_UNIX as u64,
             )?])?;
-            rules.insert(libc::SYS_socket, vec![deny_non_ip_socket]);
-            rules.insert(libc::SYS_socketpair, vec![deny_non_unix_socketpair]);
+            rules.insert(libc::SYS_socket as i64, vec![deny_non_ip_socket]);
+            rules.insert(libc::SYS_socketpair as i64, vec![deny_non_unix_socketpair]);
         }
         NetworkSeccompMode::VmSocketRestricted => {
             let deny_vsock = SeccompRule::new(vec![SeccompCondition::new(
@@ -276,8 +282,8 @@ fn install_network_seccomp_filter_on_current_thread(
                 SeccompCmpOp::Eq,
                 libc::AF_VSOCK as u64,
             )?])?;
-            rules.insert(libc::SYS_socket, vec![deny_vsock.clone()]);
-            rules.insert(libc::SYS_socketpair, vec![deny_vsock]);
+            rules.insert(libc::SYS_socket as i64, vec![deny_vsock.clone()]);
+            rules.insert(libc::SYS_socketpair as i64, vec![deny_vsock]);
         }
     }
 
@@ -289,6 +295,8 @@ fn install_network_seccomp_filter_on_current_thread(
             TargetArch::x86_64
         } else if cfg!(target_arch = "aarch64") {
             TargetArch::aarch64
+        } else if cfg!(all(target_arch = "mips", target_endian = "little")) {
+            TargetArch::mipsel
         } else {
             unimplemented!("unsupported architecture for seccomp filter");
         },

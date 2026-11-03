@@ -23,7 +23,7 @@ use codex_protocol::protocol::ReviewDecision;
 use codex_protocol::protocol::WarningEvent;
 use std::future::Future;
 use std::sync::Arc;
-use std::sync::atomic::AtomicI64;
+use portable_atomic::AtomicI64;
 use std::sync::atomic::Ordering;
 use tokio_util::sync::CancellationToken;
 

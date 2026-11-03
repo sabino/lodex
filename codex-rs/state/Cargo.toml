@@ -4,7 +4,12 @@ version.workspace = true
 edition.workspace = true
 license.workspace = true
 
+[features]
+# The single-core headless appliance needs fewer SQLite worker threads/caches.
+lodex-low-memory = []
+
 [dependencies]
+portable-atomic = { workspace = true }
 anyhow = { workspace = true }
 chrono = { workspace = true }
 codex-file-system = { workspace = true }

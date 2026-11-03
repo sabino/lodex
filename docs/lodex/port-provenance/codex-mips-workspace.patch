@@ -1,0 +1,2987 @@
+diff --git i/codex-rs/Cargo.lock w/codex-rs/Cargo.lock
+index 1d27abb..61b9b15 100644
+--- i/codex-rs/Cargo.lock
++++ w/codex-rs/Cargo.lock
+@@ -149,8 +149,6 @@ dependencies = [
+ [[package]]
+ name = "allocative"
+ version = "0.3.6"
+-source = "registry+https://github.com/rust-lang/crates.io-index"
+-checksum = "d8cf9afc79c83d514444b55df3935d317da54b1ce3b17a133c646889cc260de8"
+ dependencies = [
+  "allocative_derive",
+  "bumpalo",
+@@ -287,7 +285,7 @@ checksum = "2a4385e2e34eb35d6b3efe798b9eb88096925d87726c0798709bf56d9ed84af3"
+ 
+ [[package]]
+ name = "app_test_support"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "anyhow",
+  "base64 0.22.1",
+@@ -1888,7 +1886,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-agent-extension"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "anyhow",
+  "codex-core",
+@@ -1900,7 +1898,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-agent-graph-store"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "codex-protocol",
+  "codex-state",
+@@ -1915,7 +1913,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-agent-identity"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "anyhow",
+  "base64 0.22.1",
+@@ -1935,7 +1933,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-agent-message-board-client"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "anyhow",
+  "chrono",
+@@ -1958,7 +1956,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-agent-message-board-extension"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "codex-extension-api",
+  "codex-message-board",
+@@ -1972,7 +1970,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-agent-roles"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "codex-config",
+  "codex-file-system",
+@@ -1985,7 +1983,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-analytics"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "codex-app-server-protocol",
+  "codex-git-utils",
+@@ -1998,6 +1996,7 @@ dependencies = [
+  "codex-utils-absolute-path",
+  "codex-utils-path-uri",
+  "os_info",
++ "portable-atomic",
+  "pretty_assertions",
+  "serde",
+  "serde_json",
+@@ -2008,7 +2007,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-ansi-escape"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "ansi-to-tui",
+  "pretty_assertions",
+@@ -2019,7 +2018,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-api"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "anyhow",
+  "assert_matches",
+@@ -2057,7 +2056,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-app-server"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "anyhow",
+  "app_test_support",
+@@ -2142,6 +2141,7 @@ dependencies = [
+  "libc",
+  "opentelemetry",
+  "opentelemetry_sdk",
++ "portable-atomic",
+  "pretty_assertions",
+  "rcgen",
+  "rmcp",
+@@ -2174,7 +2174,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-app-server-client"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "codex-app-server",
+  "codex-app-server-protocol",
+@@ -2202,7 +2202,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-app-server-daemon"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "anyhow",
+  "blake3",
+@@ -2232,7 +2232,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-app-server-protocol"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "anyhow",
+  "codex-app-server-protocol-noop-macros",
+@@ -2266,11 +2266,11 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-app-server-protocol-noop-macros"
+-version = "0.0.0"
++version = "0.166.0"
+ 
+ [[package]]
+ name = "codex-app-server-test-client"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "anyhow",
+  "clap",
+@@ -2292,7 +2292,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-app-server-transport"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "axum",
+  "base64 0.22.1",
+@@ -2316,6 +2316,7 @@ dependencies = [
+  "httpdate",
+  "libc",
+  "owo-colors",
++ "portable-atomic",
+  "pretty_assertions",
+  "rand 0.9.3",
+  "serde",
+@@ -2335,7 +2336,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-apply-patch"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "anyhow",
+  "assert_cmd",
+@@ -2355,7 +2356,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-arg0"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "anyhow",
+  "codex-apply-patch",
+@@ -2378,7 +2379,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-async-utils"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "pretty_assertions",
+  "rand 0.9.3",
+@@ -2388,7 +2389,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-attachment-store"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "pretty_assertions",
+  "serde",
+@@ -2398,7 +2399,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-aws-auth"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "aws-config",
+  "aws-credential-types",
+@@ -2424,7 +2425,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-backend-client"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "anyhow",
+  "codex-api",
+@@ -2444,7 +2445,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-backend-openapi-models"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "serde",
+  "serde_json",
+@@ -2453,7 +2454,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-build-info"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "codex-install-context",
+  "pretty_assertions",
+@@ -2466,7 +2467,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-bwrap"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "cc",
+  "libc",
+@@ -2475,7 +2476,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-chatgpt"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "anyhow",
+  "clap",
+@@ -2497,7 +2498,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-cli"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "anyhow",
+  "app_test_support",
+@@ -2601,7 +2602,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-client"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "codex-http-client",
+  "eventsource-stream",
+@@ -2615,7 +2616,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-cloud-client"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "anyhow",
+  "async-stream",
+@@ -2639,7 +2640,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-cloud-config"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "base64 0.22.1",
+  "chrono",
+@@ -2667,7 +2668,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-cloud-tasks"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "anyhow",
+  "chrono",
+@@ -2700,7 +2701,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-cloud-tasks-client"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "anyhow",
+  "chrono",
+@@ -2715,7 +2716,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-cloud-tasks-mock-client"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "chrono",
+  "codex-cloud-tasks-client",
+@@ -2724,7 +2725,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-code-mode"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "codex-code-mode-protocol",
+  "codex-http-client",
+@@ -2733,6 +2734,7 @@ dependencies = [
+  "codex-protocol",
+  "futures",
+  "http-body-util",
++ "portable-atomic",
+  "pretty_assertions",
+  "prost",
+  "rand 0.9.3",
+@@ -2748,7 +2750,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-code-mode-host"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "anyhow",
+  "axum",
+@@ -2779,7 +2781,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-code-mode-protocol"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "codex-protocol",
+  "glob",
+@@ -2797,7 +2799,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-code-mode-runtime"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "base64 0.22.1",
+  "codex-code-mode-protocol",
+@@ -2816,11 +2818,11 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-collaboration-mode-templates"
+-version = "0.0.0"
++version = "0.166.0"
+ 
+ [[package]]
+ name = "codex-config"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "anyhow",
+  "base64 0.22.1",
+@@ -2874,7 +2876,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-config-schema"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "anyhow",
+  "clap",
+@@ -2883,7 +2885,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-connectors"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "anyhow",
+  "arc-swap",
+@@ -2893,6 +2895,7 @@ dependencies = [
+  "codex-plugin",
+  "codex-protocol",
+  "indexmap 2.14.0",
++ "portable-atomic",
+  "pretty_assertions",
+  "serde",
+  "serde_json",
+@@ -2905,7 +2908,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-connectors-extension"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "codex-connectors",
+  "codex-core-plugins",
+@@ -2919,7 +2922,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-context-fragments"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "codex-protocol",
+  "codex-protocol-test-support",
+@@ -2930,7 +2933,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-core"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "anyhow",
+  "arc-swap",
+@@ -3042,6 +3045,7 @@ dependencies = [
+  "openssl-sys",
+  "opentelemetry",
+  "opentelemetry_sdk",
++ "portable-atomic",
+  "predicates",
+  "pretty_assertions",
+  "rand 0.9.3",
+@@ -3080,7 +3084,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-core-api"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "codex-analytics",
+  "codex-app-server-protocol",
+@@ -3103,7 +3107,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-core-plugin-common"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "codex-utils-absolute-path",
+  "semver",
+@@ -3114,7 +3118,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-core-plugins"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "anyhow",
+  "chrono",
+@@ -3171,15 +3175,16 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-diagnostics"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "libc",
++ "portable-atomic",
+  "pretty_assertions",
+ ]
+ 
+ [[package]]
+ name = "codex-direct-tool-timing"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "codex-utils-critical-path",
+  "pretty_assertions",
+@@ -3190,7 +3195,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-exec"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "anyhow",
+  "assert_cmd",
+@@ -3224,6 +3229,7 @@ dependencies = [
+  "opentelemetry",
+  "opentelemetry_sdk",
+  "owo-colors",
++ "portable-atomic",
+  "predicates",
+  "pretty_assertions",
+  "serde",
+@@ -3243,7 +3249,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-exec-server"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "anyhow",
+  "arc-swap",
+@@ -3289,6 +3295,7 @@ dependencies = [
+  "notify",
+  "opentelemetry",
+  "opentelemetry_sdk",
++ "portable-atomic",
+  "pretty_assertions",
+  "prost",
+  "rcgen",
+@@ -3316,7 +3323,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-exec-server-cli"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "anyhow",
+  "assert_matches",
+@@ -3356,7 +3363,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-exec-server-protocol"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "base64 0.22.1",
+  "codex-file-system",
+@@ -3374,7 +3381,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-exec-server-test-support"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "anyhow",
+  "codex-exec-server",
+@@ -3389,7 +3396,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-execpolicy"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "anyhow",
+  "clap",
+@@ -3407,7 +3414,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-experimental-api-macros"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "proc-macro2",
+  "quote",
+@@ -3416,7 +3423,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-extension-api"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "codex-api",
+  "codex-config",
+@@ -3432,6 +3439,7 @@ dependencies = [
+  "codex-utils-absolute-path",
+  "codex-utils-path-uri",
+  "futures",
++ "portable-atomic",
+  "pretty_assertions",
+  "serde_json",
+  "tokio",
+@@ -3439,7 +3447,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-extension-items"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "codex-utils-absolute-path",
+  "pretty_assertions",
+@@ -3451,7 +3459,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-external-agent-migration"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "chrono",
+  "codex-analytics",
+@@ -3482,7 +3490,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-features"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "codex-network-proxy",
+  "codex-protocol",
+@@ -3496,7 +3504,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-feedback"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "anyhow",
+  "bytes",
+@@ -3524,7 +3532,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-file-search"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "anyhow",
+  "clap",
+@@ -3540,7 +3548,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-file-system"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "bytes",
+  "codex-protocol",
+@@ -3554,7 +3562,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-file-watcher"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "notify",
+  "pretty_assertions",
+@@ -3565,7 +3573,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-git-attribution"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "codex-backend-client",
+  "codex-extension-api",
+@@ -3578,7 +3586,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-git-utils"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "anyhow",
+  "chrono",
+@@ -3606,7 +3614,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-goal-extension"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "anyhow",
+  "chrono",
+@@ -3621,6 +3629,7 @@ dependencies = [
+  "codex-tools",
+  "codex-utils-absolute-path",
+  "codex-utils-template",
++ "portable-atomic",
+  "pretty_assertions",
+  "serde",
+  "serde_json",
+@@ -3631,7 +3640,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-guardian-context"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "codex-context-fragments",
+  "codex-history",
+@@ -3645,7 +3654,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-guardian-reviewer"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "anyhow",
+  "codex-analytics",
+@@ -3668,6 +3677,7 @@ dependencies = [
+  "codex-utils-string",
+  "opentelemetry",
+  "opentelemetry_sdk",
++ "portable-atomic",
+  "pretty_assertions",
+  "rand 0.9.3",
+  "rmcp",
+@@ -3681,7 +3691,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-guardian-v2"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "anyhow",
+  "codex-analytics",
+@@ -3720,7 +3730,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-guardian-v3"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "codex-message-board",
+  "codex-protocol",
+@@ -3729,7 +3739,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-history"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "anyhow",
+  "codex-protocol",
+@@ -3741,7 +3751,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-history-notes-extension"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "codex-analytics",
+  "codex-client",
+@@ -3767,7 +3777,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-home"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "codex-extension-api",
+  "codex-utils-absolute-path",
+@@ -3779,7 +3789,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-hooks"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "anyhow",
+  "async-channel",
+@@ -3808,7 +3818,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-http-client"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "bytes",
+  "codex-utils-cargo-bin",
+@@ -3821,6 +3831,7 @@ dependencies = [
+  "native-tls",
+  "opentelemetry",
+  "opentelemetry_sdk",
++ "portable-atomic",
+  "pretty_assertions",
+  "rcgen",
+  "reqwest 0.12.28",
+@@ -3848,7 +3859,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-image-generation-extension"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "base64 0.22.1",
+  "codex-api",
+@@ -3880,7 +3891,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-install-context"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "codex-utils-absolute-path",
+  "codex-utils-home-dir",
+@@ -3893,7 +3904,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-keyring-store"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "keyring",
+  "pretty_assertions",
+@@ -3904,7 +3915,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-linux-sandbox"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "clap",
+  "codex-core",
+@@ -3933,7 +3944,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-lmstudio"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "codex-core",
+  "codex-http-client",
+@@ -3947,7 +3958,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-login"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "anyhow",
+  "base64 0.22.1",
+@@ -3972,6 +3983,7 @@ dependencies = [
+  "once_cell",
+  "opentelemetry_sdk",
+  "os_info",
++ "portable-atomic",
+  "pretty_assertions",
+  "rand 0.9.3",
+  "regex-lite",
+@@ -3993,7 +4005,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-mcp"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "anyhow",
+  "arc-swap",
+@@ -4021,6 +4033,7 @@ dependencies = [
+  "futures",
+  "insta",
+  "lru",
++ "portable-atomic",
+  "pretty_assertions",
+  "regex-lite",
+  "rmcp",
+@@ -4037,7 +4050,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-mcp-extension"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "anyhow",
+  "axum",
+@@ -4058,6 +4071,7 @@ dependencies = [
+  "codex-utils-path-uri",
+  "core_test_support",
+  "futures",
++ "portable-atomic",
+  "pretty_assertions",
+  "serde_json",
+  "tempfile",
+@@ -4070,7 +4084,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-memories-extension"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "codex-core",
+  "codex-extension-api",
+@@ -4092,7 +4106,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-memories-read"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "codex-protocol",
+  "codex-shell-command",
+@@ -4102,7 +4116,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-memories-write"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "anyhow",
+  "chrono",
+@@ -4139,7 +4153,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-mermaid"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "insta",
+  "pretty_assertions",
+@@ -4148,7 +4162,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-message-board"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "base64 0.22.1",
+  "caseless",
+@@ -4159,6 +4173,7 @@ dependencies = [
+  "codex-tools",
+  "codex-utils-output-truncation",
+  "futures",
++ "portable-atomic",
+  "pretty_assertions",
+  "serde",
+  "serde_json",
+@@ -4171,7 +4186,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-message-history"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "codex-config",
+  "memchr",
+@@ -4185,7 +4200,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-model-provider"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "base64 0.22.1",
+  "chrono",
+@@ -4209,6 +4224,7 @@ dependencies = [
+  "codex-utils-redacted-string",
+  "codex-utils-rustls-provider",
+  "http 1.4.0",
++ "portable-atomic",
+  "pretty_assertions",
+  "rcgen",
+  "rustls",
+@@ -4224,7 +4240,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-model-provider-info"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "codex-client",
+  "codex-http-client",
+@@ -4242,7 +4258,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-models-manager"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "chrono",
+  "codex-http-client",
+@@ -4261,7 +4277,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-multi-env-copy-file"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "anyhow",
+  "codex-config",
+@@ -4287,7 +4303,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-mxc-sandbox"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "anyhow",
+  "codex-network-proxy",
+@@ -4308,7 +4324,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-network-proxy"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "anyhow",
+  "aws-credential-types",
+@@ -4324,6 +4340,7 @@ dependencies = [
+  "globset",
+  "libc",
+  "opentelemetry",
++ "portable-atomic",
+  "pretty_assertions",
+  "rama-core",
+  "rama-dns",
+@@ -4359,7 +4376,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-ollama"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "assert_matches",
+  "async-stream",
+@@ -4379,7 +4396,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-otel"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "bytes",
+  "chrono",
+@@ -4400,6 +4417,7 @@ dependencies = [
+  "opentelemetry-semantic-conventions",
+  "opentelemetry_sdk",
+  "os_info",
++ "portable-atomic",
+  "pretty_assertions",
+  "rcgen",
+  "reqwest 0.12.28",
+@@ -4418,7 +4436,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-otel-trace-websocket"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "anyhow",
+  "axum",
+@@ -4429,7 +4447,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-plugin"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "codex-config",
+  "codex-core-plugin-common",
+@@ -4444,7 +4462,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-plugin-host"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "codex-utils-cargo-bin",
+  "codex-utils-process",
+@@ -4461,7 +4479,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-process-hardening"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "libc",
+  "pretty_assertions",
+@@ -4469,7 +4487,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-prompts"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "anyhow",
+  "codex-collaboration-mode-templates",
+@@ -4487,7 +4505,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-protocol"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "anyhow",
+  "chardetng",
+@@ -4533,14 +4551,14 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-protocol-test-support"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "codex-protocol",
+ ]
+ 
+ [[package]]
+ name = "codex-queue-extension"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "anyhow",
+  "codex-core",
+@@ -4561,7 +4579,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-realtime-webrtc"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "anyhow",
+  "codex-build-info",
+@@ -4580,7 +4598,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-response-debug-context"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "base64 0.22.1",
+  "codex-api",
+@@ -4591,7 +4609,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-responses-api-proxy"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "anyhow",
+  "bytes",
+@@ -4601,6 +4619,7 @@ dependencies = [
+  "ctor 0.6.3",
+  "http 1.4.0",
+  "libc",
++ "portable-atomic",
+  "pretty_assertions",
+  "reqwest 0.12.28",
+  "serde",
+@@ -4615,7 +4634,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-rmcp-client"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "anyhow",
+  "axum",
+@@ -4641,6 +4660,7 @@ dependencies = [
+  "memchr",
+  "oauth2",
+  "opentelemetry_sdk",
++ "portable-atomic",
+  "pretty_assertions",
+  "rmcp",
+  "serde",
+@@ -4666,7 +4686,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-rollout"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "anyhow",
+  "chrono",
+@@ -4699,12 +4719,13 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-rollout-trace"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "anyhow",
+  "codex-code-mode",
+  "codex-protocol",
+  "http 1.4.0",
++ "portable-atomic",
+  "pretty_assertions",
+  "serde",
+  "serde_json",
+@@ -4716,7 +4737,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-runtime-agent-instance"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "base64 0.22.1",
+  "codex-agent-identity",
+@@ -4742,7 +4763,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-sandboxing"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "anyhow",
+  "codex-mxc-sandbox",
+@@ -4770,7 +4791,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-secrets"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "age",
+  "anyhow",
+@@ -4791,7 +4812,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-shell-command"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "anyhow",
+  "base64 0.22.1",
+@@ -4814,7 +4835,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-skills"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "codex-protocol",
+  "codex-shell-command",
+@@ -4831,7 +4852,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-skills-extension"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "assert_matches",
+  "blake3",
+@@ -4871,7 +4892,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-state"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "anyhow",
+  "chrono",
+@@ -4883,6 +4904,7 @@ dependencies = [
+  "file-id",
+  "libsqlite3-sys",
+  "log",
++ "portable-atomic",
+  "pretty_assertions",
+  "scopeguard",
+  "serde",
+@@ -4900,7 +4922,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-stdio-to-uds"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "anyhow",
+  "codex-uds",
+@@ -4912,7 +4934,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-tcp-tunnel"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "anyhow",
+  "bytes",
+@@ -4933,7 +4955,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-terminal-detection"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "pretty_assertions",
+  "tracing",
+@@ -4941,7 +4963,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-test-binary-support"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "codex-arg0",
+  "tempfile",
+@@ -4949,7 +4971,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-thread-manager-sample"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "anyhow",
+  "clap",
+@@ -4960,7 +4982,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-thread-store"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "chrono",
+  "codex-app-server-protocol",
+@@ -4991,7 +5013,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-tools"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "bitflags 2.13.1",
+  "codex-attachment-store",
+@@ -5017,7 +5039,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-tui"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "anyhow",
+  "app_test_support",
+@@ -5099,6 +5121,7 @@ dependencies = [
+  "objc2-foundation",
+  "opentelemetry_sdk",
+  "pathdiff",
++ "portable-atomic",
+  "pretty_assertions",
+  "pulldown-cmark",
+  "rand 0.9.3",
+@@ -5145,7 +5168,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-uds"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "async-io",
+  "libc",
+@@ -5159,7 +5182,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-user-verification"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "base64 0.22.1",
+  "block2",
+@@ -5180,7 +5203,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-utils-absolute-path"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "dirs",
+  "dunce",
+@@ -5194,14 +5217,14 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-utils-approval-presets"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "codex-protocol",
+ ]
+ 
+ [[package]]
+ name = "codex-utils-audio"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "base64 0.22.1",
+  "codex-protocol",
+@@ -5215,7 +5238,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-utils-cache"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "lru",
+  "sha1 0.10.6",
+@@ -5224,7 +5247,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-utils-cargo-bin"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "assert_cmd",
+  "runfiles",
+@@ -5233,7 +5256,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-utils-cli"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "clap",
+  "codex-protocol",
+@@ -5245,22 +5268,22 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-utils-critical-path"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "pretty_assertions",
+ ]
+ 
+ [[package]]
+ name = "codex-utils-elapsed"
+-version = "0.0.0"
++version = "0.166.0"
+ 
+ [[package]]
+ name = "codex-utils-fuzzy-match"
+-version = "0.0.0"
++version = "0.166.0"
+ 
+ [[package]]
+ name = "codex-utils-git-discovery"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "codex-git-utils",
+  "codex-utils-absolute-path",
+@@ -5273,14 +5296,14 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-utils-head-tail-buffer"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "pretty_assertions",
+ ]
+ 
+ [[package]]
+ name = "codex-utils-home-dir"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "codex-utils-absolute-path",
+  "dirs",
+@@ -5290,7 +5313,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-utils-image"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "base64 0.22.1",
+  "codex-utils-cache",
+@@ -5304,7 +5327,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-utils-json-to-toml"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "pretty_assertions",
+  "serde_json",
+@@ -5313,7 +5336,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-utils-oss"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "codex-core",
+  "codex-lmstudio",
+@@ -5323,7 +5346,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-utils-output-truncation"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "codex-protocol",
+  "codex-utils-string",
+@@ -5333,7 +5356,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-utils-path"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "codex-utils-absolute-path",
+  "dunce",
+@@ -5344,7 +5367,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-utils-path-uri"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "base64 0.22.1",
+  "codex-utils-absolute-path",
+@@ -5360,7 +5383,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-utils-plugins"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "codex-exec-server",
+  "codex-exec-server-protocol",
+@@ -5374,7 +5397,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-utils-process"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "pretty_assertions",
+  "tokio",
+@@ -5382,7 +5405,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-utils-pty"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "anyhow",
+  "codex-utils-cargo-bin",
+@@ -5401,7 +5424,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-utils-readiness"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "assert_matches",
+  "thiserror 2.0.18",
+@@ -5411,7 +5434,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-utils-redacted-string"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "schemars 0.8.22",
+  "serde",
+@@ -5419,14 +5442,14 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-utils-rustls-provider"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "rustls",
+ ]
+ 
+ [[package]]
+ name = "codex-utils-sandbox-summary"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "codex-protocol",
+  "codex-utils-absolute-path",
+@@ -5436,7 +5459,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-utils-sleep-inhibitor"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "core-foundation 0.9.4",
+  "libc",
+@@ -5446,14 +5469,14 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-utils-stream-parser"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "pretty_assertions",
+ ]
+ 
+ [[package]]
+ name = "codex-utils-string"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "pretty_assertions",
+  "regex-lite",
+@@ -5463,14 +5486,14 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-utils-template"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "pretty_assertions",
+ ]
+ 
+ [[package]]
+ name = "codex-v8-poc"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "pretty_assertions",
+  "v8",
+@@ -5478,7 +5501,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-voice-host"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "anyhow",
+  "codex-install-context",
+@@ -5505,7 +5528,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-web-search-extension"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "codex-api",
+  "codex-core",
+@@ -5527,7 +5550,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-websocket-auth"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "anyhow",
+  "base64 0.22.1",
+@@ -5546,7 +5569,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-websocket-client"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "codex-http-client",
+  "codex-utils-rustls-provider",
+@@ -5562,7 +5585,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-windows-sandbox"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "anyhow",
+  "base64 0.22.1",
+@@ -5579,6 +5602,7 @@ dependencies = [
+  "dirs-next",
+  "dunce",
+  "glob",
++ "portable-atomic",
+  "pretty_assertions",
+  "rand 0.8.6",
+  "serde",
+@@ -5592,7 +5616,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-windows-sandbox-service"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "anyhow",
+  "codex-cloud-config",
+@@ -5610,16 +5634,17 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-windows-sandbox-test-support"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "dirs",
+ ]
+ 
+ [[package]]
+ name = "codex-workload-identity"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "codex-http-client",
++ "portable-atomic",
+  "pretty_assertions",
+  "serde",
+  "serde_json",
+@@ -5632,7 +5657,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "codex-worktree"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "anyhow",
+  "codex-git-utils",
+@@ -5885,7 +5910,7 @@ dependencies = [
+ 
+ [[package]]
+ name = "core_test_support"
+-version = "0.0.0"
++version = "0.166.0"
+ dependencies = [
+  "anyhow",
+  "assert_cmd",
+@@ -10480,7 +10505,6 @@ dependencies = [
+ [[package]]
+ name = "mxc-sdk"
+ version = "1.0.0"
+-source = "git+https://github.com/microsoft/mxc?rev=b21120168d70befe12356411423266bfef168446#b21120168d70befe12356411423266bfef168446"
+ dependencies = [
+  "anyhow",
+  "base64 0.22.1",
+@@ -10491,6 +10515,7 @@ dependencies = [
+  "getrandom 0.2.17",
+  "libc",
+  "nix 0.29.0",
++ "portable-atomic",
+  "same-file",
+  "semver",
+  "serde",
+@@ -10686,17 +10711,16 @@ dependencies = [
+ [[package]]
+ name = "nucleo"
+ version = "0.5.0"
+-source = "git+https://github.com/helix-editor/nucleo.git?rev=4253de9faabb4e5c6d81d946a5e35a90f87347ee#4253de9faabb4e5c6d81d946a5e35a90f87347ee"
+ dependencies = [
+  "nucleo-matcher",
+  "parking_lot",
++ "portable-atomic",
+  "rayon",
+ ]
+ 
+ [[package]]
+ name = "nucleo-matcher"
+ version = "0.3.1"
+-source = "git+https://github.com/helix-editor/nucleo.git?rev=4253de9faabb4e5c6d81d946a5e35a90f87347ee#4253de9faabb4e5c6d81d946a5e35a90f87347ee"
+ dependencies = [
+  "memchr",
+  "unicode-segmentation",
+@@ -11321,14 +11345,13 @@ checksum = "e62e29dfe041afb8ed2a6c9737ab57db4907285d999ef8ad3a59092a36bdc846"
+ [[package]]
+ name = "opentelemetry_sdk"
+ version = "0.31.0"
+-source = "registry+https://github.com/rust-lang/crates.io-index"
+-checksum = "e14ae4f5991976fd48df6d843de219ca6d31b01daaab2dad5af2badeded372bd"
+ dependencies = [
+  "futures-channel",
+  "futures-executor",
+  "futures-util",
+  "opentelemetry",
+  "percent-encoding",
++ "portable-atomic",
+  "rand 0.9.3",
+  "thiserror 2.0.18",
+  "tokio",
+@@ -11456,8 +11479,6 @@ dependencies = [
+ [[package]]
+ name = "pagable"
+ version = "0.4.1"
+-source = "registry+https://github.com/rust-lang/crates.io-index"
+-checksum = "3658968938a4d1eaa1987e69dcd84b01fb067c5b3416dccc8d71373b6ded6821"
+ dependencies = [
+  "allocative",
+  "anyhow",
+@@ -13222,7 +13243,6 @@ dependencies = [
+ [[package]]
+ name = "rmcp"
+ version = "3.5.1"
+-source = "git+https://github.com/modelcontextprotocol/rust-sdk?rev=98a54789b80110ad210495c4ad845c89e1980471#98a54789b80110ad210495c4ad845c89e1980471"
+ dependencies = [
+  "async-trait",
+  "base64 0.23.0",
+@@ -13237,6 +13257,7 @@ dependencies = [
+  "oauth2",
+  "pastey",
+  "pin-project-lite",
++ "portable-atomic",
+  "process-wrap",
+  "rand 0.10.1",
+  "reqwest 0.13.4",
+@@ -13258,7 +13279,6 @@ dependencies = [
+ [[package]]
+ name = "rmcp-macros"
+ version = "3.5.1"
+-source = "git+https://github.com/modelcontextprotocol/rust-sdk?rev=98a54789b80110ad210495c4ad845c89e1980471#98a54789b80110ad210495c4ad845c89e1980471"
+ dependencies = [
+  "darling 0.24.0",
+  "proc-macro2",
+@@ -13965,8 +13985,6 @@ dependencies = [
+ [[package]]
+ name = "seccompiler"
+ version = "0.5.0"
+-source = "registry+https://github.com/rust-lang/crates.io-index"
+-checksum = "a4ae55de56877481d112a559bbc12667635fdaf5e005712fd4e2b2fa50ffc884"
+ dependencies = [
+  "libc",
+ ]
+@@ -14841,8 +14859,6 @@ checksum = "6ce2be8dc25455e1f91df71bfa12ad37d7af1092ae736f3a6cd0e37bc7810596"
+ [[package]]
+ name = "starlark"
+ version = "0.14.2"
+-source = "registry+https://github.com/rust-lang/crates.io-index"
+-checksum = "9062e866918dc4c9701c98ac99f7f4fa9e4b3b4edce306e147393bc75458c4fc"
+ dependencies = [
+  "allocative",
+  "anyhow",
+@@ -14868,6 +14884,7 @@ dependencies = [
+  "once_cell",
+  "pagable",
+  "paste",
++ "portable-atomic",
+  "ref-cast",
+  "regex",
+  "rustyline",
+@@ -16268,8 +16285,6 @@ dependencies = [
+ [[package]]
+ name = "tree-sitter-bash"
+ version = "0.25.1"
+-source = "registry+https://github.com/rust-lang/crates.io-index"
+-checksum = "9e5ec769279cc91b561d3df0d8a5deb26b0ad40d183127f409494d6d8fc53062"
+ dependencies = [
+  "cc",
+  "tree-sitter-language",
+@@ -16284,8 +16299,6 @@ checksum = "009994f150cc0cd50ff54917d5bc8bffe8cad10ca10d81c34da2ec421ae61782"
+ [[package]]
+ name = "tree-sitter-powershell"
+ version = "0.26.4"
+-source = "registry+https://github.com/rust-lang/crates.io-index"
+-checksum = "3faf304d44b9ddd4a7d97804bb8de7daf564336dd5a526dc6de5b39238243022"
+ dependencies = [
+  "cc",
+  "tree-sitter-language",
+@@ -16610,7 +16623,8 @@ dependencies = [
+ [[package]]
+ name = "v8"
+ version = "152.2.0"
+-source = "git+https://github.com/seanh-oai/rusty_v8.git?rev=350c5a859a9b3c84ab8701b3ad51e3b7699b30c0#350c5a859a9b3c84ab8701b3ad51e3b7699b30c0"
++source = "registry+https://github.com/rust-lang/crates.io-index"
++checksum = "a10fe1a92da5c32c7c7f838ce36c0ccfcfd5edf0865b58bdde820aa64cea9888"
+ dependencies = [
+  "bindgen",
+  "bitflags 2.13.1",
+diff --git i/codex-rs/Cargo.toml w/codex-rs/Cargo.toml
+index 85cd80b..073a1d6 100644
+--- i/codex-rs/Cargo.toml
++++ w/codex-rs/Cargo.toml
+@@ -178,6 +178,7 @@ edition = "2024"
+ license = "Apache-2.0"
+ 
+ [workspace.dependencies]
++portable-atomic = { version = "1.13.1", features = ["fallback"] }
+ # Internal
+ codex-realtime-webrtc = { path = "realtime-webrtc" }
+ app_test_support = { path = "app-server/tests/common" }
+@@ -668,15 +669,31 @@ inherits = "test"
+ opt-level = 0
+ 
+ [patch.crates-io]
++seccompiler = { path = "../../codex-vendor/seccompiler" }
++tree-sitter-powershell = { path = "../../codex-vendor/tree-sitter-powershell" }
++tree-sitter-bash = { path = "../../codex-vendor/tree-sitter-bash" }
++opentelemetry_sdk = { path = "../../codex-vendor/opentelemetry_sdk" }
++starlark = { path = "../../codex-vendor/starlark" }
++pagable = { path = "../../codex-vendor/pagable" }
++allocative = { path = "../../codex-vendor/allocative" }
+ # Uncomment to debug local changes.
+ # ratatui = { path = "../../ratatui" }
+ crossterm = { git = "https://github.com/openai-oss-forks/crossterm", rev = "ed1cdab335221515706178d68495bba2aed1924f" }
+ tokio-tungstenite = { git = "https://github.com/openai-oss-forks/tokio-tungstenite", rev = "0e5b2d73aa18dd9f0a50ee9ff199d5aef7594186" }
+ tungstenite = { git = "https://github.com/openai-oss-forks/tungstenite-rs", rev = "4fffad30fe373adbdcffab9545e9e9bf4f2fc19f" }
+-v8 = { git = "https://github.com/seanh-oai/rusty_v8.git", rev = "350c5a859a9b3c84ab8701b3ad51e3b7699b30c0" }
+ 
+ # Uncomment to debug local changes.
+ # rmcp = { path = "../../rust-sdk/crates/rmcp" }
+ 
+ [patch."ssh://git@github.com/openai-oss-forks/tungstenite-rs.git"]
+ tungstenite = { git = "https://github.com/openai-oss-forks/tungstenite-rs", rev = "4fffad30fe373adbdcffab9545e9e9bf4f2fc19f" }
++
++[patch."https://github.com/microsoft/mxc"]
++mxc-sdk = { path = "../../codex-vendor/mxc/src/mxc-sdk" }
++
++[patch."https://github.com/helix-editor/nucleo.git"]
++nucleo = { path = "../../codex-vendor/nucleo" }
++
++[patch."https://github.com/modelcontextprotocol/rust-sdk"]
++rmcp = { path = "../../codex-vendor/rust-sdk/crates/rmcp" }
++rmcp-macros = { path = "../../codex-vendor/rust-sdk/crates/rmcp-macros" }
+diff --git i/codex-rs/analytics/Cargo.toml w/codex-rs/analytics/Cargo.toml
+index 61e6f72..8f4f2af 100644
+--- i/codex-rs/analytics/Cargo.toml
++++ w/codex-rs/analytics/Cargo.toml
+@@ -13,6 +13,7 @@ path = "src/lib.rs"
+ workspace = true
+ 
+ [dependencies]
++portable-atomic = { workspace = true }
+ codex-http-client = { workspace = true }
+ codex-app-server-protocol = { workspace = true }
+ codex-git-utils = { workspace = true }
+diff --git i/codex-rs/analytics/src/client.rs w/codex-rs/analytics/src/client.rs
+index 0c54d01..6aae4d1 100644
+--- i/codex-rs/analytics/src/client.rs
++++ w/codex-rs/analytics/src/client.rs
+@@ -79,7 +79,7 @@ use std::collections::HashSet;
+ use std::path::PathBuf;
+ use std::sync::Arc;
+ use std::sync::Mutex;
+-use std::sync::atomic::AtomicU64;
++use portable_atomic::AtomicU64;
+ use std::sync::atomic::Ordering;
+ use std::time::Duration;
+ use tokio::sync::mpsc;
+diff --git i/codex-rs/analytics/src/client_tests.rs w/codex-rs/analytics/src/client_tests.rs
+index d7d8ff6..3da576d 100644
+--- i/codex-rs/analytics/src/client_tests.rs
++++ w/codex-rs/analytics/src/client_tests.rs
+@@ -297,7 +297,7 @@ fn client_with_receiver() -> (
+     let (sender, receiver) = mpsc::channel(8);
+     let queue = AnalyticsEventsQueue {
+         sender,
+-        product_generation: Arc::new(std::sync::atomic::AtomicU64::new(0)),
++        product_generation: Arc::new(portable_atomic::AtomicU64::new(0)),
+         app_used_emitted_keys: Arc::new(Mutex::new(HashSet::new())),
+         plugin_used_emitted_keys: Arc::new(Mutex::new(HashSet::new())),
+     };
+diff --git i/codex-rs/analytics/src/tests/suite/plugins_tests.rs w/codex-rs/analytics/src/tests/suite/plugins_tests.rs
+index 584f5d0..5e38c6f 100644
+--- i/codex-rs/analytics/src/tests/suite/plugins_tests.rs
++++ w/codex-rs/analytics/src/tests/suite/plugins_tests.rs
+@@ -286,7 +286,7 @@ fn plugin_used_dedupe_is_keyed_by_turn_and_plugin() {
+     let (sender, _receiver) = mpsc::channel(1);
+     let queue = AnalyticsEventsQueue {
+         sender,
+-        product_generation: Arc::new(std::sync::atomic::AtomicU64::new(0)),
++        product_generation: Arc::new(portable_atomic::AtomicU64::new(0)),
+         app_used_emitted_keys: Arc::new(Mutex::new(HashSet::new())),
+         plugin_used_emitted_keys: Arc::new(Mutex::new(HashSet::new())),
+     };
+diff --git i/codex-rs/app-server-transport/Cargo.toml w/codex-rs/app-server-transport/Cargo.toml
+index 9596758..a2288ee 100644
+--- i/codex-rs/app-server-transport/Cargo.toml
++++ w/codex-rs/app-server-transport/Cargo.toml
+@@ -13,6 +13,7 @@ doctest = false
+ workspace = true
+ 
+ [dependencies]
++portable-atomic = { workspace = true }
+ codex-http-client = { workspace = true }
+ codex-websocket-client = { workspace = true }
+ axum = { workspace = true, default-features = false, features = [
+diff --git i/codex-rs/app-server-transport/src/transport/mod.rs w/codex-rs/app-server-transport/src/transport/mod.rs
+index cd75578..d985171 100644
+--- i/codex-rs/app-server-transport/src/transport/mod.rs
++++ w/codex-rs/app-server-transport/src/transport/mod.rs
+@@ -11,7 +11,7 @@ use std::net::SocketAddr;
+ use std::path::Path;
+ use std::path::PathBuf;
+ use std::str::FromStr;
+-use std::sync::atomic::AtomicU64;
++use portable_atomic::AtomicU64;
+ use std::sync::atomic::Ordering;
+ use tokio::sync::mpsc;
+ use tokio_util::sync::CancellationToken;
+diff --git i/codex-rs/app-server-transport/src/websocket_compression.rs w/codex-rs/app-server-transport/src/websocket_compression.rs
+index 2aeface..d8de08c 100644
+--- i/codex-rs/app-server-transport/src/websocket_compression.rs
++++ w/codex-rs/app-server-transport/src/websocket_compression.rs
+@@ -9,7 +9,7 @@
+ //! Paired codecs report cumulative payload sizes per connection and direction.
+ 
+ use std::io;
+-use std::sync::atomic::AtomicU64;
++use portable_atomic::AtomicU64;
+ use std::sync::atomic::Ordering;
+ use std::time::Duration;
+ use std::time::Instant;
+diff --git i/codex-rs/app-server/Cargo.toml w/codex-rs/app-server/Cargo.toml
+index b4553fc..f699a9b 100644
+--- i/codex-rs/app-server/Cargo.toml
++++ w/codex-rs/app-server/Cargo.toml
+@@ -25,6 +25,7 @@ doctest = false
+ workspace = true
+ 
+ [dependencies]
++portable-atomic = { workspace = true }
+ codex-utils-process = { workspace = true }
+ anyhow = { workspace = true }
+ base64 = { workspace = true }
+diff --git i/codex-rs/app-server/src/command_exec.rs w/codex-rs/app-server/src/command_exec.rs
+index c71aff3..1a93952 100644
+--- i/codex-rs/app-server/src/command_exec.rs
++++ w/codex-rs/app-server/src/command_exec.rs
+@@ -1,6 +1,6 @@
+ use std::collections::HashMap;
+ use std::sync::Arc;
+-use std::sync::atomic::AtomicI64;
++use portable_atomic::AtomicI64;
+ use std::sync::atomic::Ordering;
+ use std::time::Duration;
+ 
+diff --git i/codex-rs/app-server/src/outgoing_message.rs w/codex-rs/app-server/src/outgoing_message.rs
+index 35f5027..df64bf1 100644
+--- i/codex-rs/app-server/src/outgoing_message.rs
++++ w/codex-rs/app-server/src/outgoing_message.rs
+@@ -2,7 +2,7 @@ use std::collections::HashMap;
+ use std::collections::HashSet;
+ use std::sync::Arc;
+ use std::sync::OnceLock;
+-use std::sync::atomic::AtomicI64;
++use portable_atomic::AtomicI64;
+ use std::sync::atomic::Ordering;
+ use std::time::SystemTime;
+ use std::time::UNIX_EPOCH;
+diff --git i/codex-rs/code-mode/Cargo.toml w/codex-rs/code-mode/Cargo.toml
+index 52cdae6..2b23f3c 100644
+--- i/codex-rs/code-mode/Cargo.toml
++++ w/codex-rs/code-mode/Cargo.toml
+@@ -13,6 +13,7 @@ path = "src/lib.rs"
+ workspace = true
+ 
+ [dependencies]
++portable-atomic = { workspace = true }
+ codex-code-mode-protocol = { workspace = true }
+ codex-http-client = { workspace = true }
+ codex-install-context = { workspace = true }
+diff --git i/codex-rs/code-mode/src/grpc_session/mod.rs w/codex-rs/code-mode/src/grpc_session/mod.rs
+index 602f2fe..a6de395 100644
+--- i/codex-rs/code-mode/src/grpc_session/mod.rs
++++ w/codex-rs/code-mode/src/grpc_session/mod.rs
+@@ -5,7 +5,7 @@ use std::sync::Mutex;
+ use std::sync::PoisonError;
+ use std::sync::Weak;
+ use std::sync::atomic::AtomicBool;
+-use std::sync::atomic::AtomicU64;
++use portable_atomic::AtomicU64;
+ use std::sync::atomic::Ordering;
+ use std::time::Duration;
+ 
+diff --git i/codex-rs/code-mode/src/remote_session.rs w/codex-rs/code-mode/src/remote_session.rs
+index 4c4c3c2..b2c5cf6 100644
+--- i/codex-rs/code-mode/src/remote_session.rs
++++ w/codex-rs/code-mode/src/remote_session.rs
+@@ -3,7 +3,7 @@ use std::path::PathBuf;
+ use std::sync::Arc;
+ use std::sync::Mutex as StdMutex;
+ use std::sync::atomic::AtomicBool;
+-use std::sync::atomic::AtomicU64;
++use portable_atomic::AtomicU64;
+ use std::sync::atomic::Ordering;
+ 
+ use codex_code_mode_protocol::CodeModeSession;
+diff --git i/codex-rs/codex-mcp/Cargo.toml w/codex-rs/codex-mcp/Cargo.toml
+index 49adaab..b097470 100644
+--- i/codex-rs/codex-mcp/Cargo.toml
++++ w/codex-rs/codex-mcp/Cargo.toml
+@@ -13,6 +13,7 @@ doctest = false
+ workspace = true
+ 
+ [dependencies]
++portable-atomic = { workspace = true }
+ anyhow = { workspace = true }
+ arc-swap = { workspace = true }
+ async-channel = { workspace = true }
+diff --git i/codex-rs/codex-mcp/src/client_tool_catalog.rs w/codex-rs/codex-mcp/src/client_tool_catalog.rs
+index cec29a9..8be7ec2 100644
+--- i/codex-rs/codex-mcp/src/client_tool_catalog.rs
++++ w/codex-rs/codex-mcp/src/client_tool_catalog.rs
+@@ -11,7 +11,7 @@
+ use std::collections::HashSet;
+ use std::future::Future;
+ use std::sync::Arc;
+-use std::sync::atomic::AtomicU64;
++use portable_atomic::AtomicU64;
+ use std::sync::atomic::Ordering;
+ use std::time::Duration;
+ 
+diff --git i/codex-rs/codex-mcp/src/elicitation.rs w/codex-rs/codex-mcp/src/elicitation.rs
+index 4f4e3ec..939be6f 100644
+--- i/codex-rs/codex-mcp/src/elicitation.rs
++++ w/codex-rs/codex-mcp/src/elicitation.rs
+@@ -10,7 +10,7 @@ use std::collections::HashMap;
+ use std::sync::Arc;
+ use std::sync::Mutex as StdMutex;
+ use std::sync::atomic::AtomicBool;
+-use std::sync::atomic::AtomicU64;
++use portable_atomic::AtomicU64;
+ use std::sync::atomic::Ordering;
+ 
+ use crate::McpConfig;
+diff --git i/codex-rs/codex-mcp/src/runtime.rs w/codex-rs/codex-mcp/src/runtime.rs
+index 12eae6c..751f320 100644
+--- i/codex-rs/codex-mcp/src/runtime.rs
++++ w/codex-rs/codex-mcp/src/runtime.rs
+@@ -20,7 +20,7 @@ use std::sync::Mutex;
+ use std::sync::OnceLock;
+ use std::sync::Weak;
+ use std::sync::atomic::AtomicBool;
+-use std::sync::atomic::AtomicU64;
++use portable_atomic::AtomicU64;
+ use std::sync::atomic::Ordering;
+ use std::time::Duration;
+ 
+diff --git i/codex-rs/codex-mcp/src/tool_catalog_cache.rs w/codex-rs/codex-mcp/src/tool_catalog_cache.rs
+index a83f859..5afc9a4 100644
+--- i/codex-rs/codex-mcp/src/tool_catalog_cache.rs
++++ w/codex-rs/codex-mcp/src/tool_catalog_cache.rs
+@@ -8,7 +8,7 @@ use std::sync::Arc;
+ use std::sync::Mutex;
+ use std::sync::MutexGuard;
+ use std::sync::Weak;
+-use std::sync::atomic::AtomicU64;
++use portable_atomic::AtomicU64;
+ use std::sync::atomic::Ordering;
+ use std::time::Duration;
+ 
+diff --git i/codex-rs/connectors/Cargo.toml w/codex-rs/connectors/Cargo.toml
+index ac3ce92..98a8f2d 100644
+--- i/codex-rs/connectors/Cargo.toml
++++ w/codex-rs/connectors/Cargo.toml
+@@ -8,6 +8,7 @@ license.workspace = true
+ workspace = true
+ 
+ [dependencies]
++portable-atomic = { workspace = true }
+ anyhow = { workspace = true }
+ arc-swap = { workspace = true }
+ codex-config = { workspace = true }
+diff --git i/codex-rs/connectors/src/connector_runtime/mod.rs w/codex-rs/connectors/src/connector_runtime/mod.rs
+index bf0096a..52faead 100644
+--- i/codex-rs/connectors/src/connector_runtime/mod.rs
++++ w/codex-rs/connectors/src/connector_runtime/mod.rs
+@@ -16,7 +16,7 @@ use std::path::PathBuf;
+ use std::sync::Arc;
+ use std::sync::Mutex;
+ use std::sync::Weak;
+-use std::sync::atomic::AtomicU64;
++use portable_atomic::AtomicU64;
+ use std::sync::atomic::Ordering;
+ use std::time::Duration;
+ use std::time::Instant;
+diff --git i/codex-rs/core/Cargo.toml w/codex-rs/core/Cargo.toml
+index 542abf9..d1df6f2 100644
+--- i/codex-rs/core/Cargo.toml
++++ w/codex-rs/core/Cargo.toml
+@@ -12,6 +12,7 @@ path = "src/lib.rs"
+ workspace = true
+ 
+ [dependencies]
++portable-atomic = { workspace = true }
+ codex-utils-process = { workspace = true }
+ anyhow = { workspace = true }
+ arc-swap = { workspace = true }
+@@ -145,6 +146,10 @@ openssl-sys = { workspace = true, features = ["vendored"] }
+ [target.aarch64-unknown-linux-musl.dependencies]
+ openssl-sys = { workspace = true, features = ["vendored"] }
+ 
++# The Omega's musl SDK does not include target OpenSSL development files.
++[target.mipsel-unknown-linux-musl.dependencies]
++openssl-sys = { workspace = true, features = ["vendored"] }
++
+ [dev-dependencies]
+ assert_cmd = { workspace = true }
+ assert_matches = { workspace = true }
+diff --git i/codex-rs/core/src/context_manager/history.rs w/codex-rs/core/src/context_manager/history.rs
+index 12fff89..ebc59bf 100644
+--- i/codex-rs/core/src/context_manager/history.rs
++++ w/codex-rs/core/src/context_manager/history.rs
+@@ -77,7 +77,7 @@ use std::ops::Deref;
+ use std::sync::Arc;
+ use std::sync::LazyLock;
+ use std::sync::OnceLock;
+-use std::sync::atomic::AtomicU64;
++use portable_atomic::AtomicU64;
+ use std::sync::atomic::Ordering;
+ 
+ use crate::config::ManagedFeatures;
+diff --git i/codex-rs/core/src/session/mod.rs w/codex-rs/core/src/session/mod.rs
+index cc418ca..7ecc64a 100644
+--- i/codex-rs/core/src/session/mod.rs
++++ w/codex-rs/core/src/session/mod.rs
+@@ -8,7 +8,7 @@ use std::collections::HashSet;
+ use std::fmt::Debug;
+ use std::path::PathBuf;
+ use std::sync::Arc;
+-use std::sync::atomic::AtomicU64;
++use portable_atomic::AtomicU64;
+ use std::time::SystemTime;
+ use std::time::UNIX_EPOCH;
+ 
+diff --git i/codex-rs/core/tests/suite/current_time_reminder.rs w/codex-rs/core/tests/suite/current_time_reminder.rs
+index 17c9eb0..23307da 100644
+--- i/codex-rs/core/tests/suite/current_time_reminder.rs
++++ w/codex-rs/core/tests/suite/current_time_reminder.rs
+@@ -2,8 +2,8 @@ use std::collections::BTreeMap;
+ use std::collections::VecDeque;
+ use std::sync::Arc;
+ use std::sync::Mutex;
+-use std::sync::atomic::AtomicI64;
+-use std::sync::atomic::AtomicU64;
++use portable_atomic::AtomicI64;
++use portable_atomic::AtomicU64;
+ use std::sync::atomic::Ordering;
+ use std::time::Duration;
+ 
+diff --git i/codex-rs/diagnostics/Cargo.toml w/codex-rs/diagnostics/Cargo.toml
+index 2eb2125..a20d538 100644
+--- i/codex-rs/diagnostics/Cargo.toml
++++ w/codex-rs/diagnostics/Cargo.toml
+@@ -13,6 +13,7 @@ doctest = false
+ workspace = true
+ 
+ [dependencies]
++portable-atomic = { workspace = true }
+ libc = { workspace = true }
+ 
+ [dev-dependencies]
+diff --git i/codex-rs/diagnostics/src/lib.rs w/codex-rs/diagnostics/src/lib.rs
+index a966e4a..ef931ae 100644
+--- i/codex-rs/diagnostics/src/lib.rs
++++ w/codex-rs/diagnostics/src/lib.rs
+@@ -1,6 +1,6 @@
+ use std::sync::Mutex;
+ use std::sync::Once;
+-use std::sync::atomic::AtomicU64;
++use portable_atomic::AtomicU64;
+ use std::sync::atomic::Ordering;
+ 
+ static GAUGES: Mutex<Vec<&'static Gauge>> = Mutex::new(Vec::new());
+diff --git i/codex-rs/exec-server/Cargo.toml w/codex-rs/exec-server/Cargo.toml
+index 6f9a1e7..f4edd0e 100644
+--- i/codex-rs/exec-server/Cargo.toml
++++ w/codex-rs/exec-server/Cargo.toml
+@@ -19,6 +19,7 @@ ignored-paths = [
+ workspace = true
+ 
+ [dependencies]
++portable-atomic = { workspace = true }
+ codex-utils-process = { workspace = true }
+ arc-swap = { workspace = true }
+ axum = { workspace = true, features = ["http1", "tokio", "ws"] }
+diff --git i/codex-rs/exec-server/src/client.rs w/codex-rs/exec-server/src/client.rs
+index 53743bb..94fbc6f 100644
+--- i/codex-rs/exec-server/src/client.rs
++++ w/codex-rs/exec-server/src/client.rs
+@@ -5,7 +5,7 @@ use std::sync::Arc;
+ use std::sync::Mutex as StdMutex;
+ use std::sync::OnceLock;
+ use std::sync::atomic::AtomicBool;
+-use std::sync::atomic::AtomicU64;
++use portable_atomic::AtomicU64;
+ use std::sync::atomic::Ordering;
+ use std::time::Duration;
+ 
+diff --git i/codex-rs/exec-server/src/local_process.rs w/codex-rs/exec-server/src/local_process.rs
+index fced427..c6e632b 100644
+--- i/codex-rs/exec-server/src/local_process.rs
++++ w/codex-rs/exec-server/src/local_process.rs
+@@ -3,7 +3,7 @@ use std::collections::HashSet;
+ use std::collections::VecDeque;
+ use std::collections::hash_map::Entry;
+ use std::sync::Arc;
+-use std::sync::atomic::AtomicU64;
++use portable_atomic::AtomicU64;
+ use std::sync::atomic::Ordering;
+ use std::time::Duration;
+ 
+diff --git i/codex-rs/exec-server/src/rpc.rs w/codex-rs/exec-server/src/rpc.rs
+index cbe30bb..a5c8c96 100644
+--- i/codex-rs/exec-server/src/rpc.rs
++++ w/codex-rs/exec-server/src/rpc.rs
+@@ -5,7 +5,7 @@ use std::pin::Pin;
+ use std::sync::Arc;
+ use std::sync::Mutex as StdMutex;
+ use std::sync::atomic::AtomicBool;
+-use std::sync::atomic::AtomicI64;
++use portable_atomic::AtomicI64;
+ use std::sync::atomic::Ordering;
+ use std::time::Duration;
+ 
+diff --git i/codex-rs/exec-server/src/rpc_server_requests.rs w/codex-rs/exec-server/src/rpc_server_requests.rs
+index 54d7454..b068551 100644
+--- i/codex-rs/exec-server/src/rpc_server_requests.rs
++++ w/codex-rs/exec-server/src/rpc_server_requests.rs
+@@ -1,7 +1,7 @@
+ use std::collections::HashMap;
+ use std::sync::Arc;
+ use std::sync::Mutex;
+-use std::sync::atomic::AtomicI64;
++use portable_atomic::AtomicI64;
+ use std::sync::atomic::Ordering;
+ use std::time::Duration;
+ 
+diff --git i/codex-rs/exec/Cargo.toml w/codex-rs/exec/Cargo.toml
+index d5190c2..19fd58e 100644
+--- i/codex-rs/exec/Cargo.toml
++++ w/codex-rs/exec/Cargo.toml
+@@ -22,6 +22,7 @@ path = "tests/all.rs"
+ workspace = true
+ 
+ [dependencies]
++portable-atomic = { workspace = true }
+ anyhow = { workspace = true }
+ clap = { workspace = true, features = ["derive"] }
+ codex-arg0 = { workspace = true }
+diff --git i/codex-rs/exec/src/event_processor_with_jsonl_output.rs w/codex-rs/exec/src/event_processor_with_jsonl_output.rs
+index a92f762..d0db7e3 100644
+--- i/codex-rs/exec/src/event_processor_with_jsonl_output.rs
++++ w/codex-rs/exec/src/event_processor_with_jsonl_output.rs
+@@ -1,6 +1,6 @@
+ use std::collections::HashMap;
+ use std::path::PathBuf;
+-use std::sync::atomic::AtomicU64;
++use portable_atomic::AtomicU64;
+ use std::sync::atomic::Ordering;
+ 
+ use codex_app_server_protocol::CollabAgentTool;
+diff --git i/codex-rs/ext/extension-api/Cargo.toml w/codex-rs/ext/extension-api/Cargo.toml
+index 3b80882..88bc8a3 100644
+--- i/codex-rs/ext/extension-api/Cargo.toml
++++ w/codex-rs/ext/extension-api/Cargo.toml
+@@ -14,6 +14,7 @@ doctest = false
+ workspace = true
+ 
+ [dependencies]
++portable-atomic = { workspace = true }
+ codex-core-plugin-common = { workspace = true }
+ codex-api = { workspace = true }
+ futures = { workspace = true }
+diff --git i/codex-rs/ext/extension-api/examples/enabled_extensions/shared_state_extension.rs w/codex-rs/ext/extension-api/examples/enabled_extensions/shared_state_extension.rs
+index 0657f79..96dbe82 100644
+--- i/codex-rs/ext/extension-api/examples/enabled_extensions/shared_state_extension.rs
++++ w/codex-rs/ext/extension-api/examples/enabled_extensions/shared_state_extension.rs
+@@ -1,5 +1,5 @@
+ use std::sync::Arc;
+-use std::sync::atomic::AtomicU64;
++use portable_atomic::AtomicU64;
+ use std::sync::atomic::Ordering;
+ 
+ use codex_extension_api::ContentItemKind;
+diff --git i/codex-rs/ext/goal/Cargo.toml w/codex-rs/ext/goal/Cargo.toml
+index 3939da1..82dfbbf 100644
+--- i/codex-rs/ext/goal/Cargo.toml
++++ w/codex-rs/ext/goal/Cargo.toml
+@@ -14,6 +14,7 @@ doctest = false
+ workspace = true
+ 
+ [dependencies]
++portable-atomic = { workspace = true }
+ codex-analytics = { workspace = true }
+ codex-core = { workspace = true }
+ codex-extension-api = { workspace = true }
+diff --git i/codex-rs/ext/goal/src/accounting.rs w/codex-rs/ext/goal/src/accounting.rs
+index e338a56..24363c3 100644
+--- i/codex-rs/ext/goal/src/accounting.rs
++++ w/codex-rs/ext/goal/src/accounting.rs
+@@ -9,7 +9,7 @@ use codex_state::ThreadGoalStatus;
+ use std::collections::HashMap;
+ use std::sync::Mutex;
+ use std::sync::PoisonError;
+-use std::sync::atomic::AtomicI64;
++use portable_atomic::AtomicI64;
+ use std::sync::atomic::Ordering;
+ use std::time::Duration;
+ use std::time::Instant;
+diff --git i/codex-rs/ext/guardian-reviewer/Cargo.toml w/codex-rs/ext/guardian-reviewer/Cargo.toml
+index 26e73f0..ddca6d0 100644
+--- i/codex-rs/ext/guardian-reviewer/Cargo.toml
++++ w/codex-rs/ext/guardian-reviewer/Cargo.toml
+@@ -13,6 +13,7 @@ path = "src/lib.rs"
+ workspace = true
+ 
+ [dependencies]
++portable-atomic = { workspace = true }
+ anyhow = { workspace = true }
+ codex-analytics = { workspace = true }
+ codex-context-fragments = { workspace = true }
+diff --git i/codex-rs/ext/guardian-reviewer/src/review.rs w/codex-rs/ext/guardian-reviewer/src/review.rs
+index 08f0433..b02bcc9 100644
+--- i/codex-rs/ext/guardian-reviewer/src/review.rs
++++ w/codex-rs/ext/guardian-reviewer/src/review.rs
+@@ -23,7 +23,7 @@ use codex_protocol::protocol::ReviewDecision;
+ use codex_protocol::protocol::WarningEvent;
+ use std::future::Future;
+ use std::sync::Arc;
+-use std::sync::atomic::AtomicI64;
++use portable_atomic::AtomicI64;
+ use std::sync::atomic::Ordering;
+ use tokio_util::sync::CancellationToken;
+ 
+diff --git i/codex-rs/ext/mcp/Cargo.toml w/codex-rs/ext/mcp/Cargo.toml
+index a30517a..669aa1d 100644
+--- i/codex-rs/ext/mcp/Cargo.toml
++++ w/codex-rs/ext/mcp/Cargo.toml
+@@ -13,6 +13,7 @@ doctest = false
+ workspace = true
+ 
+ [dependencies]
++portable-atomic = { workspace = true }
+ anyhow = { workspace = true }
+ codex-core = { workspace = true }
+ codex-core-plugins = { workspace = true }
+diff --git i/codex-rs/ext/mcp/src/stream_manager.rs w/codex-rs/ext/mcp/src/stream_manager.rs
+index a304411..24f1471 100644
+--- i/codex-rs/ext/mcp/src/stream_manager.rs
++++ w/codex-rs/ext/mcp/src/stream_manager.rs
+@@ -6,7 +6,7 @@ use std::sync::Arc;
+ use std::sync::Mutex;
+ use std::sync::PoisonError;
+ use std::sync::atomic::AtomicBool;
+-use std::sync::atomic::AtomicU64;
++use portable_atomic::AtomicU64;
+ use std::sync::atomic::Ordering;
+ use std::time::Duration;
+ 
+diff --git i/codex-rs/http-client/Cargo.toml w/codex-rs/http-client/Cargo.toml
+index fa144cb..33442c4 100644
+--- i/codex-rs/http-client/Cargo.toml
++++ w/codex-rs/http-client/Cargo.toml
+@@ -5,6 +5,7 @@ name = "codex-http-client"
+ version.workspace = true
+ 
+ [dependencies]
++portable-atomic = { workspace = true }
+ bytes = { workspace = true }
+ codex-utils-rustls-provider = { workspace = true }
+ futures = { workspace = true }
+diff --git i/codex-rs/http-client/src/windows_proxy_auth/pipe.rs w/codex-rs/http-client/src/windows_proxy_auth/pipe.rs
+index 51ad09b..2b8cc8a 100644
+--- i/codex-rs/http-client/src/windows_proxy_auth/pipe.rs
++++ w/codex-rs/http-client/src/windows_proxy_auth/pipe.rs
+@@ -4,7 +4,7 @@
+ use std::io;
+ use std::path::Path;
+ use std::path::PathBuf;
+-use std::sync::atomic::AtomicU64;
++use portable_atomic::AtomicU64;
+ use std::sync::atomic::Ordering;
+ use std::time::Duration;
+ 
+diff --git i/codex-rs/linux-sandbox/src/daemon_mounts.rs w/codex-rs/linux-sandbox/src/daemon_mounts.rs
+index 1ad026f..189b90f 100644
+--- i/codex-rs/linux-sandbox/src/daemon_mounts.rs
++++ w/codex-rs/linux-sandbox/src/daemon_mounts.rs
+@@ -28,7 +28,7 @@ pub(crate) fn daemon_socket_mask_paths(
+     let directory_file = fs::File::open(directory)?;
+     let device = directory_file.metadata()?.dev();
+     let filesystem =
+-        if fstatfs(&directory_file).is_ok_and(|stat| stat.f_type == libc::BTRFS_SUPER_MAGIC) {
++        if fstatfs(&directory_file).is_ok_and(|stat| stat.f_type == libc::BTRFS_SUPER_MAGIC as rustix::fs::FsWord) {
+             SocketFilesystem::Btrfs
+         } else {
+             SocketFilesystem::Other
+diff --git i/codex-rs/linux-sandbox/src/seccomp.rs w/codex-rs/linux-sandbox/src/seccomp.rs
+index 67cc724..76c0183 100644
+--- i/codex-rs/linux-sandbox/src/seccomp.rs
++++ w/codex-rs/linux-sandbox/src/seccomp.rs
+@@ -182,8 +182,8 @@ fn install_network_seccomp_filter_on_current_thread(
+     mode: NetworkSeccompMode,
+     managed_network: Option<&ManagedNetworkSandboxContext>,
+ ) -> std::result::Result<(), SandboxErr> {
+-    fn deny_syscall(rules: &mut BTreeMap<i64, Vec<SeccompRule>>, nr: i64) {
+-        rules.insert(nr, vec![]); // empty rule vec = unconditional match
++    fn deny_syscall(rules: &mut BTreeMap<i64, Vec<SeccompRule>>, nr: libc::c_long) {
++        rules.insert(nr as i64, vec![]); // empty rule vec = unconditional match
+     }
+ 
+     // Build rule map.
+@@ -200,6 +200,12 @@ fn install_network_seccomp_filter_on_current_thread(
+     deny_syscall(&mut rules, libc::SYS_io_uring_enter);
+     deny_syscall(&mut rules, libc::SYS_io_uring_register);
+ 
++    // MIPS o32 also exposes the legacy socketcall multiplexer. Its pointed-to
++    // arguments cannot be inspected by seccomp, so reject the entire legacy
++    // path instead of permitting it to bypass direct-syscall restrictions.
++    #[cfg(target_arch = "mips")]
++    deny_syscall(&mut rules, libc::SYS_socketcall);
++
+     match mode {
+         NetworkSeccompMode::Restricted => {
+             deny_syscall(&mut rules, libc::SYS_connect);
+@@ -229,8 +235,8 @@ fn install_network_seccomp_filter_on_current_thread(
+                 libc::AF_UNIX as u64,
+             )?])?;
+ 
+-            rules.insert(libc::SYS_socket, vec![unix_only_rule.clone()]);
+-            rules.insert(libc::SYS_socketpair, vec![unix_only_rule]);
++            rules.insert(libc::SYS_socket as i64, vec![unix_only_rule.clone()]);
++            rules.insert(libc::SYS_socketpair as i64, vec![unix_only_rule]);
+         }
+         NetworkSeccompMode::ProxyRouted => {
+             // In proxy-routed mode we allow IP sockets in the isolated
+@@ -266,8 +272,8 @@ fn install_network_seccomp_filter_on_current_thread(
+                 SeccompCmpOp::Ne,
+                 libc::AF_UNIX as u64,
+             )?])?;
+-            rules.insert(libc::SYS_socket, vec![deny_non_ip_socket]);
+-            rules.insert(libc::SYS_socketpair, vec![deny_non_unix_socketpair]);
++            rules.insert(libc::SYS_socket as i64, vec![deny_non_ip_socket]);
++            rules.insert(libc::SYS_socketpair as i64, vec![deny_non_unix_socketpair]);
+         }
+         NetworkSeccompMode::VmSocketRestricted => {
+             let deny_vsock = SeccompRule::new(vec![SeccompCondition::new(
+@@ -276,8 +282,8 @@ fn install_network_seccomp_filter_on_current_thread(
+                 SeccompCmpOp::Eq,
+                 libc::AF_VSOCK as u64,
+             )?])?;
+-            rules.insert(libc::SYS_socket, vec![deny_vsock.clone()]);
+-            rules.insert(libc::SYS_socketpair, vec![deny_vsock]);
++            rules.insert(libc::SYS_socket as i64, vec![deny_vsock.clone()]);
++            rules.insert(libc::SYS_socketpair as i64, vec![deny_vsock]);
+         }
+     }
+ 
+@@ -289,6 +295,8 @@ fn install_network_seccomp_filter_on_current_thread(
+             TargetArch::x86_64
+         } else if cfg!(target_arch = "aarch64") {
+             TargetArch::aarch64
++        } else if cfg!(all(target_arch = "mips", target_endian = "little")) {
++            TargetArch::mipsel
+         } else {
+             unimplemented!("unsupported architecture for seccomp filter");
+         },
+diff --git i/codex-rs/login/Cargo.toml w/codex-rs/login/Cargo.toml
+index 50de4dc..cc35b01 100644
+--- i/codex-rs/login/Cargo.toml
++++ w/codex-rs/login/Cargo.toml
+@@ -8,6 +8,7 @@ license.workspace = true
+ workspace = true
+ 
+ [dependencies]
++portable-atomic = { workspace = true }
+ codex-utils-process = { workspace = true }
+ anyhow = { workspace = true }
+ base64 = { workspace = true }
+diff --git i/codex-rs/login/src/auth/manager.rs w/codex-rs/login/src/auth/manager.rs
+index 15864c4..54d9145 100644
+--- i/codex-rs/login/src/auth/manager.rs
++++ w/codex-rs/login/src/auth/manager.rs
+@@ -29,7 +29,7 @@ use std::sync::Mutex;
+ use std::sync::OnceLock;
+ use std::sync::RwLock;
+ use std::sync::Weak;
+-use std::sync::atomic::AtomicU64;
++use portable_atomic::AtomicU64;
+ use std::sync::atomic::Ordering;
+ use std::time::Duration;
+ use std::time::Instant;
+diff --git i/codex-rs/login/src/auth/workload_identity.rs w/codex-rs/login/src/auth/workload_identity.rs
+index 06cf649..a2b6b2c 100644
+--- i/codex-rs/login/src/auth/workload_identity.rs
++++ w/codex-rs/login/src/auth/workload_identity.rs
+@@ -4,7 +4,7 @@ use std::sync::Arc;
+ use std::sync::Mutex;
+ use std::sync::OnceLock;
+ use std::sync::Weak;
+-use std::sync::atomic::AtomicU64;
++use portable_atomic::AtomicU64;
+ use std::sync::atomic::Ordering;
+ 
+ use codex_http_client::HttpClientFactory;
+diff --git i/codex-rs/message-board/Cargo.toml w/codex-rs/message-board/Cargo.toml
+index 52f991c..8917218 100644
+--- i/codex-rs/message-board/Cargo.toml
++++ w/codex-rs/message-board/Cargo.toml
+@@ -13,6 +13,7 @@ doctest = false
+ workspace = true
+ 
+ [dependencies]
++portable-atomic = { workspace = true }
+ base64 = { workspace = true }
+ caseless = { workspace = true }
+ chrono = { workspace = true, features = ["serde"] }
+diff --git i/codex-rs/message-board/tests/local_board.rs w/codex-rs/message-board/tests/local_board.rs
+index a676766..f733f39 100644
+--- i/codex-rs/message-board/tests/local_board.rs
++++ w/codex-rs/message-board/tests/local_board.rs
+@@ -10,7 +10,7 @@ use std::num::NonZeroU32;
+ use std::sync::Arc;
+ use std::sync::Mutex;
+ use std::sync::atomic::AtomicBool;
+-use std::sync::atomic::AtomicI64;
++use portable_atomic::AtomicI64;
+ use std::sync::atomic::AtomicUsize;
+ use std::sync::atomic::Ordering;
+ 
+diff --git i/codex-rs/model-provider/Cargo.toml w/codex-rs/model-provider/Cargo.toml
+index 4d0a9aa..5ee59dc 100644
+--- i/codex-rs/model-provider/Cargo.toml
++++ w/codex-rs/model-provider/Cargo.toml
+@@ -13,6 +13,7 @@ path = "src/lib.rs"
+ workspace = true
+ 
+ [dependencies]
++portable-atomic = { workspace = true }
+ codex-utils-process = { workspace = true }
+ chrono = { workspace = true }
+ codex-api = { workspace = true }
+diff --git i/codex-rs/model-provider/src/amazon_bedrock/auth_refresh.rs w/codex-rs/model-provider/src/amazon_bedrock/auth_refresh.rs
+index a193243..d6cc71d 100644
+--- i/codex-rs/model-provider/src/amazon_bedrock/auth_refresh.rs
++++ w/codex-rs/model-provider/src/amazon_bedrock/auth_refresh.rs
+@@ -1,7 +1,7 @@
+ use std::io::IsTerminal;
+ use std::ops::Deref;
+ use std::process::Stdio;
+-use std::sync::atomic::AtomicU64;
++use portable_atomic::AtomicU64;
+ use std::sync::atomic::Ordering;
+ 
+ use codex_model_provider_info::AwsAuthRefreshConfig;
+diff --git i/codex-rs/model-provider/src/amazon_bedrock/credential_export.rs w/codex-rs/model-provider/src/amazon_bedrock/credential_export.rs
+index d6db7d9..4541337 100644
+--- i/codex-rs/model-provider/src/amazon_bedrock/credential_export.rs
++++ w/codex-rs/model-provider/src/amazon_bedrock/credential_export.rs
+@@ -7,7 +7,7 @@ use std::ops::Deref;
+ use std::path::Component;
+ use std::path::Path;
+ use std::process::Stdio;
+-use std::sync::atomic::AtomicU64;
++use portable_atomic::AtomicU64;
+ use std::sync::atomic::Ordering;
+ use std::time::Duration;
+ use std::time::SystemTime;
+diff --git i/codex-rs/network-proxy/Cargo.toml w/codex-rs/network-proxy/Cargo.toml
+index 0706660..fa80f49 100644
+--- i/codex-rs/network-proxy/Cargo.toml
++++ w/codex-rs/network-proxy/Cargo.toml
+@@ -17,6 +17,7 @@ path = "src/main.rs"
+ workspace = true
+ 
+ [dependencies]
++portable-atomic = { workspace = true }
+ anyhow = { workspace = true }
+ aws-credential-types = { workspace = true }
+ aws-sigv4 = { workspace = true }
+diff --git i/codex-rs/network-proxy/src/network_policy.rs w/codex-rs/network-proxy/src/network_policy.rs
+index 9af4741..acd9616 100644
+--- i/codex-rs/network-proxy/src/network_policy.rs
++++ w/codex-rs/network-proxy/src/network_policy.rs
+@@ -481,7 +481,7 @@ pub(crate) mod test_support {
+     use std::future::Future;
+     use std::sync::Arc;
+     use std::sync::Mutex;
+-    use std::sync::atomic::AtomicU64;
++    use portable_atomic::AtomicU64;
+     use std::sync::atomic::Ordering;
+     use tracing::Event;
+     use tracing::Id;
+diff --git i/codex-rs/otel/Cargo.toml w/codex-rs/otel/Cargo.toml
+index f112434..39b184d 100644
+--- i/codex-rs/otel/Cargo.toml
++++ w/codex-rs/otel/Cargo.toml
+@@ -13,6 +13,7 @@ path = "src/lib.rs"
+ workspace = true
+ 
+ [dependencies]
++portable-atomic = { workspace = true }
+ bytes = { workspace = true }
+ codex-http-client = { workspace = true }
+ opentelemetry-http = "0.31.0"
+diff --git i/codex-rs/otel/src/tool_result.rs w/codex-rs/otel/src/tool_result.rs
+index 7f9c3ca..6f7a818 100644
+--- i/codex-rs/otel/src/tool_result.rs
++++ w/codex-rs/otel/src/tool_result.rs
+@@ -7,7 +7,7 @@ use codex_protocol::ToolName;
+ use codex_protocol::config_types::ToolResultLogConfig;
+ use codex_utils_string::take_bytes_at_char_boundary;
+ use std::borrow::Cow;
+-use std::sync::atomic::AtomicU64;
++use portable_atomic::AtomicU64;
+ use std::sync::atomic::Ordering;
+ use std::time::Duration;
+ 
+diff --git i/codex-rs/responses-api-proxy/Cargo.toml w/codex-rs/responses-api-proxy/Cargo.toml
+index 82a9086..9620a93 100644
+--- i/codex-rs/responses-api-proxy/Cargo.toml
++++ w/codex-rs/responses-api-proxy/Cargo.toml
+@@ -17,6 +17,7 @@ path = "src/main.rs"
+ workspace = true
+ 
+ [dependencies]
++portable-atomic = { workspace = true }
+ anyhow = { workspace = true }
+ bytes = { workspace = true }
+ clap = { workspace = true, features = ["derive"] }
+diff --git i/codex-rs/responses-api-proxy/src/dump.rs w/codex-rs/responses-api-proxy/src/dump.rs
+index 1a09c64..4820fbf 100644
+--- i/codex-rs/responses-api-proxy/src/dump.rs
++++ w/codex-rs/responses-api-proxy/src/dump.rs
+@@ -2,7 +2,7 @@ use std::fs;
+ use std::io;
+ use std::io::Read;
+ use std::path::PathBuf;
+-use std::sync::atomic::AtomicU64;
++use portable_atomic::AtomicU64;
+ use std::sync::atomic::Ordering;
+ use std::time::SystemTime;
+ use std::time::UNIX_EPOCH;
+@@ -205,7 +205,7 @@ mod tests {
+     use std::fs;
+     use std::io::Cursor;
+     use std::io::Read;
+-    use std::sync::atomic::AtomicU64;
++    use portable_atomic::AtomicU64;
+     use std::sync::atomic::Ordering;
+ 
+     use pretty_assertions::assert_eq;
+diff --git i/codex-rs/rmcp-client/Cargo.toml w/codex-rs/rmcp-client/Cargo.toml
+index 4702b0f..a2ef745 100644
+--- i/codex-rs/rmcp-client/Cargo.toml
++++ w/codex-rs/rmcp-client/Cargo.toml
+@@ -8,6 +8,7 @@ license.workspace = true
+ workspace = true
+ 
+ [dependencies]
++portable-atomic = { workspace = true }
+ anyhow = "1"
+ axum = { workspace = true, default-features = false, features = [
+     "http1",
+diff --git i/codex-rs/rmcp-client/src/oauth_http_client.rs w/codex-rs/rmcp-client/src/oauth_http_client.rs
+index f827e17..0ad7152 100644
+--- i/codex-rs/rmcp-client/src/oauth_http_client.rs
++++ w/codex-rs/rmcp-client/src/oauth_http_client.rs
+@@ -1,5 +1,5 @@
+ use std::sync::Arc;
+-use std::sync::atomic::AtomicU64;
++use portable_atomic::AtomicU64;
+ use std::sync::atomic::Ordering;
+ use std::time::Duration;
+ use std::time::Instant;
+diff --git i/codex-rs/rmcp-client/src/request_input.rs w/codex-rs/rmcp-client/src/request_input.rs
+index 9b39fe9..95fab6f 100644
+--- i/codex-rs/rmcp-client/src/request_input.rs
++++ w/codex-rs/rmcp-client/src/request_input.rs
+@@ -3,7 +3,7 @@
+ //! Session recovery cannot replay a submitted proof; connection closure drops pending inputs.
+ 
+ use std::collections::BTreeMap;
+-use std::sync::atomic::AtomicU64;
++use portable_atomic::AtomicU64;
+ use std::sync::atomic::Ordering;
+ use std::time::Duration;
+ 
+diff --git i/codex-rs/rmcp-client/src/rmcp_client.rs w/codex-rs/rmcp-client/src/rmcp_client.rs
+index 46b86ca..1107723 100644
+--- i/codex-rs/rmcp-client/src/rmcp_client.rs
++++ w/codex-rs/rmcp-client/src/rmcp_client.rs
+@@ -8,7 +8,7 @@ use std::sync::Mutex as StdMutex;
+ use std::sync::OnceLock;
+ use std::sync::PoisonError;
+ use std::sync::atomic::AtomicBool;
+-use std::sync::atomic::AtomicU64;
++use portable_atomic::AtomicU64;
+ use std::sync::atomic::AtomicUsize;
+ use std::sync::atomic::Ordering;
+ use std::time::Duration;
+diff --git i/codex-rs/rmcp-client/src/tool_list_changes.rs w/codex-rs/rmcp-client/src/tool_list_changes.rs
+index 8f81a50..d81a8bd 100644
+--- i/codex-rs/rmcp-client/src/tool_list_changes.rs
++++ w/codex-rs/rmcp-client/src/tool_list_changes.rs
+@@ -3,7 +3,7 @@
+ 
+ use std::future::Future;
+ use std::sync::Arc;
+-use std::sync::atomic::AtomicU64;
++use portable_atomic::AtomicU64;
+ use std::sync::atomic::Ordering;
+ 
+ use rmcp::model::JsonRpcMessage;
+diff --git i/codex-rs/rollout-trace/Cargo.toml w/codex-rs/rollout-trace/Cargo.toml
+index 048026f..f14385a 100644
+--- i/codex-rs/rollout-trace/Cargo.toml
++++ w/codex-rs/rollout-trace/Cargo.toml
+@@ -13,6 +13,7 @@ path = "src/lib.rs"
+ workspace = true
+ 
+ [dependencies]
++portable-atomic = { workspace = true }
+ anyhow = { workspace = true }
+ codex-code-mode = { workspace = true }
+ codex-protocol = { workspace = true }
+diff --git i/codex-rs/rollout-trace/src/compaction.rs w/codex-rs/rollout-trace/src/compaction.rs
+index c8f1879..62090a4 100644
+--- i/codex-rs/rollout-trace/src/compaction.rs
++++ w/codex-rs/rollout-trace/src/compaction.rs
+@@ -7,7 +7,7 @@
+ 
+ use std::fmt::Display;
+ use std::sync::Arc;
+-use std::sync::atomic::AtomicU64;
++use portable_atomic::AtomicU64;
+ use std::sync::atomic::Ordering;
+ 
+ use codex_protocol::models::ResponseItem;
+diff --git i/codex-rs/state/Cargo.toml w/codex-rs/state/Cargo.toml
+index e03dcd3..0f10c1e 100644
+--- i/codex-rs/state/Cargo.toml
++++ w/codex-rs/state/Cargo.toml
+@@ -5,6 +5,7 @@ edition.workspace = true
+ license.workspace = true
+ 
+ [dependencies]
++portable-atomic = { workspace = true }
+ anyhow = { workspace = true }
+ chrono = { workspace = true }
+ codex-file-system = { workspace = true }
+diff --git i/codex-rs/state/src/runtime.rs w/codex-rs/state/src/runtime.rs
+index 2ecd959..099b930 100644
+--- i/codex-rs/state/src/runtime.rs
++++ w/codex-rs/state/src/runtime.rs
+@@ -36,7 +36,7 @@ use std::collections::BTreeSet;
+ use std::path::Path;
+ use std::path::PathBuf;
+ use std::sync::Arc;
+-use std::sync::atomic::AtomicI64;
++use portable_atomic::AtomicI64;
+ use std::time::Instant;
+ use tracing::warn;
+ 
+diff --git i/codex-rs/state/src/runtime/threads.rs w/codex-rs/state/src/runtime/threads.rs
+index 222fc83..86e907d 100644
+--- i/codex-rs/state/src/runtime/threads.rs
++++ w/codex-rs/state/src/runtime/threads.rs
+@@ -4,7 +4,7 @@ use crate::sqlite::SqlitePoolWriteExt;
+ use crate::sqlite::SqliteWriteQueryExt;
+ use codex_protocol::SanitizedGitUrl;
+ use codex_protocol::protocol::SessionSource;
+-use std::sync::atomic::AtomicI64;
++use portable_atomic::AtomicI64;
+ use std::sync::atomic::Ordering;
+ 
+ const EXCLUDE_ATTACHED_THREADS: &str = " AND threads.attached_thread_parent_id IS NULL";
+diff --git i/codex-rs/tui/Cargo.toml w/codex-rs/tui/Cargo.toml
+index 47968b8..585acce 100644
+--- i/codex-rs/tui/Cargo.toml
++++ w/codex-rs/tui/Cargo.toml
+@@ -22,6 +22,7 @@ doctest = false
+ workspace = true
+ 
+ [dependencies]
++portable-atomic = { workspace = true }
+ codex-build-info = { workspace = true }
+ anyhow = { workspace = true }
+ axum = { workspace = true, default-features = false, features = ["http1", "tokio"] }
+diff --git i/codex-rs/tui/src/app_server_session.rs w/codex-rs/tui/src/app_server_session.rs
+index 683e732..740adc6 100644
+--- i/codex-rs/tui/src/app_server_session.rs
++++ w/codex-rs/tui/src/app_server_session.rs
+@@ -159,7 +159,7 @@ use std::collections::HashSet;
+ use std::path::PathBuf;
+ use std::sync::Arc;
+ use std::sync::Mutex;
+-use std::sync::atomic::AtomicU64;
++use portable_atomic::AtomicU64;
+ use std::time::Duration;
+ use std::time::Instant;
+ use uuid::Uuid;
+diff --git i/codex-rs/tui/src/chatwidget/connectors.rs w/codex-rs/tui/src/chatwidget/connectors.rs
+index eaa2c26..19a7b02 100644
+--- i/codex-rs/tui/src/chatwidget/connectors.rs
++++ w/codex-rs/tui/src/chatwidget/connectors.rs
+@@ -2,7 +2,7 @@
+ 
+ use super::*;
+ use crate::app_event::ConnectorsSnapshot;
+-use std::sync::atomic::AtomicU64;
++use portable_atomic::AtomicU64;
+ 
+ /// Prevents stale requests from matching a replacement widget for the same thread.
+ static NEXT_CONNECTOR_SCOPE_GENERATION: AtomicU64 = AtomicU64::new(1);
+diff --git i/codex-rs/tui/src/chatwidget/pets.rs w/codex-rs/tui/src/chatwidget/pets.rs
+index aec83e7..6eccc50 100644
+--- i/codex-rs/tui/src/chatwidget/pets.rs
++++ w/codex-rs/tui/src/chatwidget/pets.rs
+@@ -2,7 +2,7 @@
+ 
+ use super::*;
+ use codex_config::types::TuiPetAnchor;
+-use std::sync::atomic::AtomicU64;
++use portable_atomic::AtomicU64;
+ use std::sync::atomic::Ordering;
+ 
+ // A configured-pet load can finish after its ChatWidget is replaced, so
+diff --git i/codex-rs/tui/src/chatwidget/realtime.rs w/codex-rs/tui/src/chatwidget/realtime.rs
+index fc79418..a084a6b 100644
+--- i/codex-rs/tui/src/chatwidget/realtime.rs
++++ w/codex-rs/tui/src/chatwidget/realtime.rs
+@@ -34,7 +34,7 @@ use std::collections::VecDeque;
+ use std::collections::hash_map::DefaultHasher;
+ use std::hash::Hash;
+ use std::hash::Hasher;
+-use std::sync::atomic::AtomicU64;
++use portable_atomic::AtomicU64;
+ use std::sync::atomic::Ordering;
+ use std::time::Duration;
+ use std::time::Instant;
+diff --git i/codex-rs/tui/src/render/highlight.rs w/codex-rs/tui/src/render/highlight.rs
+index 41b1d23..57724db 100644
+--- i/codex-rs/tui/src/render/highlight.rs
++++ w/codex-rs/tui/src/render/highlight.rs
+@@ -38,7 +38,7 @@ use std::path::PathBuf;
+ use std::sync::OnceLock;
+ use std::sync::RwLock;
+ #[cfg(not(test))]
+-use std::sync::atomic::AtomicU64;
++use portable_atomic::AtomicU64;
+ #[cfg(not(test))]
+ use std::sync::atomic::Ordering;
+ use syntect::easy::HighlightLines;
+diff --git i/codex-rs/tui/src/task_mentions.rs w/codex-rs/tui/src/task_mentions.rs
+index dd8edc5..e785bbc 100644
+--- i/codex-rs/tui/src/task_mentions.rs
++++ w/codex-rs/tui/src/task_mentions.rs
+@@ -2,7 +2,7 @@
+ 
+ use std::path::PathBuf;
+ use std::sync::Arc;
+-use std::sync::atomic::AtomicU64;
++use portable_atomic::AtomicU64;
+ use std::sync::atomic::Ordering;
+ use std::time::Duration;
+ 
+diff --git i/codex-rs/windows-sandbox-rs/Cargo.toml w/codex-rs/windows-sandbox-rs/Cargo.toml
+index a798fb8..2bf2554 100644
+--- i/codex-rs/windows-sandbox-rs/Cargo.toml
++++ w/codex-rs/windows-sandbox-rs/Cargo.toml
+@@ -26,6 +26,7 @@ path = "src/bin/managed_deny_probe/main.rs"
+ workspace = true
+ 
+ [dependencies]
++portable-atomic = { workspace = true }
+ codex-utils-process = { workspace = true }
+ codex-http-client = { workspace = true }
+ anyhow = "1.0"
+diff --git i/codex-rs/windows-sandbox-rs/src/unified_exec/tests.rs w/codex-rs/windows-sandbox-rs/src/unified_exec/tests.rs
+index be2d1bf..86cf809 100644
+--- i/codex-rs/windows-sandbox-rs/src/unified_exec/tests.rs
++++ w/codex-rs/windows-sandbox-rs/src/unified_exec/tests.rs
+@@ -31,7 +31,7 @@ use std::path::PathBuf;
+ use std::sync::Arc;
+ use std::sync::Mutex;
+ use std::sync::MutexGuard;
+-use std::sync::atomic::AtomicU64;
++use portable_atomic::AtomicU64;
+ use std::sync::atomic::Ordering;
+ use std::time::Duration;
+ use std::time::Instant;
+diff --git i/codex-rs/workload-identity/Cargo.toml w/codex-rs/workload-identity/Cargo.toml
+index b641772..0d077f5 100644
+--- i/codex-rs/workload-identity/Cargo.toml
++++ w/codex-rs/workload-identity/Cargo.toml
+@@ -13,6 +13,7 @@ path = "src/lib.rs"
+ workspace = true
+ 
+ [dependencies]
++portable-atomic = { workspace = true }
+ codex-http-client = { workspace = true }
+ serde = { workspace = true, features = ["derive"] }
+ serde_json = { workspace = true }
+diff --git i/codex-rs/workload-identity/src/exchange.rs w/codex-rs/workload-identity/src/exchange.rs
+index d910786..64d701d 100644
+--- i/codex-rs/workload-identity/src/exchange.rs
++++ w/codex-rs/workload-identity/src/exchange.rs
+@@ -1,5 +1,5 @@
+ use std::fmt;
+-use std::sync::atomic::AtomicU64;
++use portable_atomic::AtomicU64;
+ use std::sync::atomic::Ordering;
+ use std::time::Duration;
+ use std::time::Instant;

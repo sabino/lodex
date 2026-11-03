@@ -1,0 +1,35 @@
+{
+  "variant": "Lodex v1",
+  "bytes": 236607452,
+  "sha256": "409b3e933f0a90b6388587667b1736862ec56cc7773d280bdecb20bdd8d936d4",
+  "gates": {
+    "candidate-startup-shell": {
+      "passed": true,
+      "evidence_sha256": "9eb30f7afa816362c6cc3fb1a2b3c6e685bf03d94a1f508e01cf060626bf1640"
+    },
+    "candidate-history-create": {
+      "passed": true,
+      "evidence_sha256": "7aa1191926a0dde766e47498c9eab03f98225ca783e298ec6ea531cb1008af87"
+    },
+    "candidate-history-resume": {
+      "passed": true,
+      "evidence_sha256": "0845fbc3b9575ebbda12bb5864e73496056083782096a7e8159c256bcbf29fe8"
+    },
+    "candidate-mcp-stdio": {
+      "passed": true,
+      "evidence_sha256": "ee2526d01147f58347ad8207a39e2115efe66acf755bde89a501c7166800a152"
+    },
+    "candidate-mcp-http": {
+      "passed": true,
+      "evidence_sha256": "0bfa899ee6d3276edb4167cd1e05fb0545e53d6c2aef2df2b7bed7ee2c77ea11"
+    }
+  },
+  "native_cli_checks_passed_before_full_daemon_argv_check": 9,
+  "agent_file_edit_and_independent_git_check_passed": true,
+  "limitations": [
+    "First real agent task exposed missing Git on login-shell PATH; fixed with SD-backed /usr/bin/git wrapper. Retry succeeded, with an optional od probe unavailable.",
+    "Production daemon launch FAILED: missing --analytics-default-enabled parser option. v1 is rejected for production; corrected v1.1 is rebuilding.",
+    "Stock executable restored and Remote confirmed connected under the original environment ID.",
+    "No OAuth refresh, full protocol conformance, prolonged workload or realtime streaming qualification claimed."
+  ]
+}

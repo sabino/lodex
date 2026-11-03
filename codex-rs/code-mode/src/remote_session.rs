@@ -3,7 +3,7 @@ use std::path::PathBuf;
 use std::sync::Arc;
 use std::sync::Mutex as StdMutex;
 use std::sync::atomic::AtomicBool;
-use std::sync::atomic::AtomicU64;
+use portable_atomic::AtomicU64;
 use std::sync::atomic::Ordering;
 
 use codex_code_mode_protocol::CodeModeSession;

@@ -4,7 +4,7 @@ use crate::sqlite::SqlitePoolWriteExt;
 use crate::sqlite::SqliteWriteQueryExt;
 use codex_protocol::SanitizedGitUrl;
 use codex_protocol::protocol::SessionSource;
-use std::sync::atomic::AtomicI64;
+use portable_atomic::AtomicI64;
 use std::sync::atomic::Ordering;
 
 const EXCLUDE_ATTACHED_THREADS: &str = " AND threads.attached_thread_parent_id IS NULL";

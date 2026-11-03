@@ -1,0 +1,6 @@
+#!/bin/sh
+# Keep Git available after a login shell resets PATH; store its payload on SD.
+runtime_prefix=${LODEX_RUNTIME_PREFIX:-/mnt/mmcblk0p2/lodex/runtime}
+export GIT_EXEC_PATH="$runtime_prefix/usr/lib/git-core"
+export GIT_TEMPLATE_DIR="$runtime_prefix/usr/share/git-core/templates"
+exec "$runtime_prefix/usr/bin/git" "$@"

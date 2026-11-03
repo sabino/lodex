@@ -1,7 +1,7 @@
 use std::io::IsTerminal;
 use std::ops::Deref;
 use std::process::Stdio;
-use std::sync::atomic::AtomicU64;
+use portable_atomic::AtomicU64;
 use std::sync::atomic::Ordering;
 
 use codex_model_provider_info::AwsAuthRefreshConfig;

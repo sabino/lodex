@@ -62,12 +62,14 @@ async fn retries_after_a_competing_writer_releases_its_lock() -> anyhow::Result<
     })
     .await?;
 
+    // The retry is finished. Return its two leases before querying through the
+    // pool, including when the appliance profile permits only two connections.
+    drop(writer);
+    drop(competing_writer);
     let rows = sqlx::query_scalar::<_, String>("SELECT feedback_log_body FROM logs ORDER BY id")
         .fetch_all(&pool)
         .await?;
     assert_eq!(rows, vec!["saved once".to_string()]);
-    drop(writer);
-    drop(competing_writer);
     pool.close().await;
     Ok(())
 }

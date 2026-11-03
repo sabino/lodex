@@ -1,0 +1,10 @@
+{
+  "upstream_commit": "6ff1e1ca3b30fc8b914720681fcf5fe62e95f856",
+  "target": "mipsel-unknown-linux-musl",
+  "compiler": "rustc 1.98.0",
+  "profile": "release opt-level=2 panic=abort lto=false final codegen-units=256 +xgot",
+  "full_cli_bytes": 307349644,
+  "headless_bytes": 229765044,
+  "reduction_percent": 25.243107162993816,
+  "limits": "Headless binary is not yet deployed or functionally qualified. Image savings do not establish RSS savings."
+}

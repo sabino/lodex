@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 use std::sync::Arc;
-use std::sync::atomic::AtomicI64;
+use portable_atomic::AtomicI64;
 use std::sync::atomic::Ordering;
 use std::time::Duration;
 

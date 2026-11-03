@@ -17,6 +17,7 @@ path = "src/main.rs"
 workspace = true
 
 [dependencies]
+portable-atomic = { workspace = true }
 anyhow = { workspace = true }
 aws-credential-types = { workspace = true }
 aws-sigv4 = { workspace = true }

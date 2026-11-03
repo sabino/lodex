@@ -1,0 +1,70 @@
+{
+  "reference_gates": [
+    {
+      "name": "stock-startup-shell",
+      "variant": "upstream stock headless reference, not the new Lodex launcher",
+      "passed": true,
+      "requests": [
+        "initialize",
+        "command/exec",
+        "lodex/nonexistent/fixture"
+      ],
+      "evidence_sha256": "efcf4d828a93798015286332f58a849d382d16767b28a982544537fe9176cb3f"
+    },
+    {
+      "name": "stock-mcp-stdio",
+      "variant": "upstream stock headless reference, not the new Lodex launcher",
+      "passed": true,
+      "requests": [
+        "initialize",
+        "thread/start",
+        "mcpServerStatus/list",
+        "mcpServer/tool/call",
+        "mcpServer/resource/read"
+      ],
+      "evidence_sha256": "a6c5996b7480351b3c0c5ef9aaea67da9de16c728de0179d14c31493b873683e"
+    },
+    {
+      "name": "stock-mcp-http-tunnel",
+      "variant": "upstream stock headless reference, not the new Lodex launcher",
+      "passed": true,
+      "requests": [
+        "initialize",
+        "thread/start",
+        "mcpServerStatus/list",
+        "mcpServer/tool/call",
+        "mcpServer/resource/read"
+      ],
+      "evidence_sha256": "d0aebe725202bc6e8f5a74efb929ffcb3acbd20fc4df2422ae6cf0de745209a5"
+    }
+  ],
+  "idle_comparison": {
+    "stock": {
+      "sample_count": 5,
+      "elapsed_seconds": 4,
+      "rss_min_kib": 18240,
+      "rss_max_kib": 18244,
+      "rss_peak_kib": 50436,
+      "swap_max_kib": 4744,
+      "major_fault_delta": 0,
+      "cpu_tick_delta": 1
+    },
+    "full": {
+      "sample_count": 5,
+      "elapsed_seconds": 4,
+      "rss_min_kib": 23140,
+      "rss_max_kib": 23140,
+      "rss_peak_kib": 58500,
+      "swap_max_kib": 4864,
+      "major_fault_delta": 0,
+      "cpu_tick_delta": 1
+    }
+  },
+  "limits": [
+    "One sequential pair, five counter samples per variant after identical initialize/shell/error requests; not a steady-state workload guarantee.",
+    "No model calls or real account credentials used.",
+    "Full and stock headless use the same isolated home/config; production server remained running.",
+    "HTTP passed through an SSH tunnel; direct LAN endpoint timed out even with curl. No claim for OAuth/SSE/resume/cancellation or newer protocol conformance yet.",
+    "New Lodex launcher build is pending."
+  ]
+}

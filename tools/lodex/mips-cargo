@@ -1,0 +1,61 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/../.." && pwd)
+sdk=${LODEX_OPENWRT_SDK:?Set LODEX_OPENWRT_SDK to the verified OpenWrt SDK directory}
+mkdir -p "$root/.lodex-build"
+toolchains=("$sdk"/staging_dir/toolchain-mipsel_24kc_gcc-*_musl)
+toolchain=${toolchains[0]}
+if [[ ! -x "$toolchain/bin/mipsel-openwrt-linux-musl-gcc" ]]; then
+  echo 'Extract the verified OpenWrt SDK into build/openwrt-sdk first.' >&2
+  exit 1
+fi
+
+export STAGING_DIR="$sdk/staging_dir"
+export CC_mipsel_unknown_linux_musl="$toolchain/bin/mipsel-openwrt-linux-musl-gcc"
+export CFLAGS_mipsel_unknown_linux_musl="-mxgot"
+export CXXFLAGS_mipsel_unknown_linux_musl="$CFLAGS_mipsel_unknown_linux_musl"
+export CXX_mipsel_unknown_linux_musl="$toolchain/bin/mipsel-openwrt-linux-musl-g++"
+export AR_mipsel_unknown_linux_musl="$toolchain/bin/mipsel-openwrt-linux-musl-ar"
+export CARGO_TARGET_MIPSEL_UNKNOWN_LINUX_MUSL_LINKER="$CC_mipsel_unknown_linux_musl"
+export CARGO_TARGET_MIPSEL_UNKNOWN_LINUX_MUSL_RUSTFLAGS='-C target-feature=-crt-static'
+export PKG_CONFIG_ALLOW_CROSS=1
+export PKG_CONFIG_SYSROOT_DIR="$toolchain"
+export RUSTUP_TOOLCHAIN=1.98.0
+export RUSTC_BOOTSTRAP=1
+export CARGO_TARGET_DIR="${LODEX_TARGET_DIR:-$root/.lodex-build/mips-target}"
+export CARGO_BUILD_JOBS=${CARGO_BUILD_JOBS:-4}
+export CARGO_PROFILE_RELEASE_DEBUG=0
+export CARGO_PROFILE_RELEASE_STRIP=symbols
+export CARGO_PROFILE_RELEASE_LTO=false
+export CARGO_PROFILE_RELEASE_PANIC=abort
+export CARGO_PROFILE_RELEASE_OPT_LEVEL=2
+
+# The SDK does not include libbz2, which the final CLI links against.
+if [[ ! -f "$toolchain/usr/lib/libbz2.a" ]]; then
+  archive="$root/.lodex-build/bzip2-sys-0.1.13+1.0.8.crate"
+  cached=("${CARGO_HOME:-$HOME/.cargo}"/registry/cache/*/bzip2-sys-0.1.13+1.0.8.crate)
+  if [[ ! -f "$archive" ]]; then
+    if [[ -f "${cached[0]}" ]]; then
+      cp "${cached[0]}" "$archive"
+    else
+      curl -fL 'https://crates.io/api/v1/crates/bzip2-sys/0.1.13%2B1.0.8/download' -o "$archive"
+    fi
+  fi
+  printf '%s  %s\n' 225bff33b2141874fe80d71e07d6eec4f85c5c216453dd96388240f96e1acc14 "$archive" | sha256sum --check --status
+  mkdir -p "$root/.lodex-build/bzip2-source" "$root/.lodex-build/bzip2-mips"
+  tar -xzf "$archive" -C "$root/.lodex-build/bzip2-source"
+  source="$root/.lodex-build/bzip2-source/bzip2-sys-0.1.13+1.0.8/bzip2-1.0.8"
+  objects=()
+  for name in blocksort huffman crctable randtable compress decompress bzlib; do
+    object="$root/.lodex-build/bzip2-mips/$name.o"
+    "$CC_mipsel_unknown_linux_musl" -Os -fPIC -mxgot -msoft-float -march=24kc -I"$source" -c "$source/$name.c" -o "$object"
+    objects+=("$object")
+  done
+  "$AR_mipsel_unknown_linux_musl" rcs "$toolchain/usr/lib/libbz2.a" "${objects[@]}"
+fi
+
+command=$1
+shift
+exec cargo "$command" --target mipsel-unknown-linux-musl \
+  -Z build-std=std,panic_abort "$@"

@@ -1,0 +1,23 @@
+[
+  {
+    "method": "initialize",
+    "params": {
+      "clientInfo": {"name": "lodex_fixture", "version": "0.1.0"},
+      "capabilities": {"experimentalApi": true}
+    }
+  },
+  {"method": "initialized", "notification": true},
+  {
+    "method": "command/exec",
+    "params": {
+      "command": ["/bin/sh", "-c", "printf lodex-shell-ok"],
+      "timeoutMs": 10000,
+      "outputBytesCap": 1024
+    },
+    "checks": [
+      {"path": ["result", "exitCode"], "equals": 0},
+      {"path": ["result", "stdout"], "equals": "lodex-shell-ok"}
+    ]
+  },
+  {"method": "lodex/nonexistent/fixture", "expect_error": true}
+]

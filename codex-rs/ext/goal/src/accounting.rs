@@ -9,7 +9,7 @@ use codex_state::ThreadGoalStatus;
 use std::collections::HashMap;
 use std::sync::Mutex;
 use std::sync::PoisonError;
-use std::sync::atomic::AtomicI64;
+use portable_atomic::AtomicI64;
 use std::sync::atomic::Ordering;
 use std::time::Duration;
 use std::time::Instant;

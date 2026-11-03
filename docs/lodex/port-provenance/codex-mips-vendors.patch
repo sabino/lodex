@@ -1,0 +1,783 @@
+--- a/allocative/src/impls/std/sync.rs
++++ b/allocative/src/impls/std/sync.rs
+@@ -20,11 +20,13 @@
+ use std::sync::atomic::AtomicI8;
+ use std::sync::atomic::AtomicI16;
+ use std::sync::atomic::AtomicI32;
++#[cfg(target_has_atomic = "64")]
+ use std::sync::atomic::AtomicI64;
+ use std::sync::atomic::AtomicIsize;
+ use std::sync::atomic::AtomicU8;
+ use std::sync::atomic::AtomicU16;
+ use std::sync::atomic::AtomicU32;
++#[cfg(target_has_atomic = "64")]
+ use std::sync::atomic::AtomicU64;
+ use std::sync::atomic::AtomicUsize;
+ 
+@@ -158,6 +160,7 @@
+     }
+ }
+ 
++#[cfg(target_has_atomic = "64")]
+ impl Allocative for AtomicU64 {
+     fn visit<'a, 'b: 'a>(&self, visitor: &'a mut Visitor<'b>) {
+         visitor.enter_self_sized::<Self>().exit();
+@@ -188,6 +191,7 @@
+     }
+ }
+ 
++#[cfg(target_has_atomic = "64")]
+ impl Allocative for AtomicI64 {
+     fn visit<'a, 'b: 'a>(&self, visitor: &'a mut Visitor<'b>) {
+         visitor.enter_self_sized::<Self>().exit();
+--- a/pagable/src/impls/std.rs
++++ b/pagable/src/impls/std.rs
+@@ -8,6 +8,7 @@
+  * above-listed licenses.
+  */
+ 
++#[cfg(target_has_atomic = "64")]
+ use core::sync::atomic::AtomicI64;
+ use std::sync::OnceLock;
+ 
+@@ -182,6 +183,7 @@
+     }
+ }
+ 
++#[cfg(target_has_atomic = "64")]
+ impl PagableSerialize for AtomicI64 {
+     fn pagable_serialize(&self, serializer: &mut dyn PagableSerializer) -> crate::Result<()> {
+         Ok(i64::serialize(
+@@ -191,6 +193,7 @@
+     }
+ }
+ 
++#[cfg(target_has_atomic = "64")]
+ impl<'de> PagableDeserialize<'de> for AtomicI64 {
+     fn pagable_deserialize<D: PagableDeserializer<'de> + ?Sized>(
+         deserializer: &mut D,
+--- a/pagable/src/pagable_arc.rs
++++ b/pagable/src/pagable_arc.rs
+@@ -736,9 +736,14 @@
+ // occupies 12 usizes instead.
+ #[cfg(target_pointer_width = "64")]
+ static_assertions::assert_eq_size!(PagableArcInner<[usize; 4]>, [usize; 8]);
+-#[cfg(target_pointer_width = "32")]
++#[cfg(all(target_pointer_width = "32", not(target_arch = "mips")))]
+ static_assertions::assert_eq_size!(PagableArcInner<[usize; 4]>, [usize; 12]);
+ 
++// The MIPS o32 ABI aligns u128 to 8 bytes; wasm32 aligns it to 16.
++// OptionalDataKey contains u128, so the same fields occupy 40 bytes here.
++#[cfg(all(target_pointer_width = "32", target_arch = "mips"))]
++static_assertions::assert_eq_size!(PagableArcInner<[usize; 4]>, [usize; 10]);
++
+ impl<T: Pagable> PagableArcInner<T> {
+     pub fn new_paged_out(key: &DataKey, storage: PagableStorageHandle) -> Self {
+         Self {
+--- a/starlark/Cargo.toml
++++ b/starlark/Cargo.toml
+@@ -187,3 +187,7 @@
+     "cfg(starlark_require_heap_names)",
+     'cfg(feature, values("pagable", "pagable_dep"))',
+ ]
++
++[dependencies.portable-atomic]
++version = "1.13.1"
++features = ["fallback"]
+--- a/starlark/src/values/trace.rs
++++ b/starlark/src/values/trace.rs
+@@ -26,11 +26,13 @@
+ use std::sync::atomic::AtomicI8;
+ use std::sync::atomic::AtomicI16;
+ use std::sync::atomic::AtomicI32;
++#[cfg(target_has_atomic = "64")]
+ use std::sync::atomic::AtomicI64;
+ use std::sync::atomic::AtomicIsize;
+ use std::sync::atomic::AtomicU8;
+ use std::sync::atomic::AtomicU16;
+ use std::sync::atomic::AtomicU32;
++#[cfg(target_has_atomic = "64")]
+ use std::sync::atomic::AtomicU64;
+ use std::sync::atomic::AtomicUsize;
+ 
+@@ -256,10 +258,12 @@
+     fn trace(&mut self, _tracer: &Tracer<'v>) {}
+ }
+ 
++#[cfg(target_has_atomic = "64")]
+ unsafe impl<'v> Trace<'v> for AtomicI64 {
+     fn trace(&mut self, _tracer: &Tracer<'v>) {}
+ }
+ 
++#[cfg(target_has_atomic = "64")]
+ unsafe impl<'v> Trace<'v> for AtomicU64 {
+     fn trace(&mut self, _tracer: &Tracer<'v>) {}
+ }
+--- a/starlark/src/values/types/type_instance_id.rs
++++ b/starlark/src/values/types/type_instance_id.rs
+@@ -16,7 +16,7 @@
+  */
+ 
+ use std::sync::atomic;
+-use std::sync::atomic::AtomicU64;
++use portable_atomic::AtomicU64;
+ 
+ use allocative::Allocative;
+ use dupe::Dupe;
+--- a/opentelemetry_sdk/Cargo.toml
++++ b/opentelemetry_sdk/Cargo.toml
+@@ -297,3 +297,7 @@
+ [lints.rust.rust_2024_compatibility]
+ level = "warn"
+ priority = -1
++
++[dependencies.portable-atomic]
++version = "1.13.1"
++features = ["fallback"]
+--- a/opentelemetry_sdk/src/metrics/internal/mod.rs
++++ b/opentelemetry_sdk/src/metrics/internal/mod.rs
+@@ -9,7 +9,8 @@
+ use std::collections::{HashMap, HashSet};
+ use std::mem::swap;
+ use std::ops::{Add, AddAssign, DerefMut, Sub};
+-use std::sync::atomic::{AtomicBool, AtomicI64, AtomicU64, AtomicUsize, Ordering};
++use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
++use portable_atomic::{AtomicI64, AtomicU64};
+ use std::sync::{Arc, OnceLock, RwLock};
+ 
+ pub(crate) use aggregate::{AggregateBuilder, AggregateFns, ComputeAggregation, Measure};
+--- a/tree-sitter-bash/src/parser.c
++++ b/tree-sitter-bash/src/parser.c
+@@ -11,8 +11,13 @@
+ #elif defined(__clang__)
+ #pragma clang optimize off
+ #elif defined(__GNUC__)
++#if defined(__mips__)
++// Keep generated functions within MIPS branch ranges.
++#pragma GCC optimize ("Os")
++#else
+ #pragma GCC optimize ("O0")
+ #endif
++#endif
+ 
+ #define LANGUAGE_VERSION 15
+ #define STATE_COUNT 7571
+--- a/tree-sitter-powershell/src/parser.c
++++ b/tree-sitter-powershell/src/parser.c
+@@ -11,8 +11,13 @@
+ #elif defined(__clang__)
+ #pragma clang optimize off
+ #elif defined(__GNUC__)
++#if defined(__mips__)
++// Keep generated functions within MIPS branch ranges.
++#pragma GCC optimize ("Os")
++#else
+ #pragma GCC optimize ("O0")
+ #endif
++#endif
+ 
+ #define LANGUAGE_VERSION 15
+ #define STATE_COUNT 2142
+--- a/seccompiler/src/backend/bpf.rs
++++ b/seccompiler/src/backend/bpf.rs
+@@ -128,6 +128,9 @@
+ // `#define AUDIT_ARCH_RISCV64  (EM_RISCV|__AUDIT_ARCH_64BIT|__AUDIT_ARCH_LE)`
+ pub const AUDIT_ARCH_RISCV64: u32 = 243 | 0x8000_0000 | 0x4000_0000;
+ 
++// Linux AUDIT_ARCH_MIPSEL: EM_MIPS | __AUDIT_ARCH_LE, o32 ABI.
++pub const AUDIT_ARCH_MIPSEL: u32 = 8 | 0x4000_0000;
++
+ /// BPF instruction structure definition.
+ // See /usr/include/linux/filter.h .
+ // We cannot use the `libc::sock_filter` definition since it doesn't implement `Debug` and
+--- a/seccompiler/src/backend/mod.rs
++++ b/seccompiler/src/backend/mod.rs
+@@ -25,7 +25,7 @@
+     SECCOMP_RET_KILL_THREAD, SECCOMP_RET_LOG, SECCOMP_RET_TRACE, SECCOMP_RET_TRAP,
+ };
+ 
+-use bpf::{ARG_NUMBER_MAX, AUDIT_ARCH_AARCH64, AUDIT_ARCH_RISCV64, AUDIT_ARCH_X86_64, BPF_MAX_LEN};
++use bpf::{ARG_NUMBER_MAX, AUDIT_ARCH_MIPSEL, AUDIT_ARCH_AARCH64, AUDIT_ARCH_RISCV64, AUDIT_ARCH_X86_64, BPF_MAX_LEN};
+ 
+ pub use bpf::{sock_filter, BpfProgram, BpfProgramRef};
+ 
+@@ -79,6 +79,8 @@
+ #[allow(non_camel_case_types)]
+ #[derive(Debug, PartialEq, Eq, Clone, Copy)]
+ pub enum TargetArch {
++    /// Little-endian MIPS o32 ABI
++    mipsel,
+     /// x86_64 arch
+     x86_64,
+     /// aarch64 arch
+@@ -91,6 +93,7 @@
+     /// Get the arch audit value. Used for the runtime arch check embedded in the BPF filter.
+     fn get_audit_value(self) -> u32 {
+         match self {
++            TargetArch::mipsel => AUDIT_ARCH_MIPSEL,
+             TargetArch::x86_64 => AUDIT_ARCH_X86_64,
+             TargetArch::aarch64 => AUDIT_ARCH_AARCH64,
+             TargetArch::riscv64 => AUDIT_ARCH_RISCV64,
+@@ -102,6 +105,7 @@
+     type Error = Error;
+     fn try_from(input: &str) -> Result<Self> {
+         match input.to_lowercase().as_str() {
++            "mipsel" => Ok(TargetArch::mipsel),
+             "x86_64" => Ok(TargetArch::x86_64),
+             "aarch64" => Ok(TargetArch::aarch64),
+             "riscv64" => Ok(TargetArch::riscv64),
+--- a/seccompiler/src/syscall_table/mipsel.rs
++++ b/seccompiler/src/syscall_table/mipsel.rs
+@@ -0,0 +1,430 @@
++// Generated from the matching OpenWrt SDK Linux asm/unistd_o32.h.
++// MIPS o32 __NR_Linux is 4000.
++use std::collections::HashMap;
++
++pub(crate) fn make_syscall_table() -> HashMap<&'static str, i64> {
++    [
++        ("_llseek", 4140),
++        ("_newselect", 4142),
++        ("_sysctl", 4153),
++        ("accept", 4168),
++        ("accept4", 4334),
++        ("access", 4033),
++        ("acct", 4051),
++        ("add_key", 4280),
++        ("adjtimex", 4124),
++        ("afs_syscall", 4137),
++        ("alarm", 4027),
++        ("bdflush", 4134),
++        ("bind", 4169),
++        ("bpf", 4355),
++        ("break", 4017),
++        ("brk", 4045),
++        ("cachectl", 4148),
++        ("cacheflush", 4147),
++        ("capget", 4204),
++        ("capset", 4205),
++        ("chdir", 4012),
++        ("chmod", 4015),
++        ("chown", 4202),
++        ("chroot", 4061),
++        ("clock_adjtime", 4341),
++        ("clock_adjtime64", 4405),
++        ("clock_getres", 4264),
++        ("clock_getres_time64", 4406),
++        ("clock_gettime", 4263),
++        ("clock_gettime64", 4403),
++        ("clock_nanosleep", 4265),
++        ("clock_nanosleep_time64", 4407),
++        ("clock_settime", 4262),
++        ("clock_settime64", 4404),
++        ("clone", 4120),
++        ("clone3", 4435),
++        ("close", 4006),
++        ("close_range", 4436),
++        ("connect", 4170),
++        ("copy_file_range", 4360),
++        ("creat", 4008),
++        ("create_module", 4127),
++        ("delete_module", 4129),
++        ("dup", 4041),
++        ("dup2", 4063),
++        ("dup3", 4327),
++        ("epoll_create", 4248),
++        ("epoll_create1", 4326),
++        ("epoll_ctl", 4249),
++        ("epoll_pwait", 4313),
++        ("epoll_pwait2", 4441),
++        ("epoll_wait", 4250),
++        ("eventfd", 4319),
++        ("eventfd2", 4325),
++        ("execve", 4011),
++        ("execveat", 4356),
++        ("exit", 4001),
++        ("exit_group", 4246),
++        ("faccessat", 4300),
++        ("faccessat2", 4439),
++        ("fadvise64", 4254),
++        ("fallocate", 4320),
++        ("fanotify_init", 4336),
++        ("fanotify_mark", 4337),
++        ("fchdir", 4133),
++        ("fchmod", 4094),
++        ("fchmodat", 4299),
++        ("fchown", 4095),
++        ("fchownat", 4291),
++        ("fcntl", 4055),
++        ("fcntl64", 4220),
++        ("fdatasync", 4152),
++        ("fgetxattr", 4229),
++        ("finit_module", 4348),
++        ("flistxattr", 4232),
++        ("flock", 4143),
++        ("fork", 4002),
++        ("fremovexattr", 4235),
++        ("fsconfig", 4431),
++        ("fsetxattr", 4226),
++        ("fsmount", 4432),
++        ("fsopen", 4430),
++        ("fspick", 4433),
++        ("fstat", 4108),
++        ("fstat64", 4215),
++        ("fstatat64", 4293),
++        ("fstatfs", 4100),
++        ("fstatfs64", 4256),
++        ("fsync", 4118),
++        ("ftime", 4035),
++        ("ftruncate", 4093),
++        ("ftruncate64", 4212),
++        ("futex", 4238),
++        ("futex_time64", 4422),
++        ("futimesat", 4292),
++        ("get_kernel_syms", 4130),
++        ("get_mempolicy", 4269),
++        ("get_robust_list", 4310),
++        ("getcpu", 4312),
++        ("getcwd", 4203),
++        ("getdents", 4141),
++        ("getdents64", 4219),
++        ("getegid", 4050),
++        ("geteuid", 4049),
++        ("getgid", 4047),
++        ("getgroups", 4080),
++        ("getitimer", 4105),
++        ("getpeername", 4171),
++        ("getpgid", 4132),
++        ("getpgrp", 4065),
++        ("getpid", 4020),
++        ("getpmsg", 4208),
++        ("getppid", 4064),
++        ("getpriority", 4096),
++        ("getrandom", 4353),
++        ("getresgid", 4191),
++        ("getresuid", 4186),
++        ("getrlimit", 4076),
++        ("getrusage", 4077),
++        ("getsid", 4151),
++        ("getsockname", 4172),
++        ("getsockopt", 4173),
++        ("gettid", 4222),
++        ("gettimeofday", 4078),
++        ("getuid", 4024),
++        ("getxattr", 4227),
++        ("gtty", 4032),
++        ("idle", 4112),
++        ("init_module", 4128),
++        ("inotify_add_watch", 4285),
++        ("inotify_init", 4284),
++        ("inotify_init1", 4329),
++        ("inotify_rm_watch", 4286),
++        ("io_cancel", 4245),
++        ("io_destroy", 4242),
++        ("io_getevents", 4243),
++        ("io_pgetevents", 4368),
++        ("io_pgetevents_time64", 4416),
++        ("io_setup", 4241),
++        ("io_submit", 4244),
++        ("io_uring_enter", 4426),
++        ("io_uring_register", 4427),
++        ("io_uring_setup", 4425),
++        ("ioctl", 4054),
++        ("ioperm", 4101),
++        ("iopl", 4110),
++        ("ioprio_get", 4315),
++        ("ioprio_set", 4314),
++        ("ipc", 4117),
++        ("kcmp", 4347),
++        ("kexec_load", 4311),
++        ("keyctl", 4282),
++        ("kill", 4037),
++        ("landlock_add_rule", 4445),
++        ("landlock_create_ruleset", 4444),
++        ("landlock_restrict_self", 4446),
++        ("lchown", 4016),
++        ("lgetxattr", 4228),
++        ("link", 4009),
++        ("linkat", 4296),
++        ("listen", 4174),
++        ("listxattr", 4230),
++        ("llistxattr", 4231),
++        ("lock", 4053),
++        ("lookup_dcookie", 4247),
++        ("lremovexattr", 4234),
++        ("lseek", 4019),
++        ("lsetxattr", 4225),
++        ("lstat", 4107),
++        ("lstat64", 4214),
++        ("madvise", 4218),
++        ("mbind", 4268),
++        ("membarrier", 4358),
++        ("memfd_create", 4354),
++        ("migrate_pages", 4287),
++        ("mincore", 4217),
++        ("mkdir", 4039),
++        ("mkdirat", 4289),
++        ("mknod", 4014),
++        ("mknodat", 4290),
++        ("mlock", 4154),
++        ("mlock2", 4359),
++        ("mlockall", 4156),
++        ("mmap", 4090),
++        ("mmap2", 4210),
++        ("modify_ldt", 4123),
++        ("mount", 4021),
++        ("mount_setattr", 4442),
++        ("move_mount", 4429),
++        ("move_pages", 4308),
++        ("mprotect", 4125),
++        ("mpx", 4056),
++        ("mq_getsetattr", 4276),
++        ("mq_notify", 4275),
++        ("mq_open", 4271),
++        ("mq_timedreceive", 4274),
++        ("mq_timedreceive_time64", 4419),
++        ("mq_timedsend", 4273),
++        ("mq_timedsend_time64", 4418),
++        ("mq_unlink", 4272),
++        ("mremap", 4167),
++        ("msgctl", 4402),
++        ("msgget", 4399),
++        ("msgrcv", 4401),
++        ("msgsnd", 4400),
++        ("msync", 4144),
++        ("munlock", 4155),
++        ("munlockall", 4157),
++        ("munmap", 4091),
++        ("name_to_handle_at", 4339),
++        ("nanosleep", 4166),
++        ("nfsservctl", 4189),
++        ("nice", 4034),
++        ("open", 4005),
++        ("open_by_handle_at", 4340),
++        ("open_tree", 4428),
++        ("openat", 4288),
++        ("openat2", 4437),
++        ("pause", 4029),
++        ("perf_event_open", 4333),
++        ("personality", 4136),
++        ("pidfd_getfd", 4438),
++        ("pidfd_open", 4434),
++        ("pidfd_send_signal", 4424),
++        ("pipe", 4042),
++        ("pipe2", 4328),
++        ("pivot_root", 4216),
++        ("pkey_alloc", 4364),
++        ("pkey_free", 4365),
++        ("pkey_mprotect", 4363),
++        ("poll", 4188),
++        ("ppoll", 4302),
++        ("ppoll_time64", 4414),
++        ("prctl", 4192),
++        ("pread64", 4200),
++        ("preadv", 4330),
++        ("preadv2", 4361),
++        ("prlimit64", 4338),
++        ("process_madvise", 4440),
++        ("process_mrelease", 4448),
++        ("process_vm_readv", 4345),
++        ("process_vm_writev", 4346),
++        ("prof", 4044),
++        ("profil", 4098),
++        ("pselect6", 4301),
++        ("pselect6_time64", 4413),
++        ("ptrace", 4026),
++        ("putpmsg", 4209),
++        ("pwrite64", 4201),
++        ("pwritev", 4331),
++        ("pwritev2", 4362),
++        ("query_module", 4187),
++        ("quotactl", 4131),
++        ("quotactl_fd", 4443),
++        ("read", 4003),
++        ("readahead", 4223),
++        ("readdir", 4089),
++        ("readlink", 4085),
++        ("readlinkat", 4298),
++        ("readv", 4145),
++        ("reboot", 4088),
++        ("recv", 4175),
++        ("recvfrom", 4176),
++        ("recvmmsg", 4335),
++        ("recvmmsg_time64", 4417),
++        ("recvmsg", 4177),
++        ("remap_file_pages", 4251),
++        ("removexattr", 4233),
++        ("rename", 4038),
++        ("renameat", 4295),
++        ("renameat2", 4351),
++        ("request_key", 4281),
++        ("reserved221", 4221),
++        ("reserved82", 4082),
++        ("restart_syscall", 4253),
++        ("rmdir", 4040),
++        ("rseq", 4367),
++        ("rt_sigaction", 4194),
++        ("rt_sigpending", 4196),
++        ("rt_sigprocmask", 4195),
++        ("rt_sigqueueinfo", 4198),
++        ("rt_sigreturn", 4193),
++        ("rt_sigsuspend", 4199),
++        ("rt_sigtimedwait", 4197),
++        ("rt_sigtimedwait_time64", 4421),
++        ("rt_tgsigqueueinfo", 4332),
++        ("sched_get_priority_max", 4163),
++        ("sched_get_priority_min", 4164),
++        ("sched_getaffinity", 4240),
++        ("sched_getattr", 4350),
++        ("sched_getparam", 4159),
++        ("sched_getscheduler", 4161),
++        ("sched_rr_get_interval", 4165),
++        ("sched_rr_get_interval_time64", 4423),
++        ("sched_setaffinity", 4239),
++        ("sched_setattr", 4349),
++        ("sched_setparam", 4158),
++        ("sched_setscheduler", 4160),
++        ("sched_yield", 4162),
++        ("seccomp", 4352),
++        ("semctl", 4394),
++        ("semget", 4393),
++        ("semtimedop_time64", 4420),
++        ("send", 4178),
++        ("sendfile", 4207),
++        ("sendfile64", 4237),
++        ("sendmmsg", 4343),
++        ("sendmsg", 4179),
++        ("sendto", 4180),
++        ("set_mempolicy", 4270),
++        ("set_robust_list", 4309),
++        ("set_thread_area", 4283),
++        ("set_tid_address", 4252),
++        ("setdomainname", 4121),
++        ("setfsgid", 4139),
++        ("setfsuid", 4138),
++        ("setgid", 4046),
++        ("setgroups", 4081),
++        ("sethostname", 4074),
++        ("setitimer", 4104),
++        ("setns", 4344),
++        ("setpgid", 4057),
++        ("setpriority", 4097),
++        ("setregid", 4071),
++        ("setresgid", 4190),
++        ("setresuid", 4185),
++        ("setreuid", 4070),
++        ("setrlimit", 4075),
++        ("setsid", 4066),
++        ("setsockopt", 4181),
++        ("settimeofday", 4079),
++        ("setuid", 4023),
++        ("setxattr", 4224),
++        ("sgetmask", 4068),
++        ("shmat", 4397),
++        ("shmctl", 4396),
++        ("shmdt", 4398),
++        ("shmget", 4395),
++        ("shutdown", 4182),
++        ("sigaction", 4067),
++        ("sigaltstack", 4206),
++        ("signal", 4048),
++        ("signalfd", 4317),
++        ("signalfd4", 4324),
++        ("sigpending", 4073),
++        ("sigprocmask", 4126),
++        ("sigreturn", 4119),
++        ("sigsuspend", 4072),
++        ("socket", 4183),
++        ("socketcall", 4102),
++        ("socketpair", 4184),
++        ("splice", 4304),
++        ("ssetmask", 4069),
++        ("stat", 4106),
++        ("stat64", 4213),
++        ("statfs", 4099),
++        ("statfs64", 4255),
++        ("statx", 4366),
++        ("stime", 4025),
++        ("stty", 4031),
++        ("swapoff", 4115),
++        ("swapon", 4087),
++        ("symlink", 4083),
++        ("symlinkat", 4297),
++        ("sync", 4036),
++        ("sync_file_range", 4305),
++        ("syncfs", 4342),
++        ("syscall", 4000),
++        ("sysfs", 4135),
++        ("sysinfo", 4116),
++        ("syslog", 4103),
++        ("sysmips", 4149),
++        ("tee", 4306),
++        ("tgkill", 4266),
++        ("time", 4013),
++        ("timer_create", 4257),
++        ("timer_delete", 4261),
++        ("timer_getoverrun", 4260),
++        ("timer_gettime", 4259),
++        ("timer_gettime64", 4408),
++        ("timer_settime", 4258),
++        ("timer_settime64", 4409),
++        ("timerfd", 4318),
++        ("timerfd_create", 4321),
++        ("timerfd_gettime", 4322),
++        ("timerfd_gettime64", 4410),
++        ("timerfd_settime", 4323),
++        ("timerfd_settime64", 4411),
++        ("times", 4043),
++        ("tkill", 4236),
++        ("truncate", 4092),
++        ("truncate64", 4211),
++        ("ulimit", 4058),
++        ("umask", 4060),
++        ("umount", 4022),
++        ("umount2", 4052),
++        ("uname", 4122),
++        ("unlink", 4010),
++        ("unlinkat", 4294),
++        ("unshare", 4303),
++        ("unused109", 4109),
++        ("unused150", 4150),
++        ("unused18", 4018),
++        ("unused28", 4028),
++        ("unused59", 4059),
++        ("unused84", 4084),
++        ("uselib", 4086),
++        ("userfaultfd", 4357),
++        ("ustat", 4062),
++        ("utime", 4030),
++        ("utimensat", 4316),
++        ("utimensat_time64", 4412),
++        ("utimes", 4267),
++        ("vhangup", 4111),
++        ("vm86", 4113),
++        ("vmsplice", 4307),
++        ("vserver", 4277),
++        ("wait4", 4114),
++        ("waitid", 4278),
++        ("waitpid", 4007),
++        ("write", 4004),
++        ("writev", 4146),
++    ].into_iter().collect()
++}
+--- a/seccompiler/src/syscall_table/mod.rs
++++ b/seccompiler/src/syscall_table/mod.rs
+@@ -2,6 +2,7 @@
+ // SPDX-License-Identifier: Apache-2.0 OR BSD-3-Clause
+ 
+ mod aarch64;
++mod mipsel;
+ mod riscv64;
+ mod x86_64;
+ 
+@@ -18,6 +19,7 @@
+     pub fn new(arch: TargetArch) -> Self {
+         Self {
+             map: match arch {
++                TargetArch::mipsel => mipsel::make_syscall_table(),
+                 TargetArch::aarch64 => aarch64::make_syscall_table(),
+                 TargetArch::x86_64 => x86_64::make_syscall_table(),
+                 TargetArch::riscv64 => riscv64::make_syscall_table(),
+--- a/rust-sdk/crates/rmcp/Cargo.toml
++++ b/rust-sdk/crates/rmcp/Cargo.toml
+@@ -47,6 +47,7 @@
+ rustdoc-args = ["--cfg", "docsrs"]
+ 
+ [dependencies]
++portable-atomic = { version = "1.13.1", features = ["fallback"] }
+ async-trait = { version = "0.1.89", optional = true }
+ serde = { version = "1.0", features = ["derive", "rc"] }
+ serde_json = "1.0"
+--- a/rust-sdk/crates/rmcp/src/service.rs
++++ b/rust-sdk/crates/rmcp/src/service.rs
+@@ -1,3 +1,4 @@
++use portable_atomic::AtomicU64;
+ use std::{borrow::Cow, sync::OnceLock};
+ 
+ use futures::FutureExt;
+@@ -446,7 +447,7 @@
+ use std::{
+     collections::{HashMap, VecDeque},
+     ops::Deref,
+-    sync::{Arc, atomic::AtomicU64},
++    sync::Arc,
+     time::Duration,
+ };
+ 
+--- a/rust-sdk/crates/rmcp/src/transport/worker.rs
++++ b/rust-sdk/crates/rmcp/src/transport/worker.rs
+@@ -1,9 +1,10 @@
++use portable_atomic::AtomicU64;
+ use std::{
+     borrow::Cow,
+     collections::HashMap,
+     sync::{
+         Arc, Mutex, PoisonError, Weak,
+-        atomic::{AtomicU64, Ordering},
++        atomic::Ordering,
+     },
+     time::Duration,
+ };
+--- a/mxc/src/mxc-sdk/Cargo.toml
++++ b/mxc/src/mxc-sdk/Cargo.toml
+@@ -114,3 +114,7 @@
+ [[example]]
+ name = "sta_probe"
+ required-features = ["isolation_session"]
++
++[dependencies.portable-atomic]
++version = "1.13.1"
++features = ["fallback"]
+--- a/mxc/src/mxc-sdk/src/core/mxc_common/telemetry/correlation_state.rs
++++ b/mxc/src/mxc-sdk/src/core/mxc_common/telemetry/correlation_state.rs
+@@ -18,7 +18,7 @@
+ 
+ use std::fs;
+ use std::path::{Path, PathBuf};
+-use std::sync::atomic::{AtomicU64, Ordering};
++use portable_atomic::{AtomicU64, Ordering};
+ use std::time::{Duration, SystemTime};
+ 
+ use crate::mxc_common::mxc_error::{MxcError, MxcErrorCode};
+--- a/mxc/src/mxc-sdk/src/core/mxc_common/telemetry/correlation_vector.rs
++++ b/mxc/src/mxc-sdk/src/core/mxc_common/telemetry/correlation_vector.rs
+@@ -129,7 +129,7 @@
+ /// Process-wide monotonic nonce used only to keep the RNG-failure fallbacks of
+ /// [`seed`] and [`spin`] distinct across concurrent same-tick calls.
+ fn fallback_nonce() -> u64 {
+-    use std::sync::atomic::{AtomicU64, Ordering};
++    use portable_atomic::{AtomicU64, Ordering};
+     static COUNTER: AtomicU64 = AtomicU64::new(0);
+     COUNTER.fetch_add(1, Ordering::Relaxed)
+ }
+--- a/nucleo/Cargo.toml
++++ b/nucleo/Cargo.toml
+@@ -12,6 +12,7 @@
+ [lib]
+ 
+ [dependencies]
++portable-atomic = { version = "1.13.1", features = ["fallback"] }
+ nucleo-matcher = { version = "0.3.1", path = "matcher" }
+ parking_lot = { version = "0.12.1", features = ["send_guard", "arc_lock"] }
+ rayon = "1.7.0"
+--- a/nucleo/src/boxcar.rs
++++ b/nucleo/src/boxcar.rs
+@@ -25,7 +25,8 @@
+ use std::cell::UnsafeCell;
+ use std::fmt::Debug;
+ use std::mem::MaybeUninit;
+-use std::sync::atomic::{AtomicBool, AtomicPtr, AtomicU64, Ordering};
++use std::sync::atomic::{AtomicBool, AtomicPtr, Ordering};
++use portable_atomic::AtomicU64;
+ use std::{ptr, slice};
+ 
+ use crate::{Item, Utf32String};
+@@ -33,7 +34,8 @@
+ const BUCKETS: u32 = u32::BITS - SKIP_BUCKET;
+ const MAX_ENTRIES: u32 = u32::MAX - SKIP;
+ 
+-/// A lock-free, append-only vector.
++/// An append-only vector. On targets without native 64-bit atomics,
++/// portable-atomic emulates the counter with locking.
+ pub(crate) struct Vec<T> {
+     /// a counter used to retrieve a unique index to push to.
+     ///

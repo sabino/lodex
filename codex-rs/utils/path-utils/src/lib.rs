@@ -250,3 +250,35 @@ fn lower_ascii_path(path: PathBuf) -> PathBuf {
 #[cfg(test)]
 #[path = "path_utils_tests.rs"]
 mod tests;
+
+/// Returns whether `codex_home` is on a Windows-mounted WSL filesystem.
+pub fn uses_wsl_drvfs(codex_home: &std::path::Path) -> bool {
+    // The managed daemon writes an executable and Unix-style state beneath CODEX_HOME.
+    // DrvFS does not reliably support the required permission semantics, so starting it
+    // there can fail before the TUI opens.
+    #[cfg(target_os = "linux")]
+    {
+        use std::os::fd::AsRawFd;
+
+        if !crate::is_wsl() && std::env::var_os("WSL_INTEROP").is_none() {
+            return false;
+        }
+        let Some(directory) = codex_home
+            .ancestors()
+            .find_map(|path| std::fs::File::open(path).ok())
+        else {
+            return false;
+        };
+        let mut stats = std::mem::MaybeUninit::<libc::statfs>::uninit();
+        if unsafe { libc::fstatfs(directory.as_raw_fd(), stats.as_mut_ptr()) } != 0 {
+            return false;
+        }
+        unsafe { stats.assume_init() }.f_type == 0x0102_1997
+    }
+    #[cfg(not(target_os = "linux"))]
+    {
+        let _ = codex_home;
+        false
+    }
+}
+

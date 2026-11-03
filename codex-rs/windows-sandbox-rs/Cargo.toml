@@ -26,6 +26,7 @@ path = "src/bin/managed_deny_probe/main.rs"
 workspace = true
 
 [dependencies]
+portable-atomic = { workspace = true }
 codex-utils-process = { workspace = true }
 codex-http-client = { workspace = true }
 anyhow = "1.0"
