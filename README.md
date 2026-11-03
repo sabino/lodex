@@ -72,6 +72,11 @@ Populate the Cargo dependency cache on the build host before an offline build.
 The output is `.lodex-build/mips-target/mipsel-unknown-linux-musl/release/lodex`.
 `LODEX_TARGET_DIR` can select a different external build cache.
 
+For the executor-only image, use the same build command with
+`-p codex-lodex-executor --bin lodex-executor`. It exposes the shared upstream
+executor CLI directly: `lodex-executor --listen stdio` (without an `exec-server`
+subcommand). Keep the full `lodex` image for local harness execution.
+
 The executable dynamically uses the matching musl/libgcc/libatomic runtime.
 Keep extra libraries in a private prefix; do not replace firmware libraries.
 The working port uses `+xgot` and 256 final codegen units to avoid MIPS relocation
