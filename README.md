@@ -48,10 +48,12 @@ components, but are not yet attached automatically to agent prompts.
 The normal MIPS launcher graph contains no `codex-tui` or `ratatui` dependency.
 Experimental `exec-server` support preserves an executor path for remote tools.
 The standalone `lodex-executor` image compiled at 75614760 bytes for remote-primary
-setups. Native startup, environment RPC and MCP tool/resource smoke checks passed;
-process/file/cancellation/recovery stress remains to qualify. Browser automation should normally
-run through remote MCP services instead of a
-browser installed on the router.
+setups. Native process/file operations, 256 KiB output integrity, stdin retries,
+interruption, termination and fresh restart passed. Authenticated WebSocket
+stream-loss recovery preserved the session, output and stdin retry identity.
+See [the exact qualification scope](docs/lodex/executor-qualification.json);
+prolonged stress and broader failure modes remain unqualified. Browser automation
+should normally run through remote MCP services instead of a browser on the router.
 
 ## Build for the tested MIPS target
 

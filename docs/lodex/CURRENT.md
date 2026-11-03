@@ -26,9 +26,22 @@ undergoing repeated hardware comparison. All245 state tests and one doctest pass
 with both the new limit and upstream's five-connection limit. The v1.3 executor entry point compiled and passed ten native CLI gates. A separate
 Linux primary then passed real model-driven shell and MCP tool/resource tests
 through the device executor. An executor-only image compiled at 75614760 bytes as a smaller remote-primary
-option. Basic native CLI, environment RPC and remote MCP calls passed; full
-process/file/cancellation/recovery qualification is still pending. Preliminary pool results show a resource/latency tradeoff; see
-performance.md. A clean alternating confirmation remains required.
+option. Native CLI, environment RPC, remote MCP, direct process/file and
+cancellation checks passed. Capability-token rejection and process-session
+recovery after abrupt WebSocket stream loss also passed; this kept SSH and the
+executor alive. See executor-qualification.json for the exact scope. Prolonged
+stress, auth refresh and broader failure modes remain pending.
+Preliminary pool results show a resource/latency tradeoff; see
+performance.md. A clean alternating pool comparison remains required.
+
+A balanced three-mode startup/MCP comparison now passed three measured trials per
+mode after warmup, with no overlapping hardware jobs and the managed service
+stopped during measurement. Median complete fixture times were 32.64/11.14/7.58
+seconds for local/full-executor/small-executor placement, and device RSS peaks
+were 61896/53556/33044 KiB. Remote controller RSS was about 310 MiB. This is a
+synthetic fixture result, excluding model inference and voice. See performance.md
+and placement-balanced-results.json. The separate SQLite pool comparison still
+needs clean alternating confirmation.
 
 ## Remaining work
 

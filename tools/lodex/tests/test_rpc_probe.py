@@ -44,13 +44,19 @@ for line in sys.stdin: pass
             ], 2)
 
     async def test_notifications_and_expected_errors(self):
+        observed = []
         result = await probe.run([sys.executable, "-c", FIXTURE], [
             {"method": "initialized", "notification": True},
             {"method": "good", "checks": [{"path": ["result", "ok"], "equals": True}]},
             {"method": "bad", "expect_error": True},
-        ], 2)
+        ], 2, process_observer=observed.append)
         self.assertTrue(result["passed"])
         self.assertEqual(result["notifications"], 2)
+        self.assertGreaterEqual(result["workload_seconds"], sum(
+            item["elapsed_seconds"] for item in result["requests"]))
+        self.assertGreaterEqual(result["shutdown_seconds"], 0)
+        self.assertEqual(len(observed), 1)
+        self.assertGreater(observed[0], 0)
 
     async def test_early_exit_is_not_a_pass(self):
         with self.assertRaises(RuntimeError):

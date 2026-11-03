@@ -11,6 +11,8 @@ import struct
 import subprocess
 import time
 
+from hardware_job import DEFAULT_LOCK, HardwareJob
+
 
 def ssh(helper, command, **kwargs):
     return subprocess.run([str(helper), command], check=True, **kwargs)
@@ -93,12 +95,14 @@ def main():
     parser.add_argument("--name", required=True)
     parser.add_argument("--lab-root", default="/mnt/mmcblk0p2/lodex-lab")
     parser.add_argument("--cache", type=Path, default=Path(".lodex-build/uploads"))
+    parser.add_argument("--hardware-lock", type=Path, default=DEFAULT_LOCK)
     args = parser.parse_args()
     if not re.fullmatch(r"[a-zA-Z0-9][a-zA-Z0-9_.-]{0,63}", args.name):
         parser.error("name must be a simple bounded image name")
     if not Path(args.lab_root).is_absolute() or Path(args.lab_root).name != "lodex-lab":
         parser.error("lab root must be an absolute dedicated lodex-lab directory")
-    run(args)
+    with HardwareJob(args.hardware_lock):
+        run(args)
 
 
 if __name__ == "__main__":

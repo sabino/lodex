@@ -95,7 +95,9 @@ def resolve_refs(value, variables):
     return value
 
 
-async def run(command, steps, timeout, idle_seconds=0, ready_file=None, initial_variables=None):
+async def run(command, steps, timeout, idle_seconds=0, ready_file=None, initial_variables=None,
+              process_observer=None):
+    run_started = time.monotonic()
     process = await asyncio.create_subprocess_exec(
         *command, stdin=asyncio.subprocess.PIPE, stdout=asyncio.subprocess.PIPE,
         stderr=asyncio.subprocess.PIPE, limit=2 ** 20)
@@ -111,6 +113,8 @@ async def run(command, steps, timeout, idle_seconds=0, ready_file=None, initial_
     reports = []
     variables = dict(initial_variables or {})
     try:
+        if process_observer is not None:
+            process_observer(process.pid)
         for step in steps:
             if "wait_notification" in step:
                 response = await probe.wait_notification(step["wait_notification"])
@@ -142,11 +146,13 @@ async def run(command, steps, timeout, idle_seconds=0, ready_file=None, initial_
                     variables[name] = value
                 reports.append({"method": item["method"], "elapsed_seconds": elapsed,
                                 "parallel_group_size": len(batch), "response": response})
+        workload_seconds = time.monotonic() - run_started
         if ready_file is not None:
             Path(ready_file).write_text(json.dumps({"passed_requests": len(reports)}) + "\n")
         if idle_seconds:
             await asyncio.sleep(idle_seconds)
     finally:
+        shutdown_started = time.monotonic()
         process.stdin.close()
         try:
             await asyncio.wait_for(process.wait(), timeout=15)
@@ -160,7 +166,9 @@ async def run(command, steps, timeout, idle_seconds=0, ready_file=None, initial_
         await drain
     if process.returncode != 0:
         raise RuntimeError(f"runtime exited {process.returncode}: " + stderr_tail.decode(errors="replace")[-1000:])
-    return {"passed": True, "notifications": probe.notifications, "requests": reports, "captures": variables}
+    return {"passed": True, "notifications": probe.notifications, "requests": reports, "captures": variables,
+            "workload_seconds": workload_seconds,
+            "shutdown_seconds": time.monotonic() - shutdown_started}
 
 
 def main():

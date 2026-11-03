@@ -1,0 +1,553 @@
+{
+  "trials": [
+    {
+      "label": "01-local",
+      "mode": "local",
+      "warmup": true,
+      "passed": true,
+      "workload_seconds": 37.43221755803097,
+      "shutdown_seconds": 2.359743272070773,
+      "device": {
+        "sample_count": 5,
+        "elapsed_seconds": 4,
+        "rss_min_kib": 48984,
+        "rss_max_kib": 48984,
+        "rss_peak_kib": 57976,
+        "swap_max_kib": 5128,
+        "major_fault_delta": 0,
+        "cpu_tick_delta": 1,
+        "cpu_ticks_at_first_sample": 918,
+        "threads": 16,
+        "major_faults_at_first_sample": 4123
+      },
+      "host": {
+        "sample_count": 5,
+        "elapsed_seconds": 4,
+        "rss_min_kib": 10196,
+        "rss_max_kib": 10196,
+        "rss_peak_kib": 10196,
+        "swap_max_kib": 0,
+        "major_fault_delta": 0,
+        "cpu_tick_delta": 0,
+        "cpu_ticks_at_first_sample": 1,
+        "threads": 1
+      },
+      "rpc_seconds": {
+        "initialize": 9.9612940850202,
+        "thread/start": 12.312191030941904,
+        "mcpServerStatus/list": 13.966070537921041,
+        "mcpServer/tool/call": 0.9915447039529681,
+        "mcpServer/resource/read": 0.20020504691638052
+      }
+    },
+    {
+      "label": "02-remote-full",
+      "mode": "remote-full",
+      "warmup": true,
+      "passed": true,
+      "workload_seconds": 8.925034585990943,
+      "shutdown_seconds": 0.07806292502209544,
+      "device": {
+        "sample_count": 5,
+        "elapsed_seconds": 4,
+        "rss_min_kib": 50328,
+        "rss_max_kib": 50328,
+        "rss_peak_kib": 52188,
+        "swap_max_kib": 60,
+        "major_fault_delta": 0,
+        "cpu_tick_delta": 0,
+        "cpu_ticks_at_first_sample": 146,
+        "threads": 8,
+        "major_faults_at_first_sample": 641
+      },
+      "host": {
+        "sample_count": 5,
+        "elapsed_seconds": 4,
+        "rss_min_kib": 318352,
+        "rss_max_kib": 318496,
+        "rss_peak_kib": 318496,
+        "swap_max_kib": 0,
+        "major_fault_delta": 0,
+        "cpu_tick_delta": 1,
+        "cpu_ticks_at_first_sample": 22,
+        "threads": 34
+      },
+      "rpc_seconds": {
+        "initialize": 1.5539824300212786,
+        "thread/start": 5.5924983359873295,
+        "mcpServerStatus/list": 1.6710079279728234,
+        "mcpServer/tool/call": 0.053495239932090044,
+        "mcpServer/resource/read": 0.053026154986582696
+      }
+    },
+    {
+      "label": "03-remote-thin",
+      "mode": "remote-thin",
+      "warmup": true,
+      "passed": true,
+      "workload_seconds": 5.697396214934997,
+      "shutdown_seconds": 0.011125313001684844,
+      "device": {
+        "sample_count": 5,
+        "elapsed_seconds": 4,
+        "rss_min_kib": 32984,
+        "rss_max_kib": 32984,
+        "rss_peak_kib": 33004,
+        "swap_max_kib": 0,
+        "major_fault_delta": 0,
+        "cpu_tick_delta": 0,
+        "cpu_ticks_at_first_sample": 114,
+        "threads": 9,
+        "major_faults_at_first_sample": 413
+      },
+      "host": {
+        "sample_count": 5,
+        "elapsed_seconds": 4,
+        "rss_min_kib": 312908,
+        "rss_max_kib": 312908,
+        "rss_peak_kib": 312908,
+        "swap_max_kib": 0,
+        "major_fault_delta": 0,
+        "cpu_tick_delta": 0,
+        "cpu_ticks_at_first_sample": 22,
+        "threads": 33
+      },
+      "rpc_seconds": {
+        "initialize": 1.7467188639566302,
+        "thread/start": 2.61278703995049,
+        "mcpServerStatus/list": 1.2312960179988295,
+        "mcpServer/tool/call": 0.05248768499586731,
+        "mcpServer/resource/read": 0.05311261001043022
+      }
+    },
+    {
+      "label": "04-local",
+      "mode": "local",
+      "warmup": false,
+      "passed": true,
+      "workload_seconds": 34.70026924600825,
+      "shutdown_seconds": 2.429605345008895,
+      "device": {
+        "sample_count": 5,
+        "elapsed_seconds": 4,
+        "rss_min_kib": 49636,
+        "rss_max_kib": 50824,
+        "rss_peak_kib": 61896,
+        "swap_max_kib": 5812,
+        "major_fault_delta": 39,
+        "cpu_tick_delta": 3,
+        "cpu_ticks_at_first_sample": 833,
+        "threads": 16,
+        "major_faults_at_first_sample": 4258
+      },
+      "host": {
+        "sample_count": 5,
+        "elapsed_seconds": 4,
+        "rss_min_kib": 10216,
+        "rss_max_kib": 10216,
+        "rss_peak_kib": 10216,
+        "swap_max_kib": 0,
+        "major_fault_delta": 0,
+        "cpu_tick_delta": 0,
+        "cpu_ticks_at_first_sample": 1,
+        "threads": 1
+      },
+      "rpc_seconds": {
+        "initialize": 8.850528344046324,
+        "thread/start": 9.82187454297673,
+        "mcpServerStatus/list": 14.844299121992663,
+        "mcpServer/tool/call": 1.1017794409999624,
+        "mcpServer/resource/read": 0.08089306100737303
+      }
+    },
+    {
+      "label": "05-remote-full",
+      "mode": "remote-full",
+      "warmup": false,
+      "passed": true,
+      "workload_seconds": 11.138051729998551,
+      "shutdown_seconds": 0.20443954097572714,
+      "device": {
+        "sample_count": 5,
+        "elapsed_seconds": 5,
+        "rss_min_kib": 52340,
+        "rss_max_kib": 52340,
+        "rss_peak_kib": 52360,
+        "swap_max_kib": 0,
+        "major_fault_delta": 0,
+        "cpu_tick_delta": 0,
+        "cpu_ticks_at_first_sample": 133,
+        "threads": 8,
+        "major_faults_at_first_sample": 628
+      },
+      "host": {
+        "sample_count": 5,
+        "elapsed_seconds": 4,
+        "rss_min_kib": 307580,
+        "rss_max_kib": 314316,
+        "rss_peak_kib": 314316,
+        "swap_max_kib": 0,
+        "major_fault_delta": 0,
+        "cpu_tick_delta": 0,
+        "cpu_ticks_at_first_sample": 24,
+        "threads": 28
+      },
+      "rpc_seconds": {
+        "initialize": 1.5379938910482451,
+        "thread/start": 6.2689345619874075,
+        "mcpServerStatus/list": 3.210156508954242,
+        "mcpServer/tool/call": 0.061195112997666,
+        "mcpServer/resource/read": 0.058728512027300894
+      }
+    },
+    {
+      "label": "06-remote-thin",
+      "mode": "remote-thin",
+      "warmup": false,
+      "passed": true,
+      "workload_seconds": 5.514677184983157,
+      "shutdown_seconds": 0.07137905794661492,
+      "device": {
+        "sample_count": 5,
+        "elapsed_seconds": 4,
+        "rss_min_kib": 33028,
+        "rss_max_kib": 33028,
+        "rss_peak_kib": 33044,
+        "swap_max_kib": 0,
+        "major_fault_delta": 0,
+        "cpu_tick_delta": 0,
+        "cpu_ticks_at_first_sample": 113,
+        "threads": 12,
+        "major_faults_at_first_sample": 413
+      },
+      "host": {
+        "sample_count": 5,
+        "elapsed_seconds": 5,
+        "rss_min_kib": 315060,
+        "rss_max_kib": 315064,
+        "rss_peak_kib": 315064,
+        "swap_max_kib": 0,
+        "major_fault_delta": 0,
+        "cpu_tick_delta": 1,
+        "cpu_ticks_at_first_sample": 23,
+        "threads": 34
+      },
+      "rpc_seconds": {
+        "initialize": 1.5753387189470232,
+        "thread/start": 2.5800422329921275,
+        "mcpServerStatus/list": 1.2515581260668114,
+        "mcpServer/tool/call": 0.05395512597169727,
+        "mcpServer/resource/read": 0.05277235002722591
+      }
+    },
+    {
+      "label": "07-remote-full",
+      "mode": "remote-full",
+      "warmup": false,
+      "passed": true,
+      "workload_seconds": 7.141334255924448,
+      "shutdown_seconds": 0.05942805204540491,
+      "device": {
+        "sample_count": 5,
+        "elapsed_seconds": 4,
+        "rss_min_kib": 54156,
+        "rss_max_kib": 54156,
+        "rss_peak_kib": 54172,
+        "swap_max_kib": 0,
+        "major_fault_delta": 0,
+        "cpu_tick_delta": 0,
+        "cpu_ticks_at_first_sample": 135,
+        "threads": 8,
+        "major_faults_at_first_sample": 676
+      },
+      "host": {
+        "sample_count": 5,
+        "elapsed_seconds": 4,
+        "rss_min_kib": 317952,
+        "rss_max_kib": 318292,
+        "rss_peak_kib": 318292,
+        "swap_max_kib": 0,
+        "major_fault_delta": 0,
+        "cpu_tick_delta": 0,
+        "cpu_ticks_at_first_sample": 23,
+        "threads": 36
+      },
+      "rpc_seconds": {
+        "initialize": 1.603353370912373,
+        "thread/start": 4.106026294990443,
+        "mcpServerStatus/list": 1.3207053389633074,
+        "mcpServer/tool/call": 0.05321808601729572,
+        "mcpServer/resource/read": 0.05694886692799628
+      }
+    },
+    {
+      "label": "08-remote-thin",
+      "mode": "remote-thin",
+      "warmup": false,
+      "passed": true,
+      "workload_seconds": 7.576215908979066,
+      "shutdown_seconds": 0.07727663707919419,
+      "device": {
+        "sample_count": 5,
+        "elapsed_seconds": 4,
+        "rss_min_kib": 33036,
+        "rss_max_kib": 33036,
+        "rss_peak_kib": 33052,
+        "swap_max_kib": 0,
+        "major_fault_delta": 0,
+        "cpu_tick_delta": 0,
+        "cpu_ticks_at_first_sample": 112,
+        "threads": 10,
+        "major_faults_at_first_sample": 413
+      },
+      "host": {
+        "sample_count": 5,
+        "elapsed_seconds": 4,
+        "rss_min_kib": 316052,
+        "rss_max_kib": 316388,
+        "rss_peak_kib": 316388,
+        "swap_max_kib": 0,
+        "major_fault_delta": 0,
+        "cpu_tick_delta": 0,
+        "cpu_ticks_at_first_sample": 24,
+        "threads": 33
+      },
+      "rpc_seconds": {
+        "initialize": 1.5130268320208415,
+        "thread/start": 4.067571850027889,
+        "mcpServerStatus/list": 1.885803649900481,
+        "mcpServer/tool/call": 0.05403738399036229,
+        "mcpServer/resource/read": 0.054680755943991244
+      }
+    },
+    {
+      "label": "09-local",
+      "mode": "local",
+      "warmup": false,
+      "passed": true,
+      "workload_seconds": 32.15292046801187,
+      "shutdown_seconds": 2.1795038109412417,
+      "device": {
+        "sample_count": 5,
+        "elapsed_seconds": 4,
+        "rss_min_kib": 49260,
+        "rss_max_kib": 52392,
+        "rss_peak_kib": 61952,
+        "swap_max_kib": 5820,
+        "major_fault_delta": 112,
+        "cpu_tick_delta": 8,
+        "cpu_ticks_at_first_sample": 859,
+        "threads": 16,
+        "major_faults_at_first_sample": 3558
+      },
+      "host": {
+        "sample_count": 5,
+        "elapsed_seconds": 4,
+        "rss_min_kib": 10184,
+        "rss_max_kib": 10184,
+        "rss_peak_kib": 10184,
+        "swap_max_kib": 0,
+        "major_fault_delta": 0,
+        "cpu_tick_delta": 0,
+        "cpu_ticks_at_first_sample": 1,
+        "threads": 1
+      },
+      "rpc_seconds": {
+        "initialize": 9.100026858970523,
+        "thread/start": 13.591529465978965,
+        "mcpServerStatus/list": 8.65456465294119,
+        "mcpServer/tool/call": 0.6583539710845798,
+        "mcpServer/resource/read": 0.14751350600272417
+      }
+    },
+    {
+      "label": "10-remote-thin",
+      "mode": "remote-thin",
+      "warmup": false,
+      "passed": true,
+      "workload_seconds": 7.989482701988891,
+      "shutdown_seconds": 0.12715437600854784,
+      "device": {
+        "sample_count": 5,
+        "elapsed_seconds": 5,
+        "rss_min_kib": 32984,
+        "rss_max_kib": 32984,
+        "rss_peak_kib": 33000,
+        "swap_max_kib": 0,
+        "major_fault_delta": 0,
+        "cpu_tick_delta": 0,
+        "cpu_ticks_at_first_sample": 114,
+        "threads": 8,
+        "major_faults_at_first_sample": 411
+      },
+      "host": {
+        "sample_count": 5,
+        "elapsed_seconds": 4,
+        "rss_min_kib": 317056,
+        "rss_max_kib": 317388,
+        "rss_peak_kib": 317388,
+        "swap_max_kib": 0,
+        "major_fault_delta": 0,
+        "cpu_tick_delta": 0,
+        "cpu_ticks_at_first_sample": 23,
+        "threads": 32
+      },
+      "rpc_seconds": {
+        "initialize": 1.5462450579507276,
+        "thread/start": 4.2372165829874575,
+        "mcpServerStatus/list": 2.096856891992502,
+        "mcpServer/tool/call": 0.05380596499890089,
+        "mcpServer/resource/read": 0.05428204801864922
+      }
+    },
+    {
+      "label": "11-local",
+      "mode": "local",
+      "warmup": false,
+      "passed": true,
+      "workload_seconds": 32.63992321596015,
+      "shutdown_seconds": 2.51980533299502,
+      "device": {
+        "sample_count": 5,
+        "elapsed_seconds": 5,
+        "rss_min_kib": 43348,
+        "rss_max_kib": 55404,
+        "rss_peak_kib": 59144,
+        "swap_max_kib": 5228,
+        "major_fault_delta": 88,
+        "cpu_tick_delta": 6,
+        "cpu_ticks_at_first_sample": 833,
+        "threads": 16,
+        "major_faults_at_first_sample": 3674
+      },
+      "host": {
+        "sample_count": 5,
+        "elapsed_seconds": 4,
+        "rss_min_kib": 10168,
+        "rss_max_kib": 10168,
+        "rss_peak_kib": 10168,
+        "swap_max_kib": 0,
+        "major_fault_delta": 0,
+        "cpu_tick_delta": 0,
+        "cpu_ticks_at_first_sample": 1,
+        "threads": 1
+      },
+      "rpc_seconds": {
+        "initialize": 8.721033152076416,
+        "thread/start": 12.124382285983302,
+        "mcpServerStatus/list": 9.846336233895272,
+        "mcpServer/tool/call": 1.6280960880685598,
+        "mcpServer/resource/read": 0.31914631894323975
+      }
+    },
+    {
+      "label": "12-remote-full",
+      "mode": "remote-full",
+      "warmup": false,
+      "passed": true,
+      "workload_seconds": 11.82930199697148,
+      "shutdown_seconds": 0.086640604888089,
+      "device": {
+        "sample_count": 5,
+        "elapsed_seconds": 5,
+        "rss_min_kib": 53536,
+        "rss_max_kib": 53536,
+        "rss_peak_kib": 53556,
+        "swap_max_kib": 0,
+        "major_fault_delta": 0,
+        "cpu_tick_delta": 0,
+        "cpu_ticks_at_first_sample": 144,
+        "threads": 9,
+        "major_faults_at_first_sample": 608
+      },
+      "host": {
+        "sample_count": 5,
+        "elapsed_seconds": 4,
+        "rss_min_kib": 319460,
+        "rss_max_kib": 319460,
+        "rss_peak_kib": 319460,
+        "swap_max_kib": 0,
+        "major_fault_delta": 0,
+        "cpu_tick_delta": 0,
+        "cpu_ticks_at_first_sample": 25,
+        "threads": 34
+      },
+      "rpc_seconds": {
+        "initialize": 1.7777870249701664,
+        "thread/start": 6.425866421079263,
+        "mcpServerStatus/list": 3.507863542996347,
+        "mcpServer/tool/call": 0.05474369693547487,
+        "mcpServer/resource/read": 0.06204932800028473
+      }
+    }
+  ],
+  "scope": "balanced synthetic MCP startup/discovery/tool/resource workload, three fresh-home trials per mode after one warmup each; managed service stopped during all trials",
+  "limitations": [
+    "No model inference, speech, cloud WAN or complete user-turn workload.",
+    "Host samples cover direct controller process (remote modes) or SSH transport (local mode), not full process trees.",
+    "RSS is not PSS; host and device have different architectures; device/host ticks need their respective CLK_TCK.",
+    "Sequential warm-cache operation, no page-cache flush; external fixture/tunnel/sampler costs not individually attributed.",
+    "Native v1.3 and standalone v1 use low-memory pool feature; stock 0.166.0 controller uses upstream defaults.",
+    "Only three measured trials per mode; no cache eviction or machine reboot; OS background work is not fully controlled.",
+    "RSS does not isolate heap/shared executable pages and cannot be summed as PSS. Device and controller process trees are not fully accounted.",
+    "This confirms only the synthetic startup/MCP fixture; do not extrapolate to model-inference, hosted Cloud or speech latency."
+  ],
+  "medians_excluding_warmups": {
+    "local": {
+      "workload_seconds": 32.63992321596015,
+      "shutdown_seconds": 2.429605345008895,
+      "device_peak_rss_kib": 61896,
+      "device_post_workload_rss_max_kib": 52392,
+      "device_sampled_swap_max_kib": 5812,
+      "device_cpu_ticks_at_first_sample": 833,
+      "host_process_peak_rss_kib": 10184,
+      "host_process_cpu_ticks_at_first_sample": 1
+    },
+    "remote-full": {
+      "workload_seconds": 11.138051729998551,
+      "shutdown_seconds": 0.086640604888089,
+      "device_peak_rss_kib": 53556,
+      "device_post_workload_rss_max_kib": 53536,
+      "device_sampled_swap_max_kib": 0,
+      "device_cpu_ticks_at_first_sample": 135,
+      "host_process_peak_rss_kib": 318292,
+      "host_process_cpu_ticks_at_first_sample": 24
+    },
+    "remote-thin": {
+      "workload_seconds": 7.576215908979066,
+      "shutdown_seconds": 0.07727663707919419,
+      "device_peak_rss_kib": 33044,
+      "device_post_workload_rss_max_kib": 33028,
+      "device_sampled_swap_max_kib": 0,
+      "device_cpu_ticks_at_first_sample": 113,
+      "host_process_peak_rss_kib": 316388,
+      "host_process_cpu_ticks_at_first_sample": 23
+    }
+  },
+  "sample_clock_ticks_per_second": {
+    "device": 100,
+    "host": 100
+  },
+  "fixture": {
+    "mcp_fixture_sha256": "33c23a4049a494752e48d22531848ad3cd9cba407eeb899d803f62822d6ce1e4",
+    "scenario_sha256": "1c6615a1a32c1aa5fdfc2179e5b7a79af7aefa0cf52a49da8995eb0b60d98aed",
+    "model_calls": 0,
+    "workload_definition": "Wall time from starting SSH/controller process through initialize, ephemeral thread start, MCP discovery, checked echo tool and resource read; excludes 15-second post-workload sampling window and transport shutdown."
+  },
+  "images": {
+    "native_local_and_remote_full": {
+      "version": "Lodex v1.3",
+      "bytes": 239722436,
+      "sha256": "68357dffed3f3e15a49eba8c301675334720bbd51641f6f08fd4143278b45239"
+    },
+    "native_remote_thin": {
+      "version": "executor-only v1",
+      "bytes": 75614760,
+      "sha256": "7a8b64ed1bed062e7909fb6d0ee7d13b607da8e3a9c7c6efb93750c20a7cba13"
+    },
+    "remote_controller": "stock Codex 0.166.0 on x86-64 Linux; no model or auth store used"
+  },
+  "evidence_sha256": {
+    "comparison_summary": "02ecc09dcbc61270e9f50d2c431e58ba8e55a524488756250cbae009e187d7f2"
+  }
+}

@@ -8,6 +8,7 @@ from pathlib import Path
 import shlex
 
 import footprint
+from hardware_job import DEFAULT_LOCK, HardwareJob
 import rpc_probe
 
 
@@ -89,11 +90,13 @@ def main():
     parser.add_argument("--config", required=True, type=Path, help="synthetic fixture config without credentials")
     parser.add_argument("--output-dir", required=True, type=Path)
     parser.add_argument("--runtime-lib", required=True)
+    parser.add_argument("--hardware-lock", type=Path, default=DEFAULT_LOCK)
     parser.add_argument("--repeat", type=int, choices=range(1, 6), default=3)
     args = parser.parse_args()
     if not all(Path(path).is_absolute() for path in [args.binary, args.remote_root, args.runtime_lib]):
         parser.error("remote paths must be absolute")
-    asyncio.run(run(args))
+    with HardwareJob(args.hardware_lock):
+        asyncio.run(run(args))
 
 
 if __name__ == "__main__":

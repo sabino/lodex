@@ -44,7 +44,7 @@ rollback retained. It passed reconnect after managed stop/start, native CLI,
 concurrent shell/history and process-restart recovery. See CURRENT.md and
 candidate-v1.1-results.json for exact evidence and remaining limitations.
 
-The two-connection SQLite variant is building. All245 state tests and one
+The two-connection SQLite variant compiled and passed native gates. All245 state tests and one
 doctest pass with both its feature and upstream default5. Three unchanged-image
 baseline trials completed before evaluating this variant. Use
 tools/lodex/native_benchmark.py with an explicit pinned SSH helper, immutable

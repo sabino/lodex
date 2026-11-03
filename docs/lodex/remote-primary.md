@@ -39,8 +39,12 @@ The executor state directory and matching private runtime must already exist.
 The functional test used a separate, credential-free executor home. It used an
 explicit direct-tool model catalog for the controller. Other tool modes and
 firmware layouts require their own qualification. The experimental executor-only image compiled as a smaller alternative to the
-full local harness image. Its native startup, environment RPC and MCP tool/resource
-smoke checks passed; broader process/file/cancellation/recovery testing remains.
+full local harness image. Native process/file integrity, stdin retries,
+interruption, termination and restart passed. A capability-token listener behind
+pinned SSH rejected missing/wrong credentials and Origin-bearing requests, and
+resumed the same process session after abrupt WebSocket stream loss without
+duplicating stdin. See [the qualification record](executor-qualification.json).
+This does not test SSH/Wi-Fi loss, power failure, hosted Cloud or auth refresh.
 
 Specify the device-native working directory when selecting an environment or
 calling a shell tool. A controller's local working directory may not exist on the
@@ -71,3 +75,29 @@ cloud task is not migration of an existing local thread.
 Compare device CPU/RSS/swap/faults, complete startup and turn/tool latency,
 connection recovery and representative MCP concurrency before choosing a default
 placement. A functional route alone is not a performance result.
+
+## Synthetic executor qualification
+
+`tools/lodex/executor_probe.py` takes a pinned SSH helper, an immutable lab image,
+a new absolute remote directory, a private runtime library path and a create-only
+output file. It makes no model calls and does not use the managed service home.
+`--full-cli` tests the full image's `exec-server` entry point instead.
+
+`tools/lodex/executor_websocket_probe.py` tests a separately started, synthetic
+capability-token listener through a loopback SSH forward. Its only extra package,
+`websockets==15.0.1`, belongs in a controller-side virtual environment. No Python
+package is required on the device. Supply a synthetic token file with
+`--token-file`; do not use an account token. The test leaves listener/tunnel
+lifecycle to its caller, which must clean up those owned processes afterward.
+
+Uploads, native benchmarks and both probes share a fail-fast controller lock.
+Use the same `--hardware-lock` path for all jobs targeting a device. Other native
+commands can run under `python3 tools/lodex/hardware_job.py -- COMMAND ARGS...`.
+This is cooperative exclusion on one controller, not coordination across hosts
+or automatic remote cleanup. Inspect owned jobs after an abnormal termination.
+
+A [balanced native startup/MCP comparison](placement-balanced-results.json)
+passed three measured trials per placement after warmup. It includes device and
+host process counters and a complete fixture clock. It favors the smaller
+executor for that workload while showing the remote controller's memory cost;
+it does not measure cloud inference or voice.

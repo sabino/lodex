@@ -1,0 +1,94 @@
+{
+  "device": "Omega2+ MT7688 MIPS32r2 little-endian soft-float, OpenWrt 23.05.3",
+  "image_sha256": "7a8b64ed1bed062e7909fb6d0ee7d13b607da8e3a9c7c6efb93750c20a7cba13",
+  "direct_stdio": {
+    "passed": true,
+    "scope": "synthetic direct executor process/file qualification; no model or auth",
+    "checks": [
+      {
+        "case": "separate-streams-nonzero-exit",
+        "passed": true
+      },
+      {
+        "case": "paged-256-kib-output",
+        "passed": true,
+        "bytes": 262144,
+        "sha256": "8a39d2abd3999ab73c34db2476849cddf303ce389b35826850f9a700589b4a90"
+      },
+      {
+        "case": "stdin-idempotent-retry",
+        "passed": true
+      },
+      {
+        "case": "four-live-process-handles",
+        "passed": true
+      },
+      {
+        "case": "interrupt",
+        "passed": true,
+        "seconds": 0.015129938954487443
+      },
+      {
+        "case": "terminate",
+        "passed": true,
+        "seconds": 0.015868184971623123
+      },
+      {
+        "case": "binary-whole-file",
+        "passed": true,
+        "bytes": 131072,
+        "sha256": "59f410ae5e17962412e2aed4f815918f634932f2abf084f00bb638c4db017850"
+      },
+      {
+        "case": "block-file-replace-read-close-remove",
+        "passed": true,
+        "bytes": 65536,
+        "sha256": "2c4de308c38eb503c5ca2b558e16cb6be4eb504ac667569c052be79d366f3f16"
+      },
+      {
+        "case": "orderly-stdio-close-and-fresh-restart",
+        "passed": true
+      }
+    ],
+    "limitations": [
+      "No websocket/Noise session recovery or network-loss test.",
+      "No model, inference, voice, auth-refresh or MCP conformance in this probe.",
+      "Correctness fixture timings are not a controlled performance comparison."
+    ]
+  },
+  "authenticated_socket": {
+    "passed": true,
+    "cases": 4,
+    "checks": [
+      {
+        "case": "missing-wrong-bearer-and-origin-rejected",
+        "passed": true
+      },
+      {
+        "case": "active-session-duplicate-attach-rejected",
+        "passed": true
+      },
+      {
+        "case": "abrupt-stream-loss-session-output-and-stdin-recovery",
+        "passed": true,
+        "seconds": 0.10333932295907289
+      },
+      {
+        "case": "unknown-session-rejected",
+        "passed": true
+      }
+    ],
+    "total_seconds": 0.6363804549910128,
+    "scope": "capability-token listener behind pinned SSH; synthetic process-session socket-loss recovery",
+    "limitations": [
+      "Does not interrupt SSH, Wi-Fi, power or the executor process.",
+      "No Noise relay, hosted cloud, OAuth refresh, JWT expiry or detached-session TTL test.",
+      "No model, MCP, voice or controlled performance comparison."
+    ]
+  },
+  "evidence_sha256": {
+    "direct_stdio": "0912fdba23f235658158386ec9c707b8c7a259ca9bf2cdb7fd86d1bb97015b37",
+    "socket_probe": "05176b5d475c9ce60b481ba877c09be32f96873895ad6356676cb8c78fafa790"
+  },
+  "interpretation": "Native correctness qualification. These timings do not establish performance gains; recovery used abrupt WebSocket stream loss inside an intact pinned SSH tunnel."
+}

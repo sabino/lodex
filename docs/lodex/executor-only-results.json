@@ -43,9 +43,12 @@
     "mcp-result.json": "60877e5a4b612c93212a111300a1441273ae9d6ae8a854331c5a181e1e8b602a"
   },
   "limitations": [
-    "Only basic native qualification; process/file/cancellation/auth/recovery stress and prolonged workloads remain.",
+    "Native direct process/file and capability-token socket-loss gates passed; prolonged stress, auth refresh, Noise, Wi-Fi/power failure and broader native conformance remain.",
     "Real model-driven shell proof used full v1.3 executor, not this standalone image.",
     "Profile is one warm fixture observation with background managed service active, no model inference and no controller resource accounting.",
     "No universal memory, speed, cloud-network or voice-latency guarantee."
-  ]
+  ],
+  "native_process_file_stdin_cancellation_restart_passed": true,
+  "native_capability_token_and_socket_session_recovery_passed": true,
+  "qualification_record": "executor-qualification.json"
 }

@@ -13,7 +13,7 @@ external SD storage. Results are specific to the workload, binary and firmware.
 | Lodex v1.1 | 236607592 |
 | Lodex v1.2, two-connection candidate | 236607236 |
 | Lodex v1.3, executor entry point restored | 239722436 |
-| Executor-only candidate, basic native smoke checks passed | 75614760 |
+| Executor-only v1 | 75614760 |
 
 The executor CLI adds about 3.1 MB to the image while retaining a remote tools
 execution path. Image size is not heap, RSS, swap or total physical RAM usage.
@@ -69,7 +69,43 @@ An additional warm executor-only fixture observation recorded RSS 32084 KiB,
 peak 32100 KiB, zero sampled swap and 9 threads. This separate single observation
 has different warm/cache state and is not a controlled percentage-saving result.
 See [its exact scope and native gates](executor-only-results.json). Repeated
-placement tests and broader executor-only qualification remain work in progress.
+loaded-turn placement tests and broader executor-only qualification remain work in progress.
+
+## Balanced startup and MCP comparison
+
+A later run used one warmup per mode followed by three measured fresh-home trials
+per mode, in balanced order. A shared controller lock excluded other cooperative
+hardware jobs; the managed Remote service was stopped throughout measurement and
+restored connected afterward. All twelve workloads, including warmups, passed.
+Native process/file/cancellation and authenticated socket-recovery gates also
+passed separately; see [their scope](executor-qualification.json).
+
+The workload clock starts before launching SSH or the controller and ends after
+initialization, ephemeral thread creation, MCP discovery, a checked echo call and
+a checked resource read. It excludes the post-workload sampling window and
+transport shutdown. No model inference or account token was used.
+
+| Median across three measured trials | Local harness | Remote primary/full executor | Remote primary/small executor |
+| --- | ---: | ---: | ---: |
+| Complete fixture workload, seconds | 32.64 | 11.14 | 7.58 |
+| Device process RSS high-water mark, KiB | 61896 | 53556 | 33044 |
+| Maximum sampled device process swap, KiB | 5812 | 0 | 0 |
+| Device process CPU seconds at first post-workload sample | 8.33 | 1.35 | 1.13 |
+| Host process RSS high-water mark, KiB | 10184 | 318292 | 316388 |
+
+The host process is the SSH transport for local mode and the primary Codex process
+for remote modes. Its controller memory cost is substantial. These process
+measurements exclude full child trees and the external fixture/tunnel; RSS cannot
+be summed as PSS. CPU values include startup and work before the first sample,
+using 100 clock ticks per second on each machine.
+
+This small balanced run supports moving this startup/MCP workload off the device
+and using the smaller executor for it. It does not establish a model-turn or voice
+speedup, hosted-cloud availability, lower aggregate system memory, or long-running
+conversation performance. Caches were warmed without eviction, and OS background
+work was not fully controlled. Local mode remains available. The native full image
+and executor use the two-connection profile; the stock 0.166.0 x86-64 controller
+uses upstream defaults. [All trials, image hashes and limitations are retained](placement-balanced-results.json).
 
 ## Execution placement
 
