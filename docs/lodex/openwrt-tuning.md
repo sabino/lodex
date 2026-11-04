@@ -16,6 +16,32 @@ bottleneck from a boot-lifetime interrupt count. Sample CPU, process creation,
 process/child CPU, interrupt deltas and storage activity over the same interval.
 Exclude profiling overhead and retain raw captures privately.
 
+## Check process-launch overhead in Python supervisors
+
+On Python 3.11/musl, `subprocess.run()` may fork even when `os.posix_spawn()`
+is available. The
+[Python 3.11 documentation](https://docs.python.org/3.11/library/subprocess.html#subprocess.Popen)
+only promises that `Popen` uses `posix_spawn` in some cases; its availability
+alone does not establish which path runs. Large minor-fault deltas from a
+repeatedly forking supervisor can reflect copy-on-write overhead. Minor faults
+do not require disk reads and should be separated from major faults.
+
+A consumer outside Lodex tested a bounded runner using the public
+[`os.posix_spawn()` API](https://docs.python.org/3.11/library/os.html#os.posix_spawn).
+It preserves environment and exit status, closes extra inherited descriptors,
+merges output with a 64 KiB limit, and kills/reaps timed-out or oversized
+children. No interpreter-wide private flags were changed. Two native
+microbenchmark batches of 30 short commands each on Python 3.11.7 produced:
+
+| Batch | `subprocess.run` elapsed / minor faults | Bounded runner elapsed / minor faults |
+| --- | --- | --- |
+| 1 | 1.069 s / 5,999 | 0.312 s / 35 |
+| 2 | 1.263 s / 5,817 | 0.401 s / 3 |
+
+All four measurements recorded zero major faults. These two batches measure
+supervisor launch overhead; complete application latency and sustained memory
+pressure require separate measurements.
+
 ## Swap read-ahead is a different policy
 
 The executable's `MADV_RANDOM` optimization is not the same as globally setting
