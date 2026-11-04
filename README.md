@@ -119,6 +119,8 @@ direct tool mode because the V8 code-mode host is unavailable on this target.
 [Optional embedded settings](docs/lodex/embedded-config.toml) disable unused
 catalogs and telemetry exporters. Merge them into the existing configuration;
 retain the device's authentication, providers and MCP declarations.
+See [host-system profiling and kernel tuning](docs/lodex/openwrt-tuning.md) before
+changing OpenWrt drivers or global memory settings.
 
 ## Verification and measurements
 
