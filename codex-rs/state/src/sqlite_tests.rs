@@ -8,6 +8,74 @@ use sqlx::sqlite::SqliteConnectOptions;
 use sqlx::sqlite::SqliteJournalMode;
 use sqlx::sqlite::SqlitePoolOptions;
 
+#[cfg(feature = "lodex-low-memory")]
+#[tokio::test]
+async fn small_caches_preserve_queries_and_reinitialize_replaced_connections() -> anyhow::Result<()>
+{
+    use sqlx::Connection;
+
+    let home = tempfile::tempdir()?;
+    let sqlite = SqliteConfig::new_for_testing(home.path().abs());
+    let path = sqlite.state_db_path();
+    let pool = sqlite.open_read_write_pool(&path).await?;
+    sqlx::query("CREATE TABLE cached_values (value INTEGER NOT NULL)")
+        .execute(&pool)
+        .await?;
+    sqlx::query("INSERT INTO cached_values VALUES (42)")
+        .execute(&pool)
+        .await?;
+
+    // Exercise both workers, exceeding the cache with different prepared SQL.
+    let mut first = pool.acquire().await?;
+    let mut second = pool.acquire().await?;
+    for connection in [&mut first, &mut second] {
+        for offset in 0..80_i64 {
+            // The only interpolated value is this test's bounded integer.
+            let value: i64 = sqlx::query_scalar(sqlx::AssertSqlSafe(format!(
+                "SELECT value + {offset} FROM cached_values"
+            )))
+            .fetch_one(&mut **connection)
+            .await?;
+            assert_eq!(value, 42 + offset);
+        }
+        assert!(connection.cached_statements_size() <= 32);
+        assert_eq!(
+            sqlx::query_scalar::<_, i64>("PRAGMA cache_size")
+                .fetch_one(&mut **connection)
+                .await?,
+            -512
+        );
+    }
+    first.detach().close().await?;
+    second.detach().close().await?;
+
+    // A connection opened after eviction must retain tuning and persisted data.
+    let mut replacement = pool.acquire().await?;
+    assert_eq!(
+        sqlx::query_scalar::<_, i64>("PRAGMA cache_size")
+            .fetch_one(&mut *replacement)
+            .await?,
+        -512
+    );
+    assert_eq!(
+        sqlx::query_scalar::<_, i64>("SELECT value FROM cached_values")
+            .fetch_one(&mut *replacement)
+            .await?,
+        42
+    );
+    replacement.return_to_pool().await;
+    pool.close().await;
+    let read_only = sqlite.open_read_only_pool(&path, None).await?;
+    assert_eq!(
+        sqlx::query_scalar::<_, i64>("SELECT value FROM cached_values")
+            .fetch_one(&read_only)
+            .await?,
+        42
+    );
+    read_only.close().await;
+    Ok(())
+}
+
 #[tokio::test]
 async fn concurrent_writes_survive_pool_pressure_and_reopen() -> anyhow::Result<()> {
     let home = tempfile::tempdir()?;

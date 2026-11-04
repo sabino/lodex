@@ -22,7 +22,6 @@ use sqlx::Error;
 use sqlx::SqlitePool;
 use sqlx::migrate::Migrator;
 use sqlx::sqlite::SqliteConnectOptions;
-use sqlx::sqlite::SqlitePoolOptions;
 use sqlx::sqlite::SqliteSynchronous;
 use std::path::Path;
 use std::path::PathBuf;
@@ -539,8 +538,10 @@ impl SqliteConfig {
         if let Some(busy_timeout) = busy_timeout {
             options = options.busy_timeout(busy_timeout);
         }
-        SqlitePoolOptions::new()
-            .max_connections(1)
+        connection::pool_options(1)
+            // Setting cache_size while opening a read-only diagnostic can
+            // read the schema and fail under an exclusive writer lock before
+            // the caller installs its deadline/progress handler.
             .connect_with(options)
             .await
     }
@@ -562,9 +563,8 @@ impl SqliteConfig {
             .create_if_missing(false)
             .busy_timeout(Duration::ZERO)
             .log_statements(LevelFilter::Off);
-        SqlitePoolOptions::new()
-            .max_connections(1)
-            .connect_with(options)
+        connection::pool_options(1)
+            .connect_with(connection::connection_options(options))
             .await
             .map(Some)
             .map_err(anyhow::Error::from)

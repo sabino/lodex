@@ -1,0 +1,675 @@
+{
+  "schema": 1,
+  "date": "2026-11-04",
+  "hardware": {
+    "device": "Omega2+",
+    "cpu": "MT7688 / MIPS24KEc, one core",
+    "abi": "MIPS32r2 little-endian soft-float",
+    "firmware": "OpenWrt 23.05.3",
+    "kernel": "Linux 5.15.150",
+    "mem_total_kib": 122044,
+    "storage": "SD/ext4 with SD swap available",
+    "clock_ticks_per_second": 100
+  },
+  "scope": "Initialize the local App Server, create four durable threads, run checked concurrent shell commands and read history. No model/API calls or voice streaming.",
+  "method": {
+    "trials_per_variant": 3,
+    "order": [
+      "baseline",
+      "optimized",
+      "optimized",
+      "baseline",
+      "baseline",
+      "optimized"
+    ],
+    "fresh_home_each_trial": true,
+    "same_config_each_trial": true,
+    "managed_remote_stopped_during_comparison": true,
+    "fixture_config_sha256": "19d935c02e34be25d7423b53a1e5c5144dcc5cb4f8788d95d11a074692077596",
+    "managed_remote_restored_after_comparison": true,
+    "whole_run_sampling_ms": 500,
+    "post_workload_sampling_ms": 2000,
+    "post_workload_samples": 5,
+    "sampler": "native proc-sampler.c"
+  },
+  "images": {
+    "baseline": {
+      "name": "Lodex v1.7",
+      "bytes": 240250004,
+      "sha256": "1e325478ca2f942dff6210088b34443dd86a2586e76feacc97f3d55b3e2ebb20"
+    },
+    "optimized": {
+      "name": "Lodex v1.8",
+      "bytes": 163931228,
+      "sha256": "d1945185331c6e55aff95e4ad5935b6b278823983a58bb3b0fb655e7024e90ed"
+    }
+  },
+  "variants": {
+    "baseline": {
+      "trials": [
+        {
+          "order": 1,
+          "cli_version_command": {
+            "wall_seconds": 0.675438231,
+            "user_seconds": 0.0631,
+            "system_seconds": 0.135215,
+            "maxrss_kib": 18216,
+            "minor_faults": 1373,
+            "major_faults": 81,
+            "exit_code": 0
+          },
+          "workload_seconds": 46.39121211494785,
+          "shutdown_seconds": 2.568818037980236,
+          "whole_run": {
+            "sample_count": 157,
+            "elapsed_seconds": 78,
+            "rss_min_kib": 4468,
+            "rss_max_kib": 57816,
+            "rss_peak_kib": 58172,
+            "swap_max_kib": 8136,
+            "major_fault_delta": 4313,
+            "cpu_tick_delta": 1279,
+            "rss_anon_max_kib": 8888,
+            "rss_file_max_kib": 51532
+          },
+          "post_workload": {
+            "sample_count": 5,
+            "elapsed_seconds": 8,
+            "rss_min_kib": 40936,
+            "rss_max_kib": 41324,
+            "rss_peak_kib": 58172,
+            "swap_max_kib": 8136,
+            "major_fault_delta": 30,
+            "cpu_tick_delta": 6,
+            "rss_anon_max_kib": 5664,
+            "rss_file_max_kib": 35672
+          },
+          "post_workload_threads": [
+            24,
+            24,
+            24,
+            24,
+            20
+          ]
+        },
+        {
+          "order": 4,
+          "cli_version_command": {
+            "wall_seconds": 1.508253746,
+            "user_seconds": 0.080746,
+            "system_seconds": 0.161492,
+            "maxrss_kib": 18428,
+            "minor_faults": 1314,
+            "major_faults": 207,
+            "exit_code": 0
+          },
+          "workload_seconds": 55.85388417390641,
+          "shutdown_seconds": 2.9224478540709242,
+          "whole_run": {
+            "sample_count": 175,
+            "elapsed_seconds": 87,
+            "rss_min_kib": 732,
+            "rss_max_kib": 56008,
+            "rss_peak_kib": 56088,
+            "swap_max_kib": 7584,
+            "major_fault_delta": 5534,
+            "cpu_tick_delta": 1369,
+            "rss_anon_max_kib": 8768,
+            "rss_file_max_kib": 50068
+          },
+          "post_workload": {
+            "sample_count": 5,
+            "elapsed_seconds": 8,
+            "rss_min_kib": 41984,
+            "rss_max_kib": 43120,
+            "rss_peak_kib": 56088,
+            "swap_max_kib": 7516,
+            "major_fault_delta": 26,
+            "cpu_tick_delta": 10,
+            "rss_anon_max_kib": 6292,
+            "rss_file_max_kib": 36828
+          },
+          "post_workload_threads": [
+            32,
+            32,
+            32,
+            32,
+            32
+          ]
+        },
+        {
+          "order": 5,
+          "cli_version_command": {
+            "wall_seconds": 1.138056125,
+            "user_seconds": 0.116103,
+            "system_seconds": 0.116103,
+            "maxrss_kib": 18176,
+            "minor_faults": 1341,
+            "major_faults": 183,
+            "exit_code": 0
+          },
+          "workload_seconds": 45.551412218017504,
+          "shutdown_seconds": 4.085574422031641,
+          "whole_run": {
+            "sample_count": 159,
+            "elapsed_seconds": 79,
+            "rss_min_kib": 4536,
+            "rss_max_kib": 56600,
+            "rss_peak_kib": 56972,
+            "swap_max_kib": 7088,
+            "major_fault_delta": 4165,
+            "cpu_tick_delta": 1206,
+            "rss_anon_max_kib": 9060,
+            "rss_file_max_kib": 51756
+          },
+          "post_workload": {
+            "sample_count": 5,
+            "elapsed_seconds": 8,
+            "rss_min_kib": 46980,
+            "rss_max_kib": 47056,
+            "rss_peak_kib": 56972,
+            "swap_max_kib": 5412,
+            "major_fault_delta": 2,
+            "cpu_tick_delta": 2,
+            "rss_anon_max_kib": 8096,
+            "rss_file_max_kib": 38960
+          },
+          "post_workload_threads": [
+            27,
+            27,
+            27,
+            26,
+            20
+          ]
+        }
+      ],
+      "summary": {
+        "workload_seconds": {
+          "median": 46.39121211494785,
+          "min": 45.551412218017504,
+          "max": 55.85388417390641
+        },
+        "cli_version_seconds": {
+          "median": 1.138056125,
+          "min": 0.675438231,
+          "max": 1.508253746
+        },
+        "rss_peak_kib": {
+          "median": 56972,
+          "min": 56088,
+          "max": 58172
+        },
+        "swap_max_kib": {
+          "median": 7584,
+          "min": 7088,
+          "max": 8136
+        },
+        "major_fault_delta": {
+          "median": 4313,
+          "min": 4165,
+          "max": 5534
+        },
+        "cpu_tick_delta": {
+          "median": 1279,
+          "min": 1206,
+          "max": 1369
+        },
+        "rss_anon_max_kib": {
+          "median": 8888,
+          "min": 8768,
+          "max": 9060
+        },
+        "rss_file_max_kib": {
+          "median": 51532,
+          "min": 50068,
+          "max": 51756
+        }
+      }
+    },
+    "optimized": {
+      "trials": [
+        {
+          "order": 2,
+          "cli_version_command": {
+            "wall_seconds": 1.066220402,
+            "user_seconds": 0.096489,
+            "system_seconds": 0.185557,
+            "maxrss_kib": 12676,
+            "minor_faults": 1363,
+            "major_faults": 444,
+            "exit_code": 0
+          },
+          "workload_seconds": 29.83182255795691,
+          "shutdown_seconds": 1.0022514989832416,
+          "whole_run": {
+            "sample_count": 121,
+            "elapsed_seconds": 60,
+            "rss_min_kib": 576,
+            "rss_max_kib": 52512,
+            "rss_peak_kib": 52936,
+            "swap_max_kib": 0,
+            "major_fault_delta": 11803,
+            "cpu_tick_delta": 1291,
+            "rss_anon_max_kib": 14312,
+            "rss_file_max_kib": 38888
+          },
+          "post_workload": {
+            "sample_count": 5,
+            "elapsed_seconds": 8,
+            "rss_min_kib": 45428,
+            "rss_max_kib": 45476,
+            "rss_peak_kib": 52936,
+            "swap_max_kib": 0,
+            "major_fault_delta": 8,
+            "cpu_tick_delta": 7,
+            "rss_anon_max_kib": 13824,
+            "rss_file_max_kib": 31660
+          },
+          "post_workload_threads": [
+            24,
+            24,
+            24,
+            24,
+            19
+          ]
+        },
+        {
+          "order": 3,
+          "cli_version_command": {
+            "wall_seconds": 0.503977973,
+            "user_seconds": 0.095225,
+            "system_seconds": 0.11427,
+            "maxrss_kib": 14072,
+            "minor_faults": 1426,
+            "major_faults": 160,
+            "exit_code": 0
+          },
+          "workload_seconds": 25.04347390308976,
+          "shutdown_seconds": 1.9890852390090004,
+          "whole_run": {
+            "sample_count": 114,
+            "elapsed_seconds": 56,
+            "rss_min_kib": 660,
+            "rss_max_kib": 51688,
+            "rss_peak_kib": 51692,
+            "swap_max_kib": 0,
+            "major_fault_delta": 10749,
+            "cpu_tick_delta": 1274,
+            "rss_anon_max_kib": 14216,
+            "rss_file_max_kib": 38524
+          },
+          "post_workload": {
+            "sample_count": 5,
+            "elapsed_seconds": 8,
+            "rss_min_kib": 45416,
+            "rss_max_kib": 45508,
+            "rss_peak_kib": 51692,
+            "swap_max_kib": 0,
+            "major_fault_delta": 3,
+            "cpu_tick_delta": 7,
+            "rss_anon_max_kib": 13812,
+            "rss_file_max_kib": 31704
+          },
+          "post_workload_threads": [
+            24,
+            24,
+            24,
+            24,
+            20
+          ]
+        },
+        {
+          "order": 6,
+          "cli_version_command": {
+            "wall_seconds": 1.005035966,
+            "user_seconds": 0.061071,
+            "system_seconds": 0.20357,
+            "maxrss_kib": 12812,
+            "minor_faults": 1366,
+            "major_faults": 385,
+            "exit_code": 0
+          },
+          "workload_seconds": 31.675091399927624,
+          "shutdown_seconds": 1.5392020490253344,
+          "whole_run": {
+            "sample_count": 126,
+            "elapsed_seconds": 63,
+            "rss_min_kib": 1104,
+            "rss_max_kib": 49636,
+            "rss_peak_kib": 49636,
+            "swap_max_kib": 0,
+            "major_fault_delta": 12206,
+            "cpu_tick_delta": 1385,
+            "rss_anon_max_kib": 14512,
+            "rss_file_max_kib": 36612
+          },
+          "post_workload": {
+            "sample_count": 5,
+            "elapsed_seconds": 8,
+            "rss_min_kib": 45224,
+            "rss_max_kib": 45280,
+            "rss_peak_kib": 49636,
+            "swap_max_kib": 0,
+            "major_fault_delta": 0,
+            "cpu_tick_delta": 6,
+            "rss_anon_max_kib": 13720,
+            "rss_file_max_kib": 31556
+          },
+          "post_workload_threads": [
+            24,
+            24,
+            24,
+            24,
+            24
+          ]
+        }
+      ],
+      "summary": {
+        "workload_seconds": {
+          "median": 29.83182255795691,
+          "min": 25.04347390308976,
+          "max": 31.675091399927624
+        },
+        "cli_version_seconds": {
+          "median": 1.005035966,
+          "min": 0.503977973,
+          "max": 1.066220402
+        },
+        "rss_peak_kib": {
+          "median": 51692,
+          "min": 49636,
+          "max": 52936
+        },
+        "swap_max_kib": {
+          "median": 0,
+          "min": 0,
+          "max": 0
+        },
+        "major_fault_delta": {
+          "median": 11803,
+          "min": 10749,
+          "max": 12206
+        },
+        "cpu_tick_delta": {
+          "median": 1291,
+          "min": 1274,
+          "max": 1385
+        },
+        "rss_anon_max_kib": {
+          "median": 14312,
+          "min": 14216,
+          "max": 14512
+        },
+        "rss_file_max_kib": {
+          "median": 38524,
+          "min": 36612,
+          "max": 38888
+        }
+      }
+    }
+  },
+  "limitations": [
+    "Three trials per variant do not establish long-term performance.",
+    "Page caches were not flushed; filesystem and OS background activity were not fully controlled.",
+    "Process RSS is not PSS or heap size; child-process and whole-system memory are excluded.",
+    "Major faults may read executable pages or swap; counts do not establish transferred bytes.",
+    "Workload timings exclude post-workload sampling and shutdown, and contain no model inference or audio.",
+    "Configuration-only CLI startup is not full agent-turn latency."
+  ],
+  "validation": {
+    "platform_unit_tests": 3,
+    "low_memory_state_tests": 246,
+    "default_state_tests": 245,
+    "state_doctests_per_profile": 1,
+    "tooling_tests": 30,
+    "native_cli_gates": 12,
+    "native_app_server_checks": [
+      "history-create",
+      "history-resume",
+      "mcp-stdio",
+      "mcp-http",
+      "idle-pool-recovery"
+    ],
+    "embedded_memory_advice": {
+      "mappings": 2,
+      "failures": 0
+    }
+  },
+  "sampler_calibration": {
+    "samples": 100,
+    "interval_ms": 10,
+    "wall_seconds": 0.99276,
+    "cpu_seconds": 0.115249,
+    "peak_rss_kib": 448,
+    "estimated_one_core_percent_at_2hz": 0.23
+  },
+  "static_code": {
+    "note": "Static allocated text attributed by codegen object; includes dependency monomorphizations and is not a per-feature RAM measurement.",
+    "sections": {
+      ".interp": 28,
+      ".MIPS.abiflags": 24,
+      ".dynamic": 304,
+      ".hash": 2376,
+      ".dynsym": 5264,
+      ".dynstr": 3557,
+      ".gnu.version": 658,
+      ".gnu.version_d": 0,
+      ".gnu.version_r": 96,
+      ".rel.dyn": 5482616,
+      ".rel.plt": 0,
+      ".init": 28,
+      ".text": 129724112,
+      ".MIPS.stubs": 120,
+      ".fini": 28,
+      ".rodata": 10290272,
+      ".eh_frame_hdr": 2943100,
+      ".eh_frame": 11075820,
+      ".plt": 0,
+      ".tdata": 500,
+      ".tbss": 836,
+      ".preinit_array": 0,
+      ".init_array": 1780,
+      ".fini_array": 12,
+      ".data.rel.ro": 2466648,
+      ".got.plt": 0,
+      ".data": 111728,
+      ".rld_map": 4,
+      ".got": 1812852,
+      ".sdata": 4,
+      ".bss": 22648,
+      ".comment": 95,
+      ".pdr": 0,
+      ".mdebug.abi32": 0
+    },
+    "attributed_text_bytes": 129681172,
+    "largest_codegen_crates": [
+      {
+        "crate": "codex_core",
+        "text_bytes": 27106680
+      },
+      {
+        "crate": "codex_app_server",
+        "text_bytes": 10253688
+      },
+      {
+        "crate": "codex_config",
+        "text_bytes": 8853416
+      },
+      {
+        "crate": "codex_exec_server",
+        "text_bytes": 4366408
+      },
+      {
+        "crate": "codex_app_server_protocol",
+        "text_bytes": 4228336
+      },
+      {
+        "crate": "codex_rollout",
+        "text_bytes": 3743812
+      },
+      {
+        "crate": "codex_network_proxy",
+        "text_bytes": 3646648
+      },
+      {
+        "crate": "codex_mcp",
+        "text_bytes": 3455592
+      },
+      {
+        "crate": "openssl_sys",
+        "text_bytes": 3425704
+      },
+      {
+        "crate": "starlark",
+        "text_bytes": 2678296
+      },
+      {
+        "crate": "codex_app_server_transport",
+        "text_bytes": 2500752
+      },
+      {
+        "crate": "codex_core_plugins",
+        "text_bytes": 2117568
+      },
+      {
+        "crate": "codex_thread_store",
+        "text_bytes": 2115564
+      },
+      {
+        "crate": "codex_rmcp_client",
+        "text_bytes": 1603288
+      },
+      {
+        "crate": "codex_guardian_v2",
+        "text_bytes": 1427236
+      }
+    ]
+  },
+  "baseline_sections": {
+    ".dynsym": 454560,
+    ".dynstr": 3021192,
+    ".rel.dyn": 4018040,
+    ".text": 205968288,
+    ".rodata": 11606736,
+    ".eh_frame_hdr": 1942220,
+    ".eh_frame": 7921052,
+    ".data.rel.ro": 2792684,
+    ".got": 1323596,
+    ".bss": 22888
+  },
+  "compiler_only_control": {
+    "optimized_image": {
+      "bytes": 163931220,
+      "sha256": "964a7808e104f6740ffc622523c0cca76b3833a357f2755101cc94d4e795e70d"
+    },
+    "scope": "Six alternating fresh-home runs: initialize, four durable threads, checked shell output and history reads; no model calls or voice streaming. Main Remote daemon stopped during comparisons and restored after.",
+    "order": [
+      "baseline",
+      "optimized",
+      "optimized",
+      "baseline",
+      "baseline",
+      "optimized"
+    ],
+    "summary": {
+      "baseline": {
+        "workload_seconds": {
+          "median": 46.918193869059905,
+          "min": 46.836377955041826,
+          "max": 51.06732162099797
+        },
+        "rss_peak_kib": {
+          "median": 55960,
+          "min": 53244,
+          "max": 56584
+        },
+        "swap_max_kib": {
+          "median": 7364,
+          "min": 7204,
+          "max": 7560
+        },
+        "major_fault_delta": {
+          "median": 4269,
+          "min": 4041,
+          "max": 4403
+        },
+        "cpu_tick_delta": {
+          "median": 1232,
+          "min": 1182,
+          "max": 1307
+        },
+        "rss_anon_max_kib": {
+          "median": 8516,
+          "min": 8456,
+          "max": 9296
+        },
+        "rss_file_max_kib": {
+          "median": 48268,
+          "min": 45976,
+          "max": 48440
+        }
+      },
+      "optimized": {
+        "workload_seconds": {
+          "median": 45.323894382920116,
+          "min": 43.39577355701476,
+          "max": 46.73591382498853
+        },
+        "rss_peak_kib": {
+          "median": 58736,
+          "min": 57584,
+          "max": 60760
+        },
+        "swap_max_kib": {
+          "median": 6976,
+          "min": 6304,
+          "max": 7048
+        },
+        "major_fault_delta": {
+          "median": 3927,
+          "min": 3738,
+          "max": 3998
+        },
+        "cpu_tick_delta": {
+          "median": 1321,
+          "min": 1317,
+          "max": 1346
+        },
+        "rss_anon_max_kib": {
+          "median": 8956,
+          "min": 8904,
+          "max": 9116
+        },
+        "rss_file_max_kib": {
+          "median": 52368,
+          "min": 49272,
+          "max": 52388
+        }
+      }
+    },
+    "conclusion": "Smaller executable alone did not lower median peak RSS; executable read-ahead advice is evaluated separately in the final comparison."
+  },
+  "deployment": {
+    "verified": true,
+    "remote_status": "connected",
+    "cli_version": "0.166.0",
+    "app_server_version": "0.166.0",
+    "executable_sha256": "d1945185331c6e55aff95e4ad5935b6b278823983a58bb3b0fb655e7024e90ed",
+    "versioned_previous_image_retained": true,
+    "configuration_backup_retained": true,
+    "memory_advice_optout_verified": true,
+    "start_and_verify_seconds_single_observation": 46.75815846200567,
+    "short_process_observation": {
+      "sample_count": 8,
+      "elapsed_seconds": 7,
+      "rss_min_kib": 36296,
+      "rss_max_kib": 36304,
+      "rss_peak_kib": 41412,
+      "swap_max_kib": 0,
+      "major_fault_delta": 0,
+      "cpu_tick_delta": 2,
+      "rss_anon_max_kib": 8888,
+      "rss_file_max_kib": 27416
+    }
+  }
+}

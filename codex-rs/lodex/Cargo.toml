@@ -31,6 +31,7 @@ codex-http-client = { workspace = true }
 codex-login = { workspace = true }
 codex-lodex-local = { workspace = true, features = ["cli"] }
 codex-lodex-cloud = { workspace = true, features = ["cli"] }
+codex-lodex-platform = { workspace = true }
 codex-mcp = { workspace = true }
 codex-protocol = { workspace = true }
 codex-rmcp-client = { workspace = true }

@@ -33,7 +33,8 @@ def parse_samples(text):
         elif line.startswith("status "):
             _, key, value = line.split()
             names = {"VmRSS:": "rss_kib", "VmHWM:": "rss_peak_kib",
-                     "VmSwap:": "swap_kib", "Threads:": "threads"}
+                     "VmSwap:": "swap_kib", "Threads:": "threads",
+                     "RssAnon:": "rss_anon_kib", "RssFile:": "rss_file_kib"}
             current[names[key]] = int(value)
         elif line == "end":
             required = {"pid", "start_ticks", "rss_kib", "rss_peak_kib",
@@ -53,13 +54,17 @@ def parse_samples(text):
 
 def summarize(samples):
     first, last = samples[0], samples[-1]
-    return {"sample_count": len(samples), "elapsed_seconds": last["timestamp"] - first["timestamp"],
+    result = {"sample_count": len(samples), "elapsed_seconds": last["timestamp"] - first["timestamp"],
             "rss_min_kib": min(x["rss_kib"] for x in samples),
             "rss_max_kib": max(x["rss_kib"] for x in samples),
             "rss_peak_kib": max(x["rss_peak_kib"] for x in samples),
             "swap_max_kib": max(x["swap_kib"] for x in samples),
             "major_fault_delta": last["major_faults"] - first["major_faults"],
             "cpu_tick_delta": last["cpu_ticks"] - first["cpu_ticks"]}
+    for field in ("rss_anon_kib", "rss_file_kib"):
+        if all(field in sample for sample in samples):
+            result[field.replace("_kib", "_max_kib")] = max(sample[field] for sample in samples)
+    return result
 
 
 def main():

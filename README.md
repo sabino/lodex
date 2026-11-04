@@ -13,6 +13,12 @@ reconnects through Codex Remote. Optimization and extended compatibility testing
 are ongoing. Current images are still large: external SD/USB storage is required.
 This is an independent fork, not an official OpenAI distribution.
 
+The tested v1.8 image is 156.3 MiB, down from v1.7's 229.1 MiB. Six alternating
+Omega2+ trials measured median local-harness workload time of 29.8 versus 46.4
+seconds, median peak RSS of 50.5 versus 55.6 MiB, and zero sampled swap in all v1.8 runs.
+These synthetic shell/history tests exclude model inference and voice streaming.
+See [the full measurements and limits](docs/lodex/performance.md).
+
 ## Execution modes
 
 - **Local harness:** run Codex locally, with tools executing on the device. Model
@@ -44,12 +50,18 @@ than substituting a tools-only MCP shim. The MIPS port uses a matching OpenWrt
 soft-float SDK, portable atomics and dependency fixes with upstream licenses intact.
 
 A two-connection SQLite profile replaces the upstream maximum of five connections
-per writable database. Both profiles pass 245 state tests and the state doctest;
-repeated device performance comparisons are in progress. A generic, bounded local
+per writable database. Its page caches target 512 KiB per connection,
+prepared-statement caches to 32 entries, and pools use a 30-second idle timeout. The low-memory profile passes 246 state tests and the default profile
+passes 245, plus the state doctest for each. A generic, bounded local
 SOUL/MEMORY store now has local CLI administration, writer attribution and
 process-kill recovery checks, available through `lodex profile` or the small
 `lodex-profile` utility. See [local profile commands](docs/lodex/local-profiles.md).
 A cloud-submission boundary is an independent component. Neither automatically exports private profiles into agent prompts.
+
+The MIPS launcher also disables speculative read-ahead for its own read-only
+executable mappings on Linux. This targets SD-backed systems with a small RAM
+budget. It needs no resident helper and can be disabled with
+`LODEX_MMAP_READAHEAD=normal`. See [the implementation and measurement rationale](docs/lodex/embedded-tuning.md).
 
 The normal MIPS launcher graph contains no `codex-tui` or `ratatui` dependency.
 Experimental `exec-server` support preserves an executor path for remote tools.
@@ -70,26 +82,30 @@ is cross-built by the wrapper. Do not use the host's native CPU/float ABI.
 ```sh
 rustup toolchain install 1.98.0 --component rust-src
 export LODEX_OPENWRT_SDK=/absolute/path/to/openwrt-sdk
-tools/lodex/mips-cargo rustc \
-  --manifest-path codex-rs/Cargo.toml --release \
-  -p codex-lodex --bin lodex --offline -- \
-  -C target-feature=-crt-static,+xgot -C codegen-units=256
+tools/lodex/build-headless
 ```
 
 Populate the Cargo dependency cache on the build host before an offline build.
-The output is `.lodex-build/mips-target/mipsel-unknown-linux-musl/release/lodex`.
+The output is `.lodex-build/mips-target/mipsel-unknown-linux-musl/lodex-size/lodex`.
 `LODEX_TARGET_DIR` can select a different external build cache.
 
-For the executor-only image, use the same build command with
-`-p codex-lodex-executor --bin lodex-executor`. It exposes the shared upstream
+The optimized profile uses size optimization and ThinLTO. Large-GOT addressing
+applies to every Rust dependency; smaller core compilation units keep MIPS TLS
+references within range. Internal executable symbols are hidden from the dynamic
+export table. This reduces export metadata but also removes internal names from
+dynamic-symbol-based backtraces. Use a profiling build or the link map for diagnosis.
+
+For the executor-only image, use `tools/lodex/mips-cargo rustc` with
+`--manifest-path codex-rs/Cargo.toml --release -p codex-lodex-executor
+--bin lodex-executor --offline -- -C target-feature=-crt-static,+xgot
+-C codegen-units=256`. It exposes the shared upstream
 executor CLI directly: `lodex-executor --listen stdio` (without an `exec-server`
 subcommand). Keep the full `lodex` image for local harness execution.
 
 The executable dynamically uses the matching musl/libgcc/libatomic runtime.
 Keep extra libraries in a private prefix; do not replace firmware libraries.
-The working port uses `+xgot` and 256 final codegen units to avoid MIPS relocation
-limits. Rust warns that `xgot` is an unstable target feature. Size-oriented builds
-and further dependency reductions remain experiments, not default guarantees.
+The working port uses `+xgot` and bounded compilation units to avoid MIPS relocation
+limits. Rust warns that `xgot` is an unstable target feature; the toolchain is pinned.
 
 Run `lodex --help` for the current headless commands. `lodex app-server --listen
 stdio://` exposes the upstream App Server protocol. Remote daemon installation on
@@ -99,6 +115,10 @@ launch wrapper and its PATH: managed process tracking requires a `ps` supporting
 `-p PID -o stat= -o lstart=`, which the tested BusyBox build lacks. The target
 wrapper supplies a compatible version. MIPS currently needs
 direct tool mode because the V8 code-mode host is unavailable on this target.
+
+[Optional embedded settings](docs/lodex/embedded-config.toml) disable unused
+catalogs and telemetry exporters. Merge them into the existing configuration;
+retain the device's authentication, providers and MCP declarations.
 
 ## Verification and measurements
 

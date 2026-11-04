@@ -22,27 +22,28 @@ Implementation is active. Lodex is an independent MIPS/OpenWrt runtime.
 6. Physical Omega qualification, external MCP fixtures, cloud worker proof,
    prolonged operation and recoverable production cutover.
 
-Build recipe: tools/lodex/mips-cargo. Set LODEX_OPENWRT_SDK to the verified
-OpenWrt 23.05.3 SDK directory; run from codex-rs. It expects Rust 1.98/rust-src.
-Current known link settings: rustc --release -p codex-lodex
---bin lodex --offline -- -C target-feature=-crt-static,+xgot
--C codegen-units=256. The Lodex launcher preserves the daemon's re-exec grammar.
+Build recipe: tools/lodex/build-headless. Set LODEX_OPENWRT_SDK to the verified
+OpenWrt 23.05.3 SDK directory. It expects Rust 1.98/rust-src and selects the
+lodex-size profile with ThinLTO, large-GOT addressing across dependencies,
+256 core compilation units and a bounded export table. The ordinary release
+profile remains available through tools/lodex/mips-cargo for comparisons.
+The Lodex launcher preserves the daemon's re-exec grammar.
 
 Port dependencies are vendored under vendor with licenses intact. Upstream
 commit is recorded in baseline.json. Original MIPS port diffs are retained in
 port-provenance; workspace paths in this fork point to ../vendor instead.
 
 Development profiling:
-- Stream tools/lodex/sample-proc.sh to a target shell, supplying a PID, count
-  and interval; capture stdout on the host.
+- Prefer tools/lodex/proc-sampler.c on constrained targets. The older
+  tools/lodex/sample-proc.sh remains a fallback; capture stdout on the host.
 - Parse with tools/lodex/footprint.py CAPTURE.
 - Run parser tests with python3 -m unittest discover -s tools/lodex/tests -v.
-Target sampling requires only BusyBox shell/awk, not Python or extra daemons.
+Neither sampler requires target Python or an extra daemon.
 
-Lodex v1.6 is installed experimentally as the managed Remote service, with stock
+Lodex v1.8 is installed experimentally as the managed Remote service, with stock
 rollback retained. It passed reconnect after managed stop/start, native CLI,
 concurrent shell/history and process-restart recovery. See CURRENT.md and
-candidate-v1.1-results.json for exact evidence and remaining limitations.
+efficiency-results.json for current evidence and remaining limitations.
 
 The two-connection SQLite variant compiled and passed native gates. All245 state tests and one
 doctest pass with both its feature and upstream default5. Three unchanged-image

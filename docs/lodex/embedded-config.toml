@@ -1,0 +1,20 @@
+# Optional settings for a small, remotely accessed device.
+# Merge into the existing config; retain authentication, providers and MCP servers.
+check_for_update_on_startup = false
+
+[features]
+apps = false
+plugins = false
+code_mode = false
+code_mode_host = false
+skill_search = false
+
+[analytics]
+enabled = false
+
+# Analytics and OTEL exporters have separate switches upstream.
+# Disable periodic export workers when no telemetry collector is required.
+[otel]
+exporter = "none"
+trace_exporter = "none"
+metrics_exporter = "none"

@@ -127,6 +127,16 @@ enum LoginCommand {
 }
 
 fn main() -> anyhow::Result<()> {
+    #[cfg(all(target_os = "linux", target_arch = "mips"))]
+    if std::env::var_os("LODEX_MMAP_READAHEAD").as_deref() != Some(std::ffi::OsStr::new("normal")) {
+        let report = codex_lodex_platform::advise_executable_random_access();
+        if std::env::var_os("LODEX_MEMORY_DIAGNOSTICS").is_some() {
+            eprintln!(
+                "lodex memory advice: {} mappings, {} failures",
+                report.regions, report.failures
+            );
+        }
+    }
     let remote_disabled = codex_app_server::take_remote_control_disabled_env();
     arg0_dispatch_or_else(move |paths| async move {
         let cli = Cli::parse();

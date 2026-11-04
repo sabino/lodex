@@ -41,6 +41,12 @@ class FootprintTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             footprint.parse_samples(sample() + sample(timestamp=99))
 
+    def test_optional_file_and_anonymous_rss(self):
+        raw = sample().replace("end\n", "status RssAnon: 16\nstatus RssFile: 24\nend\n")
+        summary = footprint.summarize(footprint.parse_samples(raw))
+        self.assertEqual(summary["rss_anon_max_kib"], 16)
+        self.assertEqual(summary["rss_file_max_kib"], 24)
+
 
 if __name__ == "__main__":
     unittest.main()

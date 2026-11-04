@@ -11,11 +11,33 @@ use sqlx::Error;
 use sqlx::SqlitePool;
 use sqlx::sqlite::SqliteConnectOptions;
 use sqlx::sqlite::SqlitePoolOptions;
+#[cfg(feature = "lodex-low-memory")]
+use std::time::Duration;
 
 #[cfg(feature = "lodex-low-memory")]
 const MAX_CONNECTIONS: u32 = 2;
 #[cfg(not(feature = "lodex-low-memory"))]
 const MAX_CONNECTIONS: u32 = 5;
+
+pub(super) fn connection_options(options: SqliteConnectOptions) -> SqliteConnectOptions {
+    #[cfg(feature = "lodex-low-memory")]
+    let options = options
+        .statement_cache_capacity(32)
+        // A negative value is KiB, independent of the database's page size.
+        // This is a per-connection suggestion, not a process-wide memory limit.
+        .pragma("cache_size", "-512");
+    options
+}
+
+pub(super) fn pool_options(max_connections: u32) -> SqlitePoolOptions {
+    let options = SqlitePoolOptions::new().max_connections(max_connections);
+    #[cfg(feature = "lodex-low-memory")]
+    let options = options
+        // Release workers, prepared statements and page caches for unused DBs.
+        // The same initialization runs when a later request opens a connection.
+        .idle_timeout(Some(Duration::from_secs(30)));
+    options
+}
 
 #[derive(Clone, Copy, Eq, PartialEq)]
 pub(super) enum JournalModePolicy {
@@ -31,10 +53,9 @@ pub(super) async fn connect_once(
     // SQLx retries after_connect errors, eventually replacing them with PoolTimedOut.
     // Return the first initialization error directly while opening this pool.
     let (init_error_tx, mut init_error_rx) = tokio::sync::mpsc::channel(/*buffer*/ 1);
-    let pool_options = SqlitePoolOptions::new()
+    let pool_options = pool_options(MAX_CONNECTIONS)
         // Keep an independent reader/writer available; a one-connection pool
         // would serialize both and deadlock callers holding a connection.
-        .max_connections(MAX_CONNECTIONS)
         .after_connect(move |connection, _metadata| {
             let init_error_tx = init_error_tx.clone();
             Box::pin(async move {
@@ -70,7 +91,7 @@ pub(super) async fn connect_once(
     let pool = tokio::select! {
         biased;
         Some(error) = init_error_rx.recv() => Err(error),
-        result = pool_options.connect_with(options.clone()) => result,
+        result = pool_options.connect_with(connection_options(options.clone())) => result,
     }?;
     // Database settings persist on disk.
     // Initialize these settings once before callers can use the pool.

@@ -26,6 +26,10 @@ const MIN_FREE_BYTES: i64 = 64 * 1024 * 1024;
 const RESERVE_BYTES: i64 = 16 * 1024 * 1024;
 const PASS_PAGES: u32 = 1024;
 const BATCH_PAGES: u32 = 64;
+#[cfg(feature = "lodex-low-memory")]
+const MAINTENANCE_CACHE_KIB: &str = "-512";
+#[cfg(not(feature = "lodex-low-memory"))]
+const MAINTENANCE_CACHE_KIB: &str = "-16384";
 
 /// Owns background reclamation for opted-in databases registered with `SqliteConfig`.
 ///
@@ -249,8 +253,9 @@ async fn reclaim(
             .synchronous(SqliteSynchronous::Normal)
             // Keep commits from doing checkpoint I/O while holding up writers.
             .pragma("wal_autocheckpoint", "0")
-            // A 16 MiB cache reduced CPU time in large-database measurements.
-            .pragma("cache_size", "-16384")
+            // Large hosts favor a 16 MiB cache; constrained devices bound the
+            // maintenance spike while retaining the same transaction limits.
+            .pragma("cache_size", MAINTENANCE_CACHE_KIB)
             .log_statements(LevelFilter::Off)
             .log_slow_statements(LevelFilter::Off, Duration::ZERO),
     )

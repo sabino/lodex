@@ -40,6 +40,7 @@ members = [
     "lodex",
     "lodex-executor",
     "lodex-policy",
+    "lodex-platform",
     "lodex-local",
     "lodex-cloud",
     "collaboration-mode-templates",
@@ -268,6 +269,7 @@ codex-login = { path = "login" }
 codex-lodex-local = { path = "lodex-local" }
 codex-lodex-cloud = { path = "lodex-cloud" }
 codex-lodex-policy = { path = "lodex-policy" }
+codex-lodex-platform = { path = "lodex-platform" }
 codex-mermaid = { path = "mermaid" }
 codex-message-history = { path = "message-history" }
 codex-memories-extension = { path = "ext/memories" }
@@ -670,6 +672,21 @@ inherits = "release"
 debug = "full"
 lto = false
 strip = false
+
+# Isolated size/working-set experiment for constrained headless devices.
+# Keep the ordinary release profile as the comparison and rollback build.
+[profile.lodex-size]
+inherits = "release"
+opt-level = "z"
+lto = "thin"
+debug = 0
+strip = "symbols"
+panic = "abort"
+
+# MIPS TLS GOT relocations stay 16-bit even with xgot. Spread the large core
+# crate across smaller units so no single object exhausts that local GOT.
+[profile.lodex-size.package.codex-core]
+codegen-units = 256
 
 [profile.ci-test]
 # Reduce binary size to reduce disk pressure.

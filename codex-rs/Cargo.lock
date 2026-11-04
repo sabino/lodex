@@ -3977,6 +3977,7 @@ dependencies = [
  "codex-http-client",
  "codex-lodex-cloud",
  "codex-lodex-local",
+ "codex-lodex-platform",
  "codex-login",
  "codex-mcp",
  "codex-protocol",
@@ -4040,6 +4041,13 @@ dependencies = [
  "clap",
  "sha2 0.10.9",
  "tempfile",
+]
+
+[[package]]
+name = "codex-lodex-platform"
+version = "0.166.0"
+dependencies = [
+ "libc",
 ]
 
 [[package]]

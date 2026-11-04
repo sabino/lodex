@@ -1,0 +1,8 @@
+/* The executable has no public in-process plugin ABI. Keep its internal Rust
+ * and static-library symbols out of MIPS's dynamic GOT and string table.
+ * Undefined imports from musl/libgcc/libatomic remain dynamically resolved.
+ */
+{
+    global: main;
+    local: *;
+};

@@ -35,6 +35,7 @@ async def trial(args, index):
                  args.config.read_bytes())
     ready = args.output_dir / f"trial-{index}.ready"
     launch = (f"set -eu\ncd {q(root)}\nprintf '%s' $$ > runtime.pid\n"
+              + (f"{q(args.sampler)} $$ 1200 500 > workload.proc &\n" if args.sampler else "") +
               "exec env -u OPENAI_API_KEY -u CODEX_API_KEY -u CODEX_ACCESS_TOKEN "
               f"CODEX_HOME={q(root)} TMPDIR={q(root + '/tmp')} "
               f"LD_LIBRARY_PATH={q(args.runtime_lib)} {q(args.binary)} app-server --listen stdio://")
@@ -51,17 +52,26 @@ async def trial(args, index):
         pid = (await remote(args.ssh, f"cat {q(root + '/runtime.pid')}")).strip()
         if not pid.isdecimal() or int(pid) < 1:
             raise ValueError("invalid sampler PID")
-        capture = await remote(args.ssh, f"sh -s -- {pid} 5 2",
-                               (Path(__file__).parent / "sample-proc.sh").read_bytes())
+        if args.sampler:
+            capture = await remote(args.ssh, f"{q(args.sampler)} {pid} 5 2000")
+        else:
+            capture = await remote(args.ssh, f"sh -s -- {pid} 5 2",
+                                   (Path(__file__).parent / "sample-proc.sh").read_bytes())
         samples = footprint.parse_samples(capture)
         (args.output_dir / f"trial-{index}.proc").write_text(capture)
         result = await task
         (args.output_dir / f"trial-{index}.rpc.json").write_text(json.dumps(result, indent=2) + "\n")
         report = {"trial": index, "remote_home": root, "footprint": footprint.summarize(samples),
                   "threads": [sample["threads"] for sample in samples],
+                  "workload_seconds": result["workload_seconds"],
+                  "shutdown_seconds": result["shutdown_seconds"],
                   "request_group_seconds": [request.get("elapsed_seconds")
                                             for request in result["requests"]
                                             if "elapsed_seconds" in request]}
+        if args.sampler:
+            workload_capture = await remote(args.ssh, f"cat {q(root + '/workload.proc')}")
+            (args.output_dir / f"trial-{index}.workload.proc").write_text(workload_capture)
+            report["whole_run_footprint"] = footprint.summarize(footprint.parse_samples(workload_capture))
         (args.output_dir / f"trial-{index}.summary.json").write_text(json.dumps(report, indent=2) + "\n")
         print(json.dumps(report), flush=True)
         return report
@@ -90,10 +100,12 @@ def main():
     parser.add_argument("--config", required=True, type=Path, help="synthetic fixture config without credentials")
     parser.add_argument("--output-dir", required=True, type=Path)
     parser.add_argument("--runtime-lib", required=True)
+    parser.add_argument("--sampler", help="optional native proc-sampler path on the device")
     parser.add_argument("--hardware-lock", type=Path, default=DEFAULT_LOCK)
     parser.add_argument("--repeat", type=int, choices=range(1, 6), default=3)
     args = parser.parse_args()
-    if not all(Path(path).is_absolute() for path in [args.binary, args.remote_root, args.runtime_lib]):
+    if not all(Path(path).is_absolute() for path in
+               [args.binary, args.remote_root, args.runtime_lib] + ([args.sampler] if args.sampler else [])):
         parser.error("remote paths must be absolute")
     with HardwareJob(args.hardware_lock):
         asyncio.run(run(args))

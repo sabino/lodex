@@ -3,6 +3,33 @@
 Experimental MIPS/OpenWrt fork based on Codex 0.166.0,
 upstream commit 6ff1e1ca3b30fc8b914720681fcf5fe62e95f856.
 
+## v1.8 installed on the test device
+
+The v1.8 image is installed as the managed Remote runtime. Its executable hash
+was verified after transfer, and the running process was checked against the
+installed versioned path. Remote connected using the existing authentication and
+enrollment. The previous v1.7 image and configuration backup are retained.
+Lodex's release name is v1.8; its upstream CLI/App Server version remains 0.166.0.
+
+The image is 163,931,228 bytes, down from v1.7's 240,250,004 bytes. In six
+alternating synthetic local-harness runs, median workload time fell from 46.39
+to 29.83 seconds and median peak RSS from 56,972 to 51,692 KiB. All three v1.8
+runs had zero sampled process swap. CPU time was approximately unchanged.
+These runs exclude model inference and voice streaming.
+
+The final image passed twelve native CLI gates, saved-thread creation and
+process-restart resume, stdio and HTTP MCP tool/resource checks, and four-thread
+history reads after the configured connection-idle timeout. The new memory
+advice was accepted on both main-image mappings, and its opt-out was verified.
+Host checks passed 246 low-memory state tests, 245 default state tests, both
+state doctests, three platform tests and thirty tooling tests.
+
+The managed start plus connection/process verification took 46.76 seconds in
+one deployment observation. This is not a boot-time or startup-speed comparison.
+See [the measurements and limits](performance.md),
+[machine-readable results](efficiency-results.json), and
+[implementation details](embedded-tuning.md).
+
 ## Verified on hardware
 
 The tested device is an Omega2+ with one MT7688/MIPS24KEc core, little-endian
@@ -60,9 +87,9 @@ so this does not qualify hosted API execution or device registration. Exact nati
 are recorded in [cloud-results.json](cloud-results.json). Command examples and
 credential/data boundaries are in [worker-routing.md](worker-routing.md).
 
-## v1.6 deployment and API-only controller
+## Earlier v1.6 deployment and API-only controller
 
-The v1.6 launcher is now installed on the test device. It passed twelve native
+The v1.6 launcher was previously installed on the test device. It passed twelve native
 CLI gates, four-thread durable history across a process restart, App Server
 shell/error handling, stdio MCP tool/resource calls, and local profile semantics.
 Managed Remote reconnected with the existing enrollment identity. Startup through

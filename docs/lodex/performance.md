@@ -4,6 +4,54 @@ Measured on the Omega2+/MT7688 test device running OpenWrt 23.05.3. This is a
 single-core, little-endian MIPS32r2/soft-float target with about 128 MiB RAM and
 external SD storage. Results are specific to the workload, binary and firmware.
 
+## v1.8 executable paging and cache limits
+
+Six alternating fresh-home trials compared v1.7 with v1.8, three per build.
+Each initialized the local App Server, created four durable threads, executed
+checked concurrent shell commands and read history. The same credential-free
+configuration and local model catalog were used. The managed Remote daemon was
+stopped during comparison and restored afterward. No model calls or audio
+streaming were included.
+
+| Metric | v1.7 | v1.8 |
+| --- | ---: | ---: |
+| Executable bytes | 240,250,004 | 163,931,228 |
+| Median workload time, seconds | 46.391 | 29.832 |
+| Median process RSS high-water mark, KiB | 56,972 | 51,692 |
+| Median maximum sampled process swap, KiB | 7,584 | 0 |
+| Median sampled process CPU time, seconds | 12.79 | 12.91 |
+| Median major-fault delta | 4,313 | 11,803 |
+
+The image is 31.8% smaller. This fixture used 35.7% less elapsed time and had a
+9.3% lower median RSS peak. Every v1.8 trial had zero sampled process swap;
+v1.7 ranged from 7,088 to 8,136 KiB. Workload times ranged from 45.55 to 55.85
+seconds for v1.7 and 25.04 to 31.68 seconds for v1.8. CPU time stayed approximately
+flat. Individual samples arrive at 500 ms intervals and can miss brief events.
+
+The smaller compiler-only control did not reduce peak RSS: its median was
+58,736 KiB versus 55,960 KiB for its v1.7 comparison. The subsequent runtime
+change applies `MADV_RANDOM` to the main executable's read-only mappings,
+avoiding speculative mmap read-ahead on the tested SD-backed system. More major
+faults can accompany smaller on-demand reads. Fault counts alone do not measure
+transferred bytes, and this kernel does not separate executable faults from
+swap faults in these counters. `RssAnon` also counts pages kept resident instead
+of swapped out; it is not a heap-allocation measurement.
+
+The build also bounds writable SQLite caches and expires idle connections.
+See [the implementation and configuration](embedded-tuning.md) and
+[all trials, hashes, the compiler-only control and static code attribution](efficiency-results.json).
+The native sampler's measured overhead was approximately 0.23% of one CPU at
+2 Hz; it spawns no sampling subprocesses. Full-image hashing was completed
+before timing. An initial verification attempt exceeded its command deadline
+before any trial, and was retried with a longer hashing budget.
+
+These are short local-harness measurements. Page caches were not flushed and
+OS background work was not completely controlled. RSS excludes child processes
+and is not PSS. Configuration-only `--version` timings overlap between builds;
+they do not establish a separate startup-latency improvement. Model response,
+continuous voice, long-output and broader failure-mode performance require
+their own workloads.
+
 ## Image size
 
 | Image | Bytes |
@@ -15,6 +63,8 @@ external SD storage. Results are specific to the workload, binary and firmware.
 | Lodex v1.3, executor entry point restored | 239722436 |
 | Lodex v1.4, local profile administration | 239788704 |
 | Lodex v1.5, bounded cloud tasks and API sessions | 240249956 |
+| Lodex v1.7, comparison baseline | 240250004 |
+| Lodex v1.8, size profile and executable memory advice | 163931228 |
 | Executor-only v1 | 75614760 |
 
 The executor CLI adds about 3.1 MB to the image while retaining a remote tools

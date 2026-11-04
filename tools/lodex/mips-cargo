@@ -18,7 +18,10 @@ export CXXFLAGS_mipsel_unknown_linux_musl="$CFLAGS_mipsel_unknown_linux_musl"
 export CXX_mipsel_unknown_linux_musl="$toolchain/bin/mipsel-openwrt-linux-musl-g++"
 export AR_mipsel_unknown_linux_musl="$toolchain/bin/mipsel-openwrt-linux-musl-ar"
 export CARGO_TARGET_MIPSEL_UNKNOWN_LINUX_MUSL_LINKER="$CC_mipsel_unknown_linux_musl"
-export CARGO_TARGET_MIPSEL_UNKNOWN_LINUX_MUSL_RUSTFLAGS='-C target-feature=-crt-static'
+# LTO retains each dependency's function target attributes. Setting xgot only
+# on the final binary leaves imported functions using 16-bit GOT references.
+# Match the C/C++ -mxgot setting across the complete Rust dependency graph.
+export CARGO_TARGET_MIPSEL_UNKNOWN_LINUX_MUSL_RUSTFLAGS='-C target-feature=-crt-static,+xgot'
 export PKG_CONFIG_ALLOW_CROSS=1
 export PKG_CONFIG_SYSROOT_DIR="$toolchain"
 export RUSTUP_TOOLCHAIN=1.98.0

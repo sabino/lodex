@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/../.." && pwd)
+
+# Keep the large-GOT ABI throughout dependencies (mips-cargo), not just here.
+# The CLI needs no exported Rust ABI; retaining those exports grows both the
+# dynamic loader's work and its string/GOT tables on 32-bit MIPS.
+exec "$root/tools/lodex/mips-cargo" rustc \
+  --manifest-path "$root/codex-rs/Cargo.toml" \
+  --profile lodex-size -p codex-lodex --bin lodex --offline -- \
+  -C target-feature=-crt-static,+xgot -C codegen-units=256 \
+  -C "link-arg=-Wl,--version-script=$root/tools/lodex/mips-exports.map"
